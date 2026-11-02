@@ -1,0 +1,23 @@
+import { readFileSync, writeFileSync, statSync } from 'node:fs';
+import { Script } from 'node:vm';
+const root = new URL('./dist/', import.meta.url);
+const read = path => readFileSync(new URL(path, root), 'utf8');
+let html = read('index.html');
+let css = read('styles.css');
+const font = readFileSync(new URL('assets/ChosunGu.woff', root)).toString('base64');
+css = css.replace('assets/ChosunGu.woff', `data:font/woff;base64,${font}`);
+const picture = readFileSync(new URL('assets/imarket-mro.jpg', root)).toString('base64');
+html = html.replace('<link rel="stylesheet" href="styles.css">', `<style>${css}</style>`);
+html = html.replace('<link rel="stylesheet" href="motion.css">', () => `<style>${read('motion.css')}</style>`);
+html = html.replace('<link rel="stylesheet" href="cover.css">', () => `<style>${read('cover.css')}</style>`);
+html = html.replace('<link rel="stylesheet" href="readability.css">', () => `<style>${read('readability.css')}</style>`);
+const escapeScript = text => text.replace(/<\/script/gi, '<\\/script');
+html = html.replace('<script src="assets/chart.umd.min.js" defer></script><script src="app.js" defer></script>', '');
+html = html.replace('src="assets/imarket-mro.jpg"', `src="data:image/jpeg;base64,${picture}"`);
+// A callback preserves literal $&, $' and $` sequences inside bundled code.
+html = html.replace('</body>', () => `<script>${escapeScript(read('assets/chart.umd.min.js'))}</script><script>${escapeScript(read('app.js'))}</script></body>`);
+const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+if (scripts.length !== 2) throw new Error('Offline HTML must contain exactly two embedded scripts');
+scripts.forEach(([full, script], i) => new Script(script, { filename: `offline-script-${i}.js` }));
+writeFileSync(new URL('imarket-proposal.html', root), html);
+console.log(JSON.stringify({ offline_html: 'dist/imarket-proposal.html', bytes: statSync(new URL('imarket-proposal.html',root)).size, slides: (html.match(/class="slide[ "a-z-]/g)||[]).length }));

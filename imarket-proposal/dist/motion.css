@@ -1,0 +1,32 @@
+/* Presentation alignment and interaction layer. */
+.section-head,.cover-copy,.flow-info,.footnote,.blue-callout,.value-kpis,.milestones,.terms-table,.commercial,.three-grid article{ text-align:center }
+.section-head{width:100%;margin-inline:auto}
+.section-head .sub{max-width:900px;margin-inline:auto}
+.presenter{font-size:12px;line-height:1.7;color:#506587;margin-top:20px;letter-spacing:.3px}
+.presenter strong{color:var(--deep);font-weight:bold;margin-left:7px}
+.presenter-footer{color:#465e87;font-size:10px}
+.cover-caption{margin-top:13px}
+.closing-panel .presenter{margin-top:16px}
+.closing-panel .closing-caption{margin-top:9px}
+.challenge-grid .icon-box{float:none;margin:0 auto 22px}
+.use-top{justify-content:center;gap:20px}
+.stat-line{justify-content:center;text-align:center}
+.evidence-copy>.source{text-align:center}
+.mini{text-align:center}
+.flow-output{border-left:0;border-top:2px solid var(--mint);padding:12px 0 0;max-width:80%;margin-inline:auto}
+.demo-heading{justify-content:center;gap:20px}
+.demo-row>span{flex:1;text-align:center}
+.demo-status{justify-content:center;text-align:center}
+.demo-note{text-align:center}
+.panel-heading{justify-content:center;gap:18px}
+.chart-caption{justify-content:center;flex-wrap:wrap}
+.chart-caption strong{margin-left:5px}
+.chart-panel>.source{text-align:center}
+.formula{text-align:center}
+.milestones>div{padding:12px 15px;border-left:0;border-bottom:1px solid #b7c8eb;border-radius:12px}
+.milestones>div:last-child{border-bottom:0}
+.commercial .pill{align-self:center}
+.commercial>small,.commercial>strong{text-align:center}
+.workflow-tabs button{text-align:center}
+.dialog-heading>div{flex:1;text-align:center;padding-left:32px}
+#overviewGrid button{text-align:center}
