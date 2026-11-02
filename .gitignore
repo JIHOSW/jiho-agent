@@ -4,7 +4,7 @@ desktop.ini
 .DS_Store
 
 # Claude Code 개인 설정
-.claude/settings.local.json
+**/.claude/settings.local.json
 
 # 환경 변수·비밀 정보
 .env
