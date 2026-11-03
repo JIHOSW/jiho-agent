@@ -1,5 +1,7 @@
 # 아이마켓코리아 구매 혁신 제안
 
+**[발표자료 바로 보기](https://jihosw.github.io/jiho-agent/)** — 브라우저에서 슬라이드와 모션을 실행할 수 있습니다.
+
 10장 HTML 인터랙티브 발표입니다. `dist/imarket-proposal.html`은 이미지·조선굴림체·Chart.js가 포함된 단일 파일로, 더블클릭해 오프라인에서 열 수 있습니다. `dist/index.html`은 웹 배포용으로 같은 폴더의 리소스를 사용합니다.
 
 - 이동: 좌우 화살표, PageUp / PageDown, 화면 하단 버튼, 모바일 좌우 스와이프
