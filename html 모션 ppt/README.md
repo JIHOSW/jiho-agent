@@ -33,5 +33,9 @@ Built-in image_gen 사용. 저장: dist/assets/procurement-ecosystem.png. 이 �
 
 Chart.js 4.4.8 / MIT license, 번들 헤더에 라이선스 표시 보존.
 
+## 웹 게시
+
+`dist/`의 발표자료는 `.github/workflows/pages.yml`에서 GitHub Pages로 게시합니다. 최상위 폴더에는 소개용 README만 두고, 게시용 HTML과 리소스는 이 프로젝트 폴더에서 관리합니다. 기존 발표자료 주소도 유지합니다.
+
 ## 재생성
 `node build-offline.mjs` — 원본 HTML/CSS/JS에서 단일 HTML 생성. 수정 후 이 명령을 실행해야 단일 파일에도 반영됩니다.

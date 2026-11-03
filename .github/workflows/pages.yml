@@ -1,0 +1,44 @@
+name: Publish HTML presentation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'html 모션 ppt/dist/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Prepare presentation and preserve existing links
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/jiho-pages/html 모션 ppt/dist"
+          cp -a "html 모션 ppt/dist/." "$RUNNER_TEMP/jiho-pages/"
+          cp -a "html 모션 ppt/dist/." "$RUNNER_TEMP/jiho-pages/html 모션 ppt/dist/"
+      - name: Upload presentation
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ${{ runner.temp }}/jiho-pages
+      - name: Deploy presentation
+        id: deployment
+        uses: actions/deploy-pages@v4
