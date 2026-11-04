@@ -7,6 +7,10 @@ import { useAgentRun, type Recording } from "@/components/use-agent-run";
 
 const IDS: CustomerId[] = ["hanbit", "greenfood", "seum"];
 const GATED = ["apply_config_change", "send_customer_message", "create_dev_ticket"];
+// 정적 시연판(GitHub Pages)은 서버가 없어 녹화본만 재생합니다.
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const DEMO_ONLY = process.env.NEXT_PUBLIC_DEMO_ONLY === "1";
+const LIVE_URL = process.env.NEXT_PUBLIC_LIVE_URL ?? "";
 
 export default function Home() {
   const run = useAgentRun();
@@ -15,14 +19,27 @@ export default function Home() {
   const [replays, setReplays] = useState<Partial<Record<CustomerId, Recording>>>({});
   const endRef = useRef<HTMLDivElement>(null);
 
+  const autoplayed = useRef(false);
+
   useEffect(() => {
     IDS.forEach((id) =>
-      fetch(`/replays/${id}.json`)
+      fetch(`${BASE}/replays/${id}.json`)
         .then((r) => (r.ok ? r.json() : null))
         .then((rec: Recording | null) => rec && setReplays((m) => ({ ...m, [id]: rec })))
         .catch(() => {}),
     );
   }, []);
+
+  // ?play=hanbit 처럼 링크로 들어오면 해당 녹화본을 바로 재생합니다(README 바로 보기 링크용).
+  useEffect(() => {
+    if (autoplayed.current) return;
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("play") as CustomerId | null;
+    if (!id || !IDS.includes(id) || !replays[id]) return;
+    autoplayed.current = true;
+    setSelected(id);
+    run.replay(replays[id]!, Number(params.get("speed")) || 2);
+  }, [replays, run]);
 
   useEffect(() => {
     if (run.status === "running" || run.status === "awaiting") endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -93,12 +110,20 @@ export default function Home() {
               </button>
             ) : (
               <>
-                <button
-                  onClick={() => run.start(selected, note)}
-                  className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-                >
-                  ▶ 라이브 실행
-                </button>
+                {DEMO_ONLY ? (
+                  LIVE_URL && (
+                    <a href={LIVE_URL} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+                      ▶ 라이브 실행판으로 이동
+                    </a>
+                  )
+                ) : (
+                  <button
+                    onClick={() => run.start(selected, note)}
+                    className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                  >
+                    ▶ 라이브 실행
+                  </button>
+                )}
                 <button
                   disabled={!replays[selected]}
                   onClick={() => replays[selected] && run.replay(replays[selected]!, 2)}
@@ -112,7 +137,9 @@ export default function Home() {
           </div>
         </div>
         <p className="mt-2 text-xs text-slate-400">
-          라이브 실행은 LLM API를 실제로 호출합니다(1회 1~3분 소요, 무료 한도 때문에 하루 실행 횟수 제한). 녹화본은 실제 실행 기록을 그대로 재생합니다.
+          {DEMO_ONLY
+            ? "이 페이지는 시연판입니다. 서버 없이 실제로 실행했던 기록(녹화본)을 그대로 재생합니다. LLM을 호출하는 라이브 실행은 서버가 있는 배포판에서 할 수 있습니다."
+            : "라이브 실행은 LLM API를 실제로 호출합니다(1회 1~3분 소요, 무료 한도 때문에 하루 실행 횟수 제한). 녹화본은 실제 실행 기록을 그대로 재생합니다."}
         </p>
       </section>
 

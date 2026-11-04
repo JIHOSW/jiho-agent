@@ -5,6 +5,29 @@
 
 > 고객사, 제품(워크브릿지), 로그, 지식베이스는 모두 시연용 가상 데이터입니다.
 
+## 바로 보기
+
+**[▶ 프로그램 바로 열기](https://jihosw.github.io/jiho-agent/onboarding-agent/)** — 설치 없이 브라우저에서 열립니다.
+
+시연 녹화본은 에이전트를 실제로 실행했던 기록을 그대로 재생합니다. 링크를 누르면 바로 재생이 시작됩니다.
+
+| 고객사 | 상황 | 녹화본 |
+|---|---|---|
+| 한빛물류 | 오픈 6일 전, SSO 로그인 실패 | [▶ 재생](https://jihosw.github.io/jiho-agent/onboarding-agent/?play=hanbit) |
+| 그린푸드 | 오픈 3일 전, 조직도 일부 누락 | [▶ 재생](https://jihosw.github.io/jiho-agent/onboarding-agent/?play=greenfood) |
+| 세움건설 | 오픈 3주 후, 현장 사용률 저조 | [▶ 재생](https://jihosw.github.io/jiho-agent/onboarding-agent/?play=seum) |
+
+공개 페이지는 서버가 없는 시연판이라 녹화본만 재생합니다. LLM을 직접 호출하는 라이브 실행은 [로컬 실행](#로컬-실행)이나 [배포](#배포-vercel)한 서버에서 할 수 있습니다.
+
+![고객사를 고르고 실행 방식을 선택하는 첫 화면](docs/demo-start.png)
+
+<details>
+<summary>한빛물류 녹화본 화면 (진단 → 원인 분석 → 고객 메일 승인 → 재검증)</summary>
+
+![한빛물류 실행 화면: 로그에서 ACS URL 불일치를 찾고, 승인된 메일로 고객에게 정확한 값을 안내한 뒤, 재테스트에서 인증서 만료 경고를 발견](docs/demo-run.png)
+
+</details>
+
 ## 왜 만들었나
 
 고객 온보딩은 "설정해 주고 끝"이 아니라 아래 과정을 끝까지 이어가는 일입니다.
@@ -87,6 +110,14 @@ http://localhost:3000 에서 고객사를 고르고 **라이브 실행**을 누�
 ## 녹화본 만들기
 
 라이브 실행이 끝나면 오른쪽 **실행 기록 내려받기** 버튼으로 JSON을 받아 `public/replays/{hanbit|greenfood|seum}.json`에 넣으면, 방문자가 API 비용 없이 **녹화본 보기**로 실제 실행 과정을 재생할 수 있습니다.
+
+## 시연판 빌드 (GitHub Pages)
+
+```bash
+node scripts/build-demo.mjs
+```
+
+서버 API를 뺀 정적 페이지를 `demo-dist/`에 만듭니다. 이 폴더가 main에 올라가면 GitHub Actions가 `https://jihosw.github.io/jiho-agent/onboarding-agent/`로 게시합니다. `?play=hanbit`처럼 주소에 고객사를 붙이면 해당 녹화본이 바로 재생됩니다.
 
 ## 배포 (Vercel)
 

@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'html 모션 ppt/dist/**'
+      - '고객 온보딩 에이전트 포트폴리오/demo-dist/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -35,6 +36,9 @@ jobs:
           mkdir -p "$RUNNER_TEMP/jiho-pages/html 모션 ppt/dist"
           cp -a "html 모션 ppt/dist/." "$RUNNER_TEMP/jiho-pages/"
           cp -a "html 모션 ppt/dist/." "$RUNNER_TEMP/jiho-pages/html 모션 ppt/dist/"
+          # 고객 온보딩 에이전트 시연판(녹화본 재생 전용 정적 빌드)
+          mkdir -p "$RUNNER_TEMP/jiho-pages/onboarding-agent"
+          cp -a "고객 온보딩 에이전트 포트폴리오/demo-dist/." "$RUNNER_TEMP/jiho-pages/onboarding-agent/"
       - name: Upload presentation
         uses: actions/upload-pages-artifact@v4
         with:
