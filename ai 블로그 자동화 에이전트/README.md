@@ -9,9 +9,6 @@
 
 **[6장 PPT 다운로드](portfolio/AI%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pptx?raw=true)** · **[📄 PDF 보기](portfolio/AI%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pdf)**
 
-왜 만들었는지, 어떻게 동작하는지, 어떤 가치를 원했고 무엇을 배웠는지 정리했습니다. 각 슬라이드의 발표자 노트에 설명 대본이 들어 있습니다.
-
-1920×1080 기준으로 Noto Sans KR의 Regular·Bold·ExtraBold만 사용했고, 가장 작은 글자도 24px입니다. PPT를 다른 컴퓨터에서 편집할 때는 [Google Fonts](https://fonts.google.com/noto/specimen/Noto+Sans+KR)에서 Noto Sans KR을 설치해 주세요. PDF에는 글꼴이 들어 있습니다.
 
 ![1. 표지: AI 블로그 자동화 에이전트](portfolio/slide-1.png)
 ![2. 왜 만들었나: 글보다 확인이 더 오래 걸렸습니다](portfolio/slide-2.png)
