@@ -5,6 +5,17 @@
 
 > 고객사, 제품(워크브릿지), 로그, 지식베이스는 모두 시연용 가상 데이터입니다.
 
+## 포트폴리오
+
+**[📄 포트폴리오 PDF 보기 (6장)](portfolio/고객%20온보딩%20에이전트%20포트폴리오.pdf)** — 왜 만들었는지, 어떻게 동작하는지, 어떤 가치를 원했고 무엇을 배웠는지 정리했습니다.
+
+![1. 표지: 고객 온보딩 에이전트](portfolio/slide-1.png)
+![2. 왜 만들었나: 직접 해 온 일을 에이전트로 옮겼습니다](portfolio/slide-2.png)
+![3. 어떻게 동작하나: 스스로 판단하고, 사람이 승인합니다](portfolio/slide-3.png)
+![4. 원한 가치: 믿고 맡길 수 있는 온보딩 에이전트](portfolio/slide-4.png)
+![5. 배운 것: 실제로 돌려 보며 배운 세 가지](portfolio/slide-5.png)
+![6. 연락처: 김지호, 010-8713-3332, GitHub](portfolio/slide-6.png)
+
 ## 바로 보기
 
 **[▶ 프로그램 바로 열기](https://jihosw.github.io/jiho-agent/onboarding-agent/)** — 설치 없이 브라우저에서 열립니다.
