@@ -1,6 +1,6 @@
 # 
 
-![AI 활용과 사용자 지원을 표현한 AI 생성 배너](assets/readme-hero.png)
+![AI 활용과 사용자 지원을 표현한 AI 생성 배너](.github/assets/readme-hero.png)
 
 제품을 직접 배우고, 사용자가 이해하고 활용할 수 있도록 설명하는 일을 좋아합니다.
 
