@@ -1,4 +1,4 @@
-# FIRSTMILE progress
+# jihodev progress
 Plan: docs/superpowers/plans/2026-11-04-firstmile.md
 Ruling: user approved execution in conversation; no additional approval loop.
 Ruling: no existing Git repository; new project isolated under outputs/firstmile, original preview unchanged.
