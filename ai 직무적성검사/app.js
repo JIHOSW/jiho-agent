@@ -61,7 +61,9 @@
     let lastSec = null;
     let n = 0;
     const qs = questions();
-    const qNum = id => qs.findIndex(q => q.id === id) + 1;
+    // 문항 번호는 실제로 답한 순서 (짧은 버전에서 긴 버전으로 이어 가도 번호가 이어진다)
+    const askedIds = new Set(qs.map(q => q.id));
+    const answered = S.history.filter(h => askedIds.has(h)).length;
 
     for (const h of S.history) {
       if (h === 'sit') {
@@ -74,7 +76,7 @@
         const q = qById(h);
         if (!q) continue;
         if (q.sec !== lastSec) { html += agentMsg(esc(D.SECTIONS[q.sec].intro), { old: true, sys: true }); lastSec = q.sec; }
-        html += agentMsg(esc(tok(q.text)), { old: true, tag: `Q${qNum(q.id)}` });
+        html += agentMsg(esc(tok(q.text)), { old: true, tag: `Q${n + 1}` });
         html += userMsg(tok(q.options[S.answers[q.id]].label));
         n++;
       }
@@ -134,7 +136,7 @@
     } else {
       const q = step.q;
       if (q.sec !== lastSec) log.insertAdjacentHTML('beforeend', agentMsg(esc(D.SECTIONS[q.sec].intro), { sys: true }));
-      log.insertAdjacentHTML('beforeend', agentMsg(esc(tok(q.text)), { tag: `Q${qNum(q.id)} / ${qs.length}` }));
+      log.insertAdjacentHTML('beforeend', agentMsg(esc(tok(q.text)), { tag: `Q${answered + 1} / ${qs.length}` }));
       if (q.type === 'pair') ans.classList.add('pair');
       ans.innerHTML = q.options.map((o, i) => `<button class="opt" data-i="${i}">${esc(tok(o.label))}</button>`).join('');
       ans.querySelectorAll('[data-i]').forEach(b => (b.onclick = () => {
@@ -144,11 +146,15 @@
     }
 
     // 진행률
-    const total = 2 + qs.length;
-    const done = S.history.length;
+    // 상단 표시: 준비 단계(상황·영역)는 따로 세고, 문항은 말풍선 번호와 같은 숫자를 쓴다
     $('secLabel').textContent = label;
-    $('countLabel').textContent = `${done} / ${total}`;
-    $('barFill').style.width = `${Math.round((done / total) * 100)}%`;
+    if (step.kind === 'q') {
+      $('countLabel').textContent = `${answered + 1} / ${qs.length}문항`;
+      $('barFill').style.width = `${Math.round((answered / qs.length) * 100)}%`;
+    } else {
+      $('countLabel').textContent = `준비 ${step.kind === 'sit' ? 1 : 2} / 2`;
+      $('barFill').style.width = '0%';
+    }
     $('backBtn').disabled = !S.history.length;
     $('backBtn').style.visibility = S.history.length ? 'visible' : 'hidden';
 
@@ -339,6 +345,15 @@
   }
 
   // ── 시작 ──
+  // 시작 화면에 실제 문항 수 범위를 계산해 표시 (관심 영역 1개 ~ 3개+탐색)
+  const range = mode => {
+    const min = E.buildQuestions({ mode, fields: ['unknown'] }).length;
+    const max = E.buildQuestions({ mode, fields: [...Object.keys(D.FIELDS).slice(0, E.MAX_FIELDS), 'unknown'] }).length;
+    return min === max ? `${min}문항` : `${min}~${max}문항`;
+  };
+  $('shortCount').textContent = range('short');
+  $('longCount').textContent = range('long');
+
   const start = mode => { S = fresh(mode); draftFields = []; save(); show('chat'); renderChat(); };
   $('startShortBtn').onclick = () => start('short');
   $('startBtn').onclick = () => start('long');
