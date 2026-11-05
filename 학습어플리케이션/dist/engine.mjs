@@ -28,6 +28,12 @@ export function insertRepeat(queue,index,id){
  if(next.length-index-1<3)return next;
  next.splice(Math.min(index+4,next.length),0,id);return next;
 }
+export function sessionProgress(session){
+ const questions=[...new Set(session.queue)],allowed=new Set(questions);
+ const completed=new Set(session.responses.filter(r=>allowed.has(r.id)).map(r=>r.id)).size;
+ const currentId=session.queue[session.index],isReview=currentId!==undefined&&session.responses.some(r=>r.id===currentId);
+ return {total:questions.length,completed,currentNumber:currentId===undefined?null:questions.indexOf(currentId)+1,isReview,percent:questions.length?completed/questions.length*100:0};
+}
 export function remainingSeconds(session,now=Date.now()){
  const delta=session.paused?0:Math.max(0,(now-session.activeSince)/1000);
  return Math.max(0,Math.ceil((session.duration??1800)-(session.elapsed??0)-delta));
