@@ -1,9 +1,9 @@
-# AI 직군 적성검사 에이전트
+# AI 직무적성검사
 
 현재 상황과 관심 AI 영역에 따라 질문 갈래가 나뉘는 **대화형 AI 직군 적성검사**입니다.
 약 40문항으로 역량·직업가치관·업무 스타일을 분석해 AI 직군 42개 가운데 맞는 직무 TOP 5와 준비 방법을 추천합니다.
 
-▶ **웹에서 해보기**: https://jihosw.github.io/jiho-agent/career-agent/ <sub>(main 브랜치에 반영되면 자동 게시)</sub>
+▶ **웹에서 해보기**: https://jihosw.github.io/jiho-agent/ai%20%EC%A7%81%EB%AC%B4%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC/ (짧은 주소: https://jihosw.github.io/jiho-agent/career-agent/) <sub>(main 브랜치에 반영되면 자동 게시)</sub>
 
 ## 설계 결정 (문답으로 정한 내용)
 
@@ -17,7 +17,7 @@
 | 분량 | 약 40문항 · 10분 |
 | 문항 형식 | 상황 선택형 · 양자택일 · 대화형(채팅) 말투 |
 | 결과 | 점수 차트 · 추천 직군 TOP 5 · 링크 공유와 이미지·PDF 저장 |
-| 배포 | GitHub Pages (`/career-agent/`) |
+| 배포 | GitHub Pages (`/ai 직무적성검사/`, 짧은 주소 `/career-agent/`) |
 
 ## 검사 흐름
 

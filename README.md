@@ -57,10 +57,10 @@
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <a href="https://jihosw.github.io/jiho-agent/career-agent/"><img src=".github/assets/card-career.svg" width="100%" alt="AI 직군 적성검사"></a>
+      <a href="https://jihosw.github.io/jiho-agent/ai%20%EC%A7%81%EB%AC%B4%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC/"><img src=".github/assets/card-career.svg" width="100%" alt="AI 직군 적성검사"></a>
       <p align="center">
-        <a href="https://jihosw.github.io/jiho-agent/career-agent/"><b>▶ 검사해 보기</b></a> &nbsp;·&nbsp;
-        <a href="ai%20%EC%A7%81%EA%B5%B0%20%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8/"><b>폴더</b></a>
+        <a href="https://jihosw.github.io/jiho-agent/ai%20%EC%A7%81%EB%AC%B4%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC/"><b>▶ 검사해 보기</b></a> &nbsp;·&nbsp;
+        <a href="ai%20%EC%A7%81%EB%AC%B4%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC/"><b>폴더</b></a>
       </p>
     </td>
     <td width="50%" valign="top"></td>

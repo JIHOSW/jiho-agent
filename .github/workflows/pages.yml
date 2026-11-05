@@ -6,7 +6,7 @@ on:
     paths:
       - 'html 모션 ppt/dist/**'
       - '고객 온보딩 에이전트 포트폴리오/demo-dist/**'
-      - 'ai 직군 적성검사 에이전트/**'
+      - 'ai 직무적성검사/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -40,9 +40,10 @@ jobs:
           # 고객 온보딩 에이전트 시연판(녹화본 재생 전용 정적 빌드)
           mkdir -p "$RUNNER_TEMP/jiho-pages/onboarding-agent"
           cp -a "고객 온보딩 에이전트 포트폴리오/demo-dist/." "$RUNNER_TEMP/jiho-pages/onboarding-agent/"
-          # AI 직군 적성검사 에이전트(빌드 없는 정적 페이지)
-          mkdir -p "$RUNNER_TEMP/jiho-pages/career-agent"
-          cp -a "ai 직군 적성검사 에이전트/." "$RUNNER_TEMP/jiho-pages/career-agent/"
+          # AI 직무적성검사(빌드 없는 정적 페이지): 폴더 이름 그대로의 주소 + 짧은 주소(career-agent)
+          mkdir -p "$RUNNER_TEMP/jiho-pages/ai 직무적성검사" "$RUNNER_TEMP/jiho-pages/career-agent"
+          cp -a "ai 직무적성검사/." "$RUNNER_TEMP/jiho-pages/ai 직무적성검사/"
+          cp -a "ai 직무적성검사/." "$RUNNER_TEMP/jiho-pages/career-agent/"
       - name: Upload presentation
         uses: actions/upload-pages-artifact@v4
         with:
