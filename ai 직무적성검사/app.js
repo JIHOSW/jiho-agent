@@ -6,7 +6,7 @@
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-  const fresh = () => ({ sit: null, fields: [], fieldsDone: false, answers: {}, history: [] });
+  const fresh = (mode = 'long') => ({ mode, sit: null, fields: [], fieldsDone: false, answers: {}, history: [] });
   let S = fresh();
   let draftFields = [];
 
@@ -31,7 +31,7 @@
   }
 
   // ── 진행 단계 계산 ──
-  const questions = () => E.buildQuestions({ sit: S.sit, fields: S.fieldsDone ? S.fields : ['unknown'], answers: S.answers });
+  const questions = () => E.buildQuestions({ mode: S.mode, sit: S.sit, fields: S.fieldsDone ? S.fields : ['unknown'], answers: S.answers });
   function currentStep() {
     if (!S.sit) return { kind: 'sit' };
     if (!S.fieldsDone) return { kind: 'fields' };
@@ -241,7 +241,7 @@
 
     $('result').innerHTML = `
       <div class="r-head">
-        <p class="eyebrow">${shared ? '공유된 결과 · ' : ''}${esc(D.SITUATIONS[state.sit].label)} · 관심 영역: ${esc(fieldsLabel)}</p>
+        <p class="eyebrow">${shared ? '공유된 결과 · ' : ''}${esc(D.MODES[state.mode || 'long'].label)} · ${esc(D.SITUATIONS[state.sit].label)} · 관심 영역: ${esc(fieldsLabel)}</p>
         <p class="type-label">나의 유형</p>
         <h1>${esc(type.name)}</h1>
         <p class="type-desc">${esc(type.desc)}</p>
@@ -276,6 +276,7 @@
         <button class="${shared ? 'ghost' : 'primary'}" id="copyBtn">결과 링크 복사</button>
         <button class="ghost" id="imgBtn">이미지로 저장</button>
         <button class="ghost" id="pdfBtn">PDF로 저장</button>
+        ${!shared && state.mode === 'short' ? `<button class="primary" id="moreBtn">긴 버전으로 이어서 더 정확하게 보기 (+${E.buildQuestions({ ...state, mode: 'long' }).length - E.buildQuestions(state).length}문항)</button>` : ''}
         ${shared ? '' : '<button class="ghost" id="againBtn">다시 검사하기</button>'}
       </div>
       <p class="disclaimer">이 결과는 응답을 규칙에 따라 계산한 진로 탐색용 참고 자료이며, 공인된 심리검사나 채용 기준이 아닙니다. 직무 정보는 2026년 기준 일반적인 설명입니다.</p>`;
@@ -288,6 +289,12 @@
       window.print();
     };
     if ($('againBtn')) $('againBtn').onclick = restart;
+    if ($('moreBtn')) $('moreBtn').onclick = () => {
+      // 지금까지의 답은 그대로 두고, 긴 버전에만 있는 문항을 이어서 묻는다
+      S.mode = 'long'; save();
+      history.replaceState(null, '', location.pathname + location.search);
+      show('chat'); renderChat();
+    };
     if ($('mineBtn')) $('mineBtn').onclick = restart;
   }
 
@@ -332,7 +339,9 @@
   }
 
   // ── 시작 ──
-  $('startBtn').onclick = () => { S = fresh(); draftFields = []; save(); show('chat'); renderChat(); };
+  const start = mode => { S = fresh(mode); draftFields = []; save(); show('chat'); renderChat(); };
+  $('startShortBtn').onclick = () => start('short');
+  $('startBtn').onclick = () => start('long');
   $('resumeBtn').onclick = () => { show('chat'); renderChat(); };
   $('backBtn').onclick = back;
   $('restartBtn').onclick = () => { if (S.history.length && !confirm('처음부터 다시 시작할까요? 지금까지의 답변은 지워져요.')) return; restart(); };
@@ -350,7 +359,7 @@
   }
   const saved = load();
   if (saved && saved.history.length) {
-    S = saved; draftFields = [...(S.fields || [])];
+    S = { mode: 'long', ...saved }; draftFields = [...(S.fields || [])];
     $('resumeBtn').hidden = false;
     $('resumeBtn').textContent = currentStep().kind === 'done' ? '지난 결과 보기' : `이어서 하기 (${S.history.length}개 답변)`;
   }

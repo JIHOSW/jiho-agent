@@ -16,7 +16,9 @@
     // 영역을 골랐더라도 '잘 모르겠음'을 함께 고르면 탐색 문항을 더한다
     if (picked.length && (state.fields || []).includes('unknown')) deepFields.push('unknown');
     const deep = D.QUESTIONS.filter(q => q.sec === 'deep' && deepFields.includes(q.field));
-    return [...base, ...deep];
+    const all = [...base, ...deep];
+    // 짧은 버전은 정해 둔 핵심 문항만 묻는다 (점수는 물은 문항 기준으로 정규화되므로 그대로 비교 가능)
+    return state.mode === 'short' ? all.filter(q => D.SHORT.has(q.id)) : all;
   }
 
   function score(state) {
@@ -169,13 +171,13 @@
   function encode(state) {
     const qs = buildQuestions(state);
     const a = qs.map(q => (state.answers[q.id] == null ? '-' : state.answers[q.id])).join('');
-    const json = JSON.stringify({ s: state.sit, f: state.fields, a });
+    const json = JSON.stringify({ s: state.sit, f: state.fields, a, ...(state.mode === 'short' ? { m: 's' } : {}) });
     return btoa(json).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
   function decode(str) {
     const json = JSON.parse(atob(str.replace(/-/g, '+').replace(/_/g, '/')));
     if (!D.SITUATIONS[json.s] || !Array.isArray(json.f)) throw new Error('bad state');
-    const state = { sit: json.s, fields: json.f.filter(f => D.FIELDS[f] || f === 'unknown'), answers: {} };
+    const state = { sit: json.s, fields: json.f.filter(f => D.FIELDS[f] || f === 'unknown'), mode: json.m === 's' ? 'short' : 'long', answers: {} };
     buildQuestions(state).forEach((q, i) => {
       const c = json.a[i];
       if (c != null && c !== '-' && q.options[+c]) state.answers[q.id] = +c;
