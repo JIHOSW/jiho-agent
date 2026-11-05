@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="320" viewBox="0 0 600 320">
+<defs><radialGradient id="g" cx="1" cy="0" r="0.95"><stop offset="0" stop-color="#8B5CF6" stop-opacity="0.5"/><stop offset="1" stop-color="#8B5CF6" stop-opacity="0"/></radialGradient>
+<clipPath id="c"><rect width="600" height="320" rx="24"/></clipPath></defs>
+<g clip-path="url(#c)" font-family="'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif">
+<rect width="600" height="320" fill="#0F1422"/><rect width="600" height="320" fill="url(#g)"/>
+<text x="566" y="124" fill="#FFFFFF" fill-opacity="0.07" font-size="140" font-weight="800" text-anchor="end">03</text>
+<circle cx="45" cy="45" r="5" fill="#8B5CF6"/>
+<text x="60" y="51" fill="#94A3B8" font-size="16" font-weight="700" letter-spacing="1">03 · 개인 학습·실습</text>
+<text x="40" y="120" fill="#FFFFFF" font-size="34" font-weight="800">AI 블로그 자동화 에이전트</text>
+<text x="40" y="170" fill="#CBD5E1" font-size="20">자료 수집, 출처 확인, 검수를 잇는</text>
+<text x="40" y="200" fill="#CBD5E1" font-size="20">Claude Code 기반 글쓰기 에이전트</text>
+<g font-size="15" font-weight="700"><rect x="40" y="244" width="124" height="34" rx="17" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.16"/><text x="102" y="266" fill="#E5E7EB" text-anchor="middle">Claude Code</text><rect x="174" y="244" width="95" height="34" rx="17" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.16"/><text x="221.5" y="266" fill="#E5E7EB" text-anchor="middle">출처 검증</text><rect x="279" y="244" width="75" height="34" rx="17" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.16"/><text x="316.5" y="266" fill="#E5E7EB" text-anchor="middle">글 3편</text></g>
+</g></svg>

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="380" viewBox="0 0 1200 380">
+  <defs>
+    <radialGradient id="g1" cx="0.82" cy="0.25" r="0.6">
+      <stop offset="0" stop-color="#E1323F" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#E1323F" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g2" cx="0.1" cy="1" r="0.55">
+      <stop offset="0" stop-color="#5B6CFF" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#5B6CFF" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#FFFFFF" fill-opacity="0.08"/>
+    </pattern>
+    <clipPath id="c"><rect width="1200" height="380" rx="28"/></clipPath>
+  </defs>
+  <g clip-path="url(#c)">
+    <rect width="1200" height="380" fill="#0B0F1A"/>
+    <rect width="1200" height="380" fill="url(#dots)"/>
+    <rect width="1200" height="380" fill="url(#g1)"/>
+    <rect width="1200" height="380" fill="url(#g2)"/>
+    <!-- agent graph -->
+    <g stroke="#FFFFFF" stroke-opacity="0.22" stroke-width="2" fill="none">
+      <path d="M860 190 C 920 190, 930 110, 990 110"/>
+      <path d="M860 190 L 990 190"/>
+      <path d="M860 190 C 920 190, 930 270, 990 270"/>
+      <path d="M730 120 C 790 120, 800 190, 860 190"/>
+      <path d="M730 260 C 790 260, 800 190, 860 190"/>
+    </g>
+    <g font-family="'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="17" font-weight="700" text-anchor="middle">
+      <rect x="670" y="98" width="120" height="44" rx="22" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.18"/>
+      <text x="730" y="126" fill="#E5E7EB">자료</text>
+      <rect x="670" y="238" width="120" height="44" rx="22" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.18"/>
+      <text x="730" y="266" fill="#E5E7EB">고객</text>
+      <circle cx="860" cy="190" r="44" fill="#E1323F"/>
+      <circle cx="860" cy="190" r="58" fill="none" stroke="#E1323F" stroke-opacity="0.35" stroke-width="2"/>
+      <text x="860" y="197" fill="#FFFFFF" font-size="20" font-weight="800">AI</text>
+      <rect x="990" y="88" width="132" height="44" rx="22" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.18"/>
+      <text x="1056" y="116" fill="#E5E7EB">진단</text>
+      <rect x="990" y="168" width="132" height="44" rx="22" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.18"/>
+      <text x="1056" y="196" fill="#E5E7EB">교육</text>
+      <rect x="990" y="248" width="132" height="44" rx="22" fill="#FFFFFF" fill-opacity="0.95"/>
+      <text x="1056" y="276" fill="#0B0F1A">사람 승인</text>
+    </g>
+    <!-- text -->
+    <g font-family="'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif">
+      <text x="72" y="96" fill="#F87171" font-size="18" font-weight="700" letter-spacing="4">JIHODEV · PORTFOLIO</text>
+      <text x="72" y="178" fill="#FFFFFF" font-size="68" font-weight="800">김지호</text>
+      <text x="72" y="232" fill="#CBD5E1" font-size="24" font-weight="500">제품을 직접 배우고,</text>
+      <text x="72" y="266" fill="#CBD5E1" font-size="24" font-weight="500">사용자가 활용할 수 있도록 설명합니다.</text>
+      <g font-size="16" font-weight="700">
+        <rect x="72" y="298" width="118" height="36" rx="18" fill="#E1323F"/>
+        <text x="131" y="322" fill="#FFFFFF" text-anchor="middle">AI 에이전트</text>
+        <rect x="200" y="298" width="118" height="36" rx="18" fill="none" stroke="#FFFFFF" stroke-opacity="0.35"/>
+        <text x="259" y="322" fill="#E5E7EB" text-anchor="middle">고객 온보딩</text>
+        <rect x="328" y="298" width="118" height="36" rx="18" fill="none" stroke="#FFFFFF" stroke-opacity="0.35"/>
+        <text x="387" y="322" fill="#E5E7EB" text-anchor="middle">사용자 교육</text>
+        <rect x="456" y="298" width="130" height="36" rx="18" fill="none" stroke="#FFFFFF" stroke-opacity="0.35"/>
+        <text x="521" y="322" fill="#E5E7EB" text-anchor="middle">IT 사업관리</text>
+      </g>
+    </g>
+  </g>
+</svg>
