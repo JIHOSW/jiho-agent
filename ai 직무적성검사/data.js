@@ -536,5 +536,17 @@ window.DATA = (() => {
       pf: 'AI 도입 전후 업무 시간·비용 비교 분석 보고서', tags: ['ROI', '성과 지표', '분석 보고서'] },
   ];
 
-  return { COMP, VAL, STYLE, SITUATIONS, FIELDS, SECTIONS, QUESTIONS: Q, JOBS, TYPES, TYPE_MODS };
+  // 짧은 버전(약 20문항)에 쓰는 문항 — 역량 9개·가치관 6개·스타일 4축을 모두 한 번 이상 재도록 골랐다
+  const SHORT = new Set([
+    'c1', 'c2', 'c4', 'c5', 'c7', 'c11', 'c13',
+    'v1', 'v2', 'v4', 'v6', 'v7',
+    's1', 's2', 's3', 's4',
+    'dr1', 'de1', 'dd1', 'dp1', 'db1', 'dt1', 'dc1', 'dx1', 'du1',
+  ]);
+  const MODES = {
+    short: { label: '짧은 버전', desc: '약 20문항 · 5분' },
+    long: { label: '긴 버전', desc: '약 40문항 · 10분' },
+  };
+
+  return { COMP, VAL, STYLE, SITUATIONS, FIELDS, SECTIONS, QUESTIONS: Q, JOBS, TYPES, TYPE_MODS, SHORT, MODES };
 })();
