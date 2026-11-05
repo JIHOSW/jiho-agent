@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 직군 적성검사</title>
+  <meta name="description" content="상황과 관심 영역에 따라 갈래가 나뉘는 대화형 AI 직군 적성검사. 역량·가치관·업무 스타일을 분석해 AI 직군 42개 중 맞는 직무를 추천합니다.">
+  <meta property="og:title" content="AI 직군 적성검사">
+  <meta property="og:description" content="약 40문항 · 10분 · AI 직군 42개 중 나에게 맞는 직무 TOP 5">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230F1422'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%2306B6D4' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%2306B6D4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="처음으로">
+      <span class="brand-dot" aria-hidden="true"></span>AI 직군 적성검사
+    </a>
+    <button class="ghost small" id="restartBtn" hidden>처음부터</button>
+  </header>
+
+  <main>
+    <!-- 시작 화면 -->
+    <section id="intro" class="screen">
+      <p class="eyebrow">규칙 기반 대화형 검사 · AI 직군 42개</p>
+      <h1>AI 분야에서<br>나에게 맞는 직무는?</h1>
+      <p class="lead">상황과 관심 영역을 고르면 질문의 갈래가 나뉘어요. 역량, 가치관, 업무 스타일 세 가지 축으로 분석해 맞는 AI 직군 TOP 5와 준비 방법을 알려 드려요.</p>
+      <ul class="meta">
+        <li><b>약 40</b>문항</li>
+        <li><b>10</b>분</li>
+        <li><b>3</b>가지 분석 축</li>
+      </ul>
+      <div class="flow" aria-label="검사 흐름">
+        <div><span>1</span>현재 상황</div>
+        <div><span>2</span>관심 영역</div>
+        <div><span>3</span>역량</div>
+        <div><span>4</span>가치관</div>
+        <div><span>5</span>업무 스타일</div>
+        <div><span>6</span>영역 심화</div>
+      </div>
+      <div class="actions">
+        <button class="primary" id="startBtn">검사 시작하기</button>
+        <button class="ghost" id="resumeBtn" hidden>이어서 하기</button>
+      </div>
+      <p class="note">답변은 이 브라우저에만 저장되고 서버로 전송되지 않아요. 결과는 진로 탐색용 참고 자료이며 공인된 심리검사가 아닙니다.</p>
+    </section>
+
+    <!-- 문답 화면 -->
+    <section id="chat" class="screen" hidden>
+      <div class="progress" aria-live="polite">
+        <div class="progress-label"><span id="secLabel">시작</span><span id="countLabel"></span></div>
+        <div class="bar"><div id="barFill"></div></div>
+      </div>
+      <div id="log" class="log" aria-live="polite"></div>
+      <div id="answers" class="answers"></div>
+      <div class="chat-foot">
+        <button class="ghost small" id="backBtn">← 이전 답변 고치기</button>
+      </div>
+    </section>
+
+    <!-- 결과 화면 -->
+    <section id="result" class="screen" hidden></section>
+  </main>
+
+  <footer class="foot">
+    <span>AI 직군 적성검사 · 개인 학습·실습 프로젝트</span>
+  </footer>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="data.js"></script>
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
