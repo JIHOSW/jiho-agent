@@ -152,6 +152,19 @@
     return `전공 수준 지식이 필요한 직무예요. ${where} '${bridge.name}'처럼 진입이 쉬운 직무로 먼저 들어가 경험을 쌓은 뒤 옮겨 가는 경로를 추천해요.`;
   }
 
+  // 유형 이름: 가장 강한 역량 → 명사, 가장 뚜렷한 업무 스타일 → 수식어
+  function typeOf(result) {
+    const comps = Object.entries(result.comp).sort((a, b) => b[1] - a[1]);
+    const [main, sub] = [comps[0][0], comps[1][0]];
+    const axis = Object.entries(result.style).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))[0];
+    const mod = Math.abs(axis[1]) >= 0.2 ? D.TYPE_MODS[axis[0]][axis[1] < 0 ? 0 : 1] : '균형 잡힌';
+    const [noun, desc] = D.TYPES[main];
+    return {
+      name: `${mod} ${noun}`,
+      desc: `${desc} 여기에 ${D.COMP[sub]} 역량이 힘을 보태요.`,
+    };
+  }
+
   // 공유 링크용 상태 인코딩 (영문 id와 숫자만 담기므로 base64로 충분)
   function encode(state) {
     const qs = buildQuestions(state);
@@ -170,5 +183,5 @@
     return state;
   }
 
-  root.ENGINE = { buildQuestions, score, explain, encode, decode, MAX_FIELDS };
+  root.ENGINE = { buildQuestions, score, explain, typeOf, encode, decode, MAX_FIELDS };
 })(typeof window !== 'undefined' ? window : globalThis);

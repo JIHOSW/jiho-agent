@@ -209,6 +209,7 @@
   function renderResult(state, shared) {
     const r = E.score(state);
     const top = r.jobs.slice(0, 5);
+    const type = E.typeOf(r);
     const comps = Object.entries(r.comp).sort((a, b) => b[1] - a[1]);
     const vals = Object.entries(r.val).sort((a, b) => b[1] - a[1]);
     const styleWords = Object.entries(r.style).filter(([, v]) => Math.abs(v) >= 0.2)
@@ -241,7 +242,10 @@
     $('result').innerHTML = `
       <div class="r-head">
         <p class="eyebrow">${shared ? '공유된 결과 · ' : ''}${esc(D.SITUATIONS[state.sit].label)} · 관심 영역: ${esc(fieldsLabel)}</p>
-        <h1>${esc(top[0].job.name)}에<br>가장 가까워요</h1>
+        <p class="type-label">나의 유형</p>
+        <h1>${esc(type.name)}</h1>
+        <p class="type-desc">${esc(type.desc)}</p>
+        <div class="best">가장 잘 맞는 직군 <b>${esc(top[0].job.name)}</b> <span>${top[0].fit}%</span></div>
         <p>강점은 <b>${esc(D.COMP[comps[0][0]])}</b>·<b>${esc(D.COMP[comps[1][0]])}</b>, 중요하게 여기는 가치는 <b>${esc(D.VAL[vals[0][0]])}</b>·<b>${esc(D.VAL[vals[1][0]])}</b>예요.
         ${styleWords.length ? `일할 때는 <b>${esc(styleWords.join(' · '))}</b>에 가까워요.` : '일하는 방식은 어느 한쪽에 치우치지 않고 균형 잡혀 있어요.'}</p>
         <div class="chips">${comps.slice(0, 3).map(([k]) => `<span class="chip accent">${esc(D.COMP[k])}</span>`).join('')}${vals.slice(0, 2).map(([k]) => `<span class="chip">${esc(D.VAL[k])}</span>`).join('')}${styleWords.map(w => `<span class="chip">${esc(w)}</span>`).join('')}</div>

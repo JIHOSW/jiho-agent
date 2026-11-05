@@ -48,6 +48,26 @@ window.DATA = (() => {
     biz: { label: '비즈니스·현장', desc: '도입 지원·컨설팅·교육·기술영업' },
     trust: { label: '신뢰·안전·정책', desc: 'AI 안전성·보안·거버넌스' },
     creative: { label: '크리에이티브', desc: '생성형 AI로 콘텐츠 제작' },
+    ax: { label: 'AX·업무 혁신', desc: '조직의 AI 전환을 기획·운영·확산' },
+  };
+
+  // 결과 유형 이름: 가장 강한 역량(명사) + 가장 뚜렷한 업무 스타일(수식어)
+  const TYPES = {
+    analysis: ['분석가', '복잡한 문제를 숫자와 논리로 풀어내고, 근거 있는 판단을 내리는 사람이에요.'],
+    build: ['메이커', '아이디어를 실제로 돌아가는 결과물로 만들어 내는 사람이에요.'],
+    systems: ['설계자', '보이지 않는 곳에서 시스템이 멈추지 않고 커지도록 뼈대를 세우는 사람이에요.'],
+    data: ['데이터 탐정', '흩어진 데이터 속에서 단서를 찾아 의미를 만들어 내는 사람이에요.'],
+    product: ['문제 정의자', '무엇을 왜 만들어야 하는지 먼저 묻고, 흩어진 의견을 하나의 방향으로 모으는 사람이에요.'],
+    comm: ['연결자', '어려운 기술을 사람의 언어로 바꾸고, 사람과 기술을 이어 주는 사람이에요.'],
+    research: ['탐험가', '아직 답이 없는 질문을 끝까지 파고들며 새로운 지식을 찾는 사람이에요.'],
+    ethics: ['수호자', '기술이 사람에게 해가 되지 않도록 위험을 먼저 보고 기준을 세우는 사람이에요.'],
+    creative: ['크리에이터', 'AI를 도구 삼아 남들이 생각하지 못한 표현을 만들어 내는 사람이에요.'],
+  };
+  const TYPE_MODS = {
+    es: ['깊이 묻는', '빠르게 움직이는'],
+    st: ['혼자 몰입하는', '함께 일하는'],
+    sf: ['체계를 세우는', '유연하게 바꾸는'],
+    db: ['한 우물을 파는', '경계를 넘나드는'],
   };
 
   const SECTIONS = {
@@ -298,6 +318,20 @@ window.DATA = (() => {
     j('작품성과 세계관의 완성도', { ai_creative_director: 2 }),
     j('아무도 안 써 본 새로운 기법', { genai_creator: 2 }),
   ]);
+  deep('ax', 'dx1', '[AX·업무 혁신] 회사가 "올해 AI 전환(AX)을 하겠다"고 발표했어요. 맡고 싶은 역할은?', [
+    j('어느 부서의 어떤 업무부터 바꿀지 전략과 과제를 정한다', { ax_strategist: 2 }),
+    j('도입 사업의 일정·산출물·이해관계자를 관리한다', { ax_pmo: 2 }),
+    j('직원들이 AI를 쓰도록 교육 과정을 짜고 운영한다', { ax_edu_planner: 2 }),
+    j('반복 업무를 AI·노코드 도구로 직접 자동화한다', { ax_automation: 2 }),
+    j('사내 AI 도구의 계정·권한·보안·사용 정책을 운영한다', { ax_platform: 2 }),
+    j('바뀐 일하는 방식이 조직에 자리 잡도록 소통하고 설득한다', { ax_change: 2 }),
+  ]);
+  deep('ax', 'dx2', '[AX·업무 혁신] 가장 해보고 싶은 경험은?', [
+    j('공공기관·기업의 AI 도입 사업 제안서를 써서 수주하기', { ax_proposal: 2, ax_pmo: 1 }),
+    j('내 부서에서 AI를 가장 잘 쓰는 사람이 되어 동료들을 이끌기', { ax_champion: 2 }),
+    j('AI 도입 전후 시간·비용 절감 효과를 숫자로 증명하기', { ax_value: 2, ax_strategist: 1 }),
+    j('수백 명이 듣는 사내 AI 교육을 성공적으로 마치기', { ax_edu_planner: 2, ax_change: 1 }),
+  ]);
   // 관심 영역을 '잘 모르겠음'으로 고른 경우의 탐색 문항
   deep('unknown', 'du1', '[탐색] AI와 관련해 가장 해보고 싶은 일에 가까운 것은?', [
     o('AI를 직접 만들고 똑똑하게 만든다', { fields: { research: 2, eng: 1 } }),
@@ -306,14 +340,15 @@ window.DATA = (() => {
     o('사람들이 AI를 잘 쓰도록 돕는다', { fields: { biz: 2, product: 1 } }),
     o('AI가 안전하고 공정하도록 지킨다', { fields: { trust: 2 } }),
     o('AI로 새로운 것을 표현한다', { fields: { creative: 2 } }),
+    o('조직이 AI로 일하는 방식을 바꾸도록 이끈다', { fields: { ax: 2, biz: 1 } }),
   ]);
   deep('unknown', 'du2', '[탐색] 코딩에 대한 내 생각은?', [
     o('매일 코드를 쓰는 일이 좋다', { build: 2, fields: { eng: 1, research: 1 } }),
     o('필요하면 배워서 쓸 수 있다', { build: 1, fields: { data: 1, biz: 1 } }),
-    o('코드보다 사람·글·기획이 좋다', { fields: { product: 1, biz: 1, trust: 1, creative: 1 } }),
+    o('코드보다 사람·글·기획이 좋다', { fields: { product: 1, biz: 1, trust: 1, creative: 1, ax: 1 } }),
   ]);
 
-  // ── AI 직군 35개 ──
+  // ── AI 직군 44개 ──
   // c: 요구 역량 가중치, v: 맞는 가치관, s: 업무 스타일(-1~1), diff: 진입 난이도(1 낮음 ~ 3 높음)
   const JOBS = [
     // 모델·연구
@@ -469,7 +504,45 @@ window.DATA = (() => {
       c: { creative: 2, comm: 2, data: 2, product: 1 }, v: { reward: 2, growth: 1, impact: 1 }, s: { es: 0.7, st: 0.5, sf: 0.5, db: 0.5 }, diff: 1,
       steps: ['마케팅 기본과 성과 지표 이해', 'AI로 콘텐츠 제작 속도 높이는 워크플로 만들기', '실험 결과를 데이터로 정리'],
       pf: 'AI로 만든 광고 소재 A/B 테스트 결과', tags: ['콘텐츠 마케팅', '성과 분석', 'A/B 테스트'] },
+
+    // AX·업무 혁신
+    { id: 'ax_strategist', field: 'ax', name: 'AX 전략 기획자', desc: '조직 전체의 AI 전환 방향을 세우고, 어떤 업무부터 바꿀지 과제를 발굴·선정합니다.',
+      c: { product: 3, analysis: 2, comm: 2 }, v: { impact: 2, reward: 2, growth: 1 }, s: { es: -0.3, st: 0.5, sf: -0.3, db: 1 }, diff: 2,
+      steps: ['업무 프로세스 분석과 전략 기획 기본기', 'AI 도입 사례를 산업별로 정리해 보기', '한 조직의 AX 과제 후보를 뽑고 우선순위 매기기'],
+      pf: '가상 기업의 AX 과제 발굴표와 1년 로드맵', tags: ['AX 전략', '과제 발굴', '로드맵'] },
+    { id: 'ax_pmo', field: 'ax', name: 'AX 프로젝트 매니저(PM·PMO)', desc: 'AI 도입 사업의 일정·범위·산출물·이해관계자를 관리해 사업을 끝까지 완수합니다.',
+      c: { product: 2, comm: 3, analysis: 1, systems: 1 }, v: { stability: 2, reward: 1, impact: 1 }, s: { es: 0.3, st: 1, sf: -1, db: 0.7 }, diff: 2,
+      steps: ['프로젝트 관리 기본(일정·범위·위험·이슈 관리)', 'AI 사업 특유의 데이터·모델 검증 단계 이해', 'AI 도입 사업에 PMO·PL로 참여해 산출물 관리'],
+      pf: 'AI 도입 사업 WBS·이슈 관리표·검수 계획서 샘플', tags: ['PMO', '일정 관리', '검수'] },
+    { id: 'ax_proposal', field: 'ax', name: 'AX 사업 제안 매니저', desc: '공공기관·기업의 AI 도입 사업 공고(RFP)를 분석하고 제안서와 발표로 사업을 수주합니다.',
+      c: { comm: 3, product: 2, analysis: 1, creative: 1 }, v: { reward: 2, growth: 1, expertise: 1 }, s: { es: 0.5, st: 0.7, sf: -0.3, db: 1 }, diff: 2,
+      steps: ['RFP 분석과 요구사항 정리 연습', 'AI 사업 제안서 구조와 평가 기준 공부', '제안 발표와 기술 질의 대응 경험'],
+      pf: '공개된 AI 사업 RFP로 작성한 제안 요약서', tags: ['RFP', '제안서', '공공 사업'] },
+    { id: 'ax_edu_planner', field: 'ax', name: 'AX 교육 기획자', desc: '직무별 AI 활용 교육 과정을 설계하고, 사내 교육을 운영해 효과를 측정합니다.',
+      c: { comm: 3, product: 2, creative: 1, data: 1 }, v: { impact: 3, stability: 1 }, s: { st: 0.7, sf: -0.5, db: 0.7 }, diff: 1,
+      steps: ['교육 설계(요구 분석·커리큘럼·평가) 기본', '직무별 생성형 AI 활용 사례 수집', '작은 교육을 기획·운영하고 만족도·활용도 측정'],
+      pf: '직무별 AI 활용 교육 커리큘럼과 운영 결과 보고서', tags: ['커리큘럼', '교육 운영', '효과 측정'] },
+    { id: 'ax_change', field: 'ax', name: 'AX 변화관리 매니저', desc: 'AI로 바뀐 일하는 방식이 조직에 자리 잡도록 소통·설득하고 저항을 관리합니다.',
+      c: { comm: 3, product: 2, ethics: 1 }, v: { impact: 2, stability: 1, growth: 1 }, s: { st: 1, sf: 0.3, db: 0.7 }, diff: 2,
+      steps: ['조직 변화관리 이론과 사례 공부', '현업 담당자 인터뷰로 도입 장애 요인 찾기', '사내 소통 캠페인과 우수 사례 공유회 기획'],
+      pf: 'AI 도입 저항 요인 분석과 변화관리 계획서', tags: ['변화관리', '조직문화', '사내 소통'] },
+    { id: 'ax_champion', field: 'ax', name: '현업 AI 활용 리더(AI 챔피언)', desc: '자기 부서 업무를 가장 잘 아는 사람으로서 AI 활용 사례를 만들고 동료들에게 퍼뜨립니다.',
+      c: { comm: 2, product: 2, creative: 1, build: 1 }, v: { growth: 2, impact: 2 }, s: { es: 1, st: 0.7, sf: 0.5 }, diff: 1,
+      steps: ['지금 업무에 생성형 AI를 매일 써 보기', '시간을 줄인 사례를 전후 비교로 기록', '팀 안에서 짧은 공유 세션 열기'],
+      pf: '내 업무 AI 활용 사례집(전후 시간 비교 포함)', tags: ['업무 활용', '사례 공유', '현업 주도'] },
+    { id: 'ax_automation', field: 'ax', name: 'AI 업무 자동화 매니저', desc: 'AI와 노코드·RPA 도구로 반복 업무를 자동화하고, 사내 자동화 요청을 처리합니다.',
+      c: { build: 2, product: 2, systems: 1, data: 1 }, v: { growth: 2, autonomy: 1, stability: 1 }, s: { es: 1, sf: 0.3, db: 0.5 }, diff: 1,
+      steps: ['노코드 자동화 도구와 간단한 스크립트 익히기', '반복 업무 하나를 골라 끝까지 자동화', '자동화 전후 처리 시간과 오류율 비교'],
+      pf: '반복 업무 자동화 3건과 절감 시간 기록', tags: ['노코드', 'RPA', '워크플로 자동화'] },
+    { id: 'ax_platform', field: 'ax', name: '사내 AI 플랫폼 운영 관리자', desc: '사내 생성형 AI 도구의 계정·권한·보안·사용 정책과 비용을 운영하고 문의에 대응합니다.',
+      c: { systems: 3, ethics: 2, comm: 1 }, v: { stability: 3, expertise: 1 }, s: { st: 0.3, sf: -1, db: 0.3 }, diff: 2,
+      steps: ['서버·계정·권한 관리 등 IT 운영 기본', '생성형 AI 서비스의 보안·개인정보 이슈 정리', '사용량·비용 모니터링과 사용자 문의 대응 경험'],
+      pf: '사내 AI 도구 운영 정책서와 사용량 대시보드 예시', tags: ['IT 운영', '권한 관리', '사용 정책'] },
+    { id: 'ax_value', field: 'ax', name: 'AX 성과·ROI 분석가', desc: 'AI 도입 전후의 시간·비용·품질 변화를 측정해 투자 효과를 증명하고 다음 과제를 제안합니다.',
+      c: { analysis: 3, data: 2, product: 1, comm: 1 }, v: { expertise: 2, impact: 1, stability: 1 }, s: { es: -0.5, sf: -0.5 }, diff: 2,
+      steps: ['업무 측정 지표와 ROI 계산법 익히기', 'SQL·엑셀로 사용 로그 분석', '도입 전후 비교 보고서를 한 장으로 정리'],
+      pf: 'AI 도입 전후 업무 시간·비용 비교 분석 보고서', tags: ['ROI', '성과 지표', '분석 보고서'] },
   ];
 
-  return { COMP, VAL, STYLE, SITUATIONS, FIELDS, SECTIONS, QUESTIONS: Q, JOBS };
+  return { COMP, VAL, STYLE, SITUATIONS, FIELDS, SECTIONS, QUESTIONS: Q, JOBS, TYPES, TYPE_MODS };
 })();
