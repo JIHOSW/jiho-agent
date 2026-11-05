@@ -284,15 +284,15 @@ window.DATA = (() => {
   ]);
   deep('biz', 'db1', '[비즈니스·현장] 고객 앞에서 맡고 싶은 역할은?', [
     j('기술 데모와 도입 제안', { solutions_engineer: 2 }),
-    j('업무 진단과 AI 도입 로드맵 수립', { ai_consultant: 2 }),
+    j('업무 진단과 AI 도입 로드맵 수립', { ax_strategist: 2 }),
     j('고객사에 들어가 직접 구축까지', { fde: 2 }),
-    j('사용자 교육과 워크숍 진행', { ai_educator: 2 }),
+    j('사용자 교육과 워크숍 진행', { ax_edu_planner: 2 }),
     j('도입 후 잘 쓰도록 꾸준히 관리', { ai_csm: 2 }),
   ]);
   deep('biz', 'db2', '[비즈니스·현장] 가장 자신 있는 표현 방식은?', [
     j('개발자 커뮤니티 발표와 기술 콘텐츠', { devrel: 2 }),
     j('정확하고 읽기 쉬운 문서·가이드', { tech_writer: 2 }),
-    j('따라 하기 쉬운 교안과 실습', { ai_educator: 1, tech_writer: 1 }),
+    j('따라 하기 쉬운 교안과 실습', { ax_edu_planner: 1, tech_writer: 1 }),
     j('고객의 문제를 코드로 바로 해결해 보여 주기', { fde: 2, solutions_engineer: 1 }),
   ]);
   deep('trust', 'dt1', '[신뢰·안전·정책] 가장 관심 가는 일은?', [
@@ -319,9 +319,9 @@ window.DATA = (() => {
     j('아무도 안 써 본 새로운 기법', { genai_creator: 2 }),
   ]);
   deep('ax', 'dx1', '[AX·업무 혁신] 회사가 "올해 AI 전환(AX)을 하겠다"고 발표했어요. 맡고 싶은 역할은?', [
-    j('어느 부서의 어떤 업무부터 바꿀지 전략과 과제를 정한다', { ax_strategist: 2 }),
+    j('업무를 진단해 어느 부서의 어떤 일부터 바꿀지 정한다', { ax_strategist: 2 }),
     j('도입 사업의 일정·산출물·이해관계자를 관리한다', { ax_pmo: 2 }),
-    j('직원들이 AI를 쓰도록 교육 과정을 짜고 운영한다', { ax_edu_planner: 2 }),
+    j('직원들이 AI를 쓰도록 교육 과정을 짜고 직접 가르친다', { ax_edu_planner: 2 }),
     j('반복 업무를 AI·노코드 도구로 직접 자동화한다', { ax_automation: 2 }),
     j('사내 AI 도구의 계정·권한·보안·사용 정책을 운영한다', { ax_platform: 2 }),
     j('바뀐 일하는 방식이 조직에 자리 잡도록 소통하고 설득한다', { ax_change: 2 }),
@@ -348,7 +348,7 @@ window.DATA = (() => {
     o('코드보다 사람·글·기획이 좋다', { fields: { product: 1, biz: 1, trust: 1, creative: 1, ax: 1 } }),
   ]);
 
-  // ── AI 직군 44개 ──
+  // ── AI 직군 42개 ──
   // c: 요구 역량 가중치, v: 맞는 가치관, s: 업무 스타일(-1~1), diff: 진입 난이도(1 낮음 ~ 3 높음)
   const JOBS = [
     // 모델·연구
@@ -444,18 +444,10 @@ window.DATA = (() => {
       c: { comm: 3, build: 2, product: 1, systems: 1 }, v: { reward: 3, growth: 1 }, s: { es: 0.5, st: 1, sf: 0.5, db: 1 }, diff: 2,
       steps: ['AI 제품과 API를 직접 써 보며 데모 만들기', '고객 요구를 기술 요건으로 바꾸는 연습', '기술 발표와 제안서 작성 경험'],
       pf: '가상 고객사를 위한 AI 도입 데모와 제안 자료', tags: ['기술 데모', '제안', '고객 대응'] },
-    { id: 'ai_consultant', field: 'biz', name: 'AI 도입 컨설턴트', desc: '기업의 업무를 진단해 AI를 어디에 어떻게 도입할지 로드맵을 세웁니다.',
-      c: { comm: 3, product: 2, analysis: 2 }, v: { reward: 2, impact: 1, growth: 1 }, s: { st: 0.7, sf: -0.3, db: 1 }, diff: 2,
-      steps: ['업무 프로세스 분석 방법 익히기', 'AI 도입 사례와 효과 측정 공부', '실제 조직의 업무 하나를 진단해 보기'],
-      pf: '한 부서의 업무를 진단한 AI 도입 로드맵', tags: ['업무 진단', '로드맵', 'ROI'] },
     { id: 'fde', field: 'biz', name: '포워드 디플로이드 엔지니어', desc: '고객사 현장에 들어가 문제를 파악하고 AI 솔루션을 직접 구축합니다.',
       c: { build: 3, comm: 2, product: 2, systems: 1 }, v: { growth: 2, reward: 2, autonomy: 1 }, s: { es: 1, st: 0.7, sf: 1, db: 0.7 }, diff: 3,
       steps: ['개발 실력(백엔드·데이터) 확실히 다지기', '고객 요구를 빠르게 프로토타입으로 만드는 연습', '도메인 지식(제조·금융·공공 등) 하나 쌓기'],
       pf: '실제 업무 담당자와 함께 만든 AI 자동화 사례', tags: ['현장 구축', '프로토타입', '도메인'] },
-    { id: 'ai_educator', field: 'biz', name: 'AI 교육 강사·에듀케이터', desc: '사람들이 AI를 이해하고 업무에 활용하도록 교육과 교재를 만듭니다.',
-      c: { comm: 3, creative: 1, research: 1, product: 1 }, v: { impact: 3, autonomy: 1 }, s: { st: 0.7, db: 0.5 }, diff: 1,
-      steps: ['생성형 AI 도구를 업무별로 깊게 써 보기', '실습 중심 교안 설계', '작은 규모라도 강의·워크숍 진행 경험'],
-      pf: '직무별 AI 활용 실습 교안과 강의 후기', tags: ['교안', '워크숍', 'AX 교육'] },
     { id: 'ai_csm', field: 'biz', name: 'AI 고객성공 매니저', desc: 'AI 제품을 도입한 고객이 실제 성과를 내도록 온보딩과 활용을 지원합니다.',
       c: { comm: 3, product: 2, data: 1 }, v: { stability: 2, impact: 1, reward: 1 }, s: { st: 1, sf: -0.3, db: 0.5 }, diff: 1,
       steps: ['SaaS 고객성공·온보딩 업무 이해', '활용 지표로 고객 상태를 진단하는 연습', '고객 교육·안내 자료 만들기'],
@@ -506,10 +498,10 @@ window.DATA = (() => {
       pf: 'AI로 만든 광고 소재 A/B 테스트 결과', tags: ['콘텐츠 마케팅', '성과 분석', 'A/B 테스트'] },
 
     // AX·업무 혁신
-    { id: 'ax_strategist', field: 'ax', name: 'AX 전략 기획자', desc: '조직 전체의 AI 전환 방향을 세우고, 어떤 업무부터 바꿀지 과제를 발굴·선정합니다.',
+    { id: 'ax_strategist', field: 'ax', name: 'AX 전략·도입 컨설턴트', desc: '조직의 업무를 진단해 AI 전환 방향을 세우고, 어떤 업무부터 어떻게 바꿀지 과제와 도입 로드맵을 만듭니다. 사내 전략 기획과 외부 컨설팅을 모두 포함합니다.',
       c: { product: 3, analysis: 2, comm: 2 }, v: { impact: 2, reward: 2, growth: 1 }, s: { es: -0.3, st: 0.5, sf: -0.3, db: 1 }, diff: 2,
       steps: ['업무 프로세스 분석과 전략 기획 기본기', 'AI 도입 사례를 산업별로 정리해 보기', '한 조직의 AX 과제 후보를 뽑고 우선순위 매기기'],
-      pf: '가상 기업의 AX 과제 발굴표와 1년 로드맵', tags: ['AX 전략', '과제 발굴', '로드맵'] },
+      pf: '한 부서의 업무를 진단한 AX 과제 발굴표와 1년 로드맵', tags: ['AX 전략', '업무 진단', '도입 로드맵'] },
     { id: 'ax_pmo', field: 'ax', name: 'AX 프로젝트 매니저(PM·PMO)', desc: 'AI 도입 사업의 일정·범위·산출물·이해관계자를 관리해 사업을 끝까지 완수합니다.',
       c: { product: 2, comm: 3, analysis: 1, systems: 1 }, v: { stability: 2, reward: 1, impact: 1 }, s: { es: 0.3, st: 1, sf: -1, db: 0.7 }, diff: 2,
       steps: ['프로젝트 관리 기본(일정·범위·위험·이슈 관리)', 'AI 사업 특유의 데이터·모델 검증 단계 이해', 'AI 도입 사업에 PMO·PL로 참여해 산출물 관리'],
@@ -518,10 +510,10 @@ window.DATA = (() => {
       c: { comm: 3, product: 2, analysis: 1, creative: 1 }, v: { reward: 2, growth: 1, expertise: 1 }, s: { es: 0.5, st: 0.7, sf: -0.3, db: 1 }, diff: 2,
       steps: ['RFP 분석과 요구사항 정리 연습', 'AI 사업 제안서 구조와 평가 기준 공부', '제안 발표와 기술 질의 대응 경험'],
       pf: '공개된 AI 사업 RFP로 작성한 제안 요약서', tags: ['RFP', '제안서', '공공 사업'] },
-    { id: 'ax_edu_planner', field: 'ax', name: 'AX 교육 기획자', desc: '직무별 AI 활용 교육 과정을 설계하고, 사내 교육을 운영해 효과를 측정합니다.',
-      c: { comm: 3, product: 2, creative: 1, data: 1 }, v: { impact: 3, stability: 1 }, s: { st: 0.7, sf: -0.5, db: 0.7 }, diff: 1,
-      steps: ['교육 설계(요구 분석·커리큘럼·평가) 기본', '직무별 생성형 AI 활용 사례 수집', '작은 교육을 기획·운영하고 만족도·활용도 측정'],
-      pf: '직무별 AI 활용 교육 커리큘럼과 운영 결과 보고서', tags: ['커리큘럼', '교육 운영', '효과 측정'] },
+    { id: 'ax_edu_planner', field: 'ax', name: 'AX 교육 기획자·강사', desc: '직무별 AI 활용 교육 과정과 교안을 설계하고, 직접 강의·워크숍을 진행해 효과를 측정합니다.',
+      c: { comm: 3, product: 2, creative: 1, research: 1 }, v: { impact: 3, autonomy: 1, stability: 1 }, s: { st: 0.7, sf: -0.3, db: 0.7 }, diff: 1,
+      steps: ['생성형 AI 도구를 직무별로 깊게 써 보며 활용 사례 수집', '교육 설계(요구 분석·커리큘럼·실습 교안) 익히기', '작은 규모라도 강의·워크숍을 진행하고 만족도·활용도 측정'],
+      pf: '직무별 AI 활용 실습 교안과 강의 운영 결과 보고서', tags: ['커리큘럼', '강의·워크숍', '효과 측정'] },
     { id: 'ax_change', field: 'ax', name: 'AX 변화관리 매니저', desc: 'AI로 바뀐 일하는 방식이 조직에 자리 잡도록 소통·설득하고 저항을 관리합니다.',
       c: { comm: 3, product: 2, ethics: 1 }, v: { impact: 2, stability: 1, growth: 1 }, s: { st: 1, sf: 0.3, db: 0.7 }, diff: 2,
       steps: ['조직 변화관리 이론과 사례 공부', '현업 담당자 인터뷰로 도입 장애 요인 찾기', '사내 소통 캠페인과 우수 사례 공유회 기획'],
