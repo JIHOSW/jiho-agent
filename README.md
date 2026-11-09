@@ -63,7 +63,13 @@
         <a href="ai%20%EC%A7%81%EB%AC%B4%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC/"><b>폴더</b></a>
       </p>
     </td>
-    <td width="50%" valign="top"></td>
+    <td width="50%" valign="top">
+      <a href="https://jihosw.github.io/jiho-agent/agent-switchboard/"><img src=".github/assets/card-switchboard.svg" width="100%" alt="에이전트 팀 관제 대시보드"></a>
+      <p align="center">
+        <a href="https://jihosw.github.io/jiho-agent/agent-switchboard/"><b>▶ 바로 보기</b></a> &nbsp;·&nbsp;
+        <a href="%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8C%80%20%EA%B4%80%EC%A0%9C%20%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/"><b>폴더</b></a>
+      </p>
+    </td>
   </tr>
 </table>
 
@@ -79,6 +85,7 @@
 | **AI 블로그 자동화 에이전트** | 공개 자료 수집, 동향 요약·분석 글 작성, 출처 확인과 검수를 연결하는 Claude Code 기반 실습입니다. 최종 주제와 발행 여부는 사람이 결정합니다. 분석 글 2편과 동향 요약 1편을 완성했습니다. |
 | **HTML 모션 PPT** | 발표 노트와 화면 전환, 가정 기반 계산 기능을 포함한 10장 HTML 발표자료입니다. 오프라인에서 여는 단일 HTML도 제공합니다. |
 | **AI 직군 적성검사** | 현재 상황과 관심 AI 영역에 따라 질문 갈래가 나뉘는 대화형 검사입니다. 짧은 버전(17~20문항)과 긴 버전(34~40문항) 중 골라 역량·직업가치관·업무 스타일을 분석해 AI 직군 42개 중 TOP 5와 준비 로드맵을 추천합니다. 서버 없이 규칙 기반으로 동작하며 결과 링크 공유와 이미지·PDF 저장을 지원합니다. |
+| **에이전트 팀 관제 대시보드** | AI 블로그 자동화 에이전트의 역할 구조와 업무 흐름을 보여 주는 단일 HTML 대시보드입니다. 업무 흐름(Workflows), 단계별 시간(Traces), 시간·토큰(Usage), 역할 목록(Agents) 4개 화면을 애니메이션으로 보여 줍니다. 단계 이름과 검수 기록은 저장소의 실제 구성을 따르고, 시간·토큰 수치는 시연용 예시로 표시했습니다. |
 
 </details>
 

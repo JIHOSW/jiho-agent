@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>jihodev Agent Switchboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+/* Layout: 교환대(switchboard) 콘솔 — 상단 상태 바, 탭 4개, 각 탭은 "요약 → 상세" 순서의 패널 */
+:root{
+  color-scheme: dark;
+  --bg:#0a0a12;          /* 콘솔 바탕: 보랏빛이 살짝 도는 먹색 */
+  --panel:#11111d;
+  --panel-2:#171727;
+  --line:#25243a;
+  --line-2:#34324f;
+  --fg:#e9e7f5;
+  --muted:#8f8ba8;
+  --violet:#9b8cff;      /* 에이전트 작업(생성) */
+  --violet-dim:rgba(155,140,255,.16);
+  --teal:#2fd6c0;        /* 검증·결과 반환 */
+  --teal-dim:rgba(47,214,192,.14);
+  --amber:#f2b45a;       /* 사람 결정 지점 · 시연용 표시 */
+  --amber-dim:rgba(242,180,90,.13);
+  --font-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--font-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.gutter{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.label{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1,h2,h3{text-wrap:balance}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.grid-bg{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:40px 40px;background-position:-1px -1px}
+.grid-fade{position:relative}
+.grid-fade::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,var(--panel) 85%);pointer-events:none;border-radius:inherit}
+
+/* 칩: 실제 기록 vs 시연용 */
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;padding:2px 8px;border-radius:999px;white-space:nowrap;line-height:1.6}
+.chip-real{color:var(--teal);background:var(--teal-dim);border:1px solid rgba(47,214,192,.35)}
+.chip-demo{color:var(--amber);background:var(--amber-dim);border:1px dashed rgba(242,180,90,.6)}
+.chip-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* 탭 */
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{position:relative;display:flex;align-items:center;gap:8px;padding:12px 14px;font-size:14px;color:var(--muted);background:none;border:0;cursor:pointer;white-space:nowrap;border-radius:10px 10px 0 0}
+.tab .k{font-family:var(--font-mono);font-size:10.5px;opacity:.7}
+.tab:hover{color:var(--fg)}
+.tab[aria-selected="true"]{color:var(--fg)}
+.tab[aria-selected="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--violet),var(--teal))}
+.tab:focus-visible,.btn:focus-visible,.seg button:focus-visible,.bar:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:13px;padding:7px 12px;border-radius:9px;border:1px solid var(--line-2);background:var(--panel-2);color:var(--fg);cursor:pointer}
+.btn:hover{border-color:var(--violet)}
+.seg{display:inline-flex;padding:3px;border:1px solid var(--line-2);border-radius:10px;background:var(--panel-2)}
+.seg button{font-size:13px;padding:6px 12px;border-radius:7px;border:0;background:none;color:var(--muted);cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--violet-dim);color:var(--fg);box-shadow:inset 0 0 0 1px rgba(155,140,255,.45)}
+
+/* 워크플로 SVG */
+#flow{display:block;width:100%;height:auto}
+#flow text{font-family:var(--font-body);fill:var(--fg)}
+#flow .t-en{font-family:var(--font-mono);fill:var(--muted);letter-spacing:.08em}
+#flow .spoke{fill:none;stroke:var(--line-2);stroke-width:1.4}
+#flow .spoke.on{stroke:var(--violet);stroke-opacity:.7}
+#flow .ring{fill:none;stroke:var(--line);stroke-width:1;stroke-dasharray:3 6}
+#flow .node rect{fill:var(--panel-2);stroke:var(--line-2);stroke-width:1.2;transition:stroke .3s,fill .3s}
+#flow .node.active rect{stroke:var(--violet);fill:#1d1a36}
+#flow .node.human rect{stroke:rgba(242,180,90,.55)}
+#flow .node.human.active rect{stroke:var(--amber);fill:#2a2216}
+#flow .node .dot{fill:var(--line-2);transition:fill .3s}
+#flow .node.done .dot{fill:var(--teal)}
+#flow .node.active .dot{fill:var(--violet)}
+#flow .node.human.active .dot{fill:var(--amber)}
+#flow .center rect{fill:#181530;stroke:var(--violet);stroke-width:1.5}
+#flow .halo{fill:none;stroke:var(--violet);stroke-width:1.2;transform-box:fill-box;transform-origin:center;animation:halo 2.8s ease-out infinite}
+#flow .halo.h2{animation-delay:1.4s}
+@keyframes halo{from{transform:scale(1);opacity:.55}to{transform:scale(1.5);opacity:0}}
+#flow .pk{transition:opacity .2s}
+#flow .amb{fill:var(--violet);opacity:.35}
+.glow-v{fill:var(--violet)} .glow-t{fill:var(--teal)} .glow-a{fill:var(--amber)}
+
+.log{font-family:var(--font-mono);font-size:12px;line-height:1.55}
+.log li{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:5px 0;border-bottom:1px dashed var(--line);animation:logIn .35s ease-out}
+.log li:last-child{border-bottom:0}
+.log .ts{color:var(--muted)}
+@keyframes logIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+/* 간트 */
+.gantt-row{display:grid;grid-template-columns:118px 1fr;align-items:center;gap:12px;min-height:40px}
+.track{position:relative;height:26px;border-radius:6px;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(100%/6 - 1px),var(--line) calc(100%/6 - 1px),var(--line) calc(100%/6))}
+.bar{position:absolute;top:3px;bottom:3px;border-radius:5px;border:0;cursor:pointer;padding:0 8px;display:flex;align-items:center;justify-content:flex-end;font-family:var(--font-mono);font-size:11px;color:#0a0a12;font-weight:700;overflow:hidden;white-space:nowrap;transition:width 1s cubic-bezier(.2,.8,.2,1),filter .2s}
+.bar.v{background:linear-gradient(90deg,#7b6cf0,var(--violet));box-shadow:0 0 18px rgba(155,140,255,.35)}
+.bar.t{background:linear-gradient(90deg,#20b5a2,var(--teal));box-shadow:0 0 18px rgba(47,214,192,.3)}
+.bar:hover,.bar.sel{filter:brightness(1.18)}
+.playhead{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--fg);box-shadow:0 0 10px var(--fg);border-radius:2px;pointer-events:none}
+@media (max-width:560px){.gantt-row{grid-template-columns:76px 1fr;gap:8px}.bar span{display:none}.ax-odd{display:none}}
+.topbar{border-color:var(--line);padding-block:16px 0;background:rgba(10,10,18,.92);backdrop-filter:blur(10px)}
+@media (min-width:768px){.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5}}
+
+/* 게이지 */
+.gauge-track{fill:none;stroke:var(--line);stroke-width:12;stroke-linecap:round}
+.gauge-val{fill:none;stroke-width:12;stroke-linecap:round;transition:stroke-dasharray 1.4s cubic-bezier(.2,.8,.2,1)}
+.hbar{height:8px;border-radius:4px;background:var(--line)}
+.hbar > i{display:block;height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+
+.vbar{width:100%;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,var(--teal),#1a8f80)}
+
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 rgba(47,214,192,.6);animation:live 1.8s infinite}
+@keyframes live{0%{box-shadow:0 0 0 0 rgba(47,214,192,.55)}100%{box-shadow:0 0 0 10px rgba(47,214,192,0)}}
+
+.view{animation:viewIn .45s ease-out}
+@keyframes viewIn{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header class="gutter border-b topbar">
+  <div class="mx-auto max-w-6xl">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+          <rect x="1" y="1" width="32" height="32" rx="9" fill="none" stroke="var(--line-2)"/>
+          <circle cx="11" cy="11" r="3" fill="var(--violet)"/><circle cx="23" cy="11" r="3" fill="var(--line-2)"/>
+          <circle cx="11" cy="23" r="3" fill="var(--line-2)"/><circle cx="23" cy="23" r="3" fill="var(--teal)"/>
+          <path d="M11 11 C 17 11, 17 23, 23 23" stroke="var(--violet)" stroke-width="1.6" fill="none"/>
+        </svg>
+        <div class="min-w-0">
+          <div class="label" style="letter-spacing:.18em">jihodev · Agent Switchboard</div>
+          <h1 class="text-[17px] sm:text-[19px] font-bold leading-tight">AI 블로그 자동화 에이전트 관제 화면</h1>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="chip chip-real"><span class="chip-dot"></span>구조·단계 = 실제 저장소 구성</span>
+        <span class="chip chip-demo"><span class="chip-dot"></span>초·토큰·시간 = 시연용 수치</span>
+        <span class="hidden md:inline-flex items-center gap-2 mono num text-[12px] muted"><span class="live-dot"></span><span id="clock">--:--:--</span></span>
+      </div>
+    </div>
+    <nav class="tabs mt-3" role="tablist" aria-label="화면 전환">
+      <button class="tab" role="tab" id="tab-workflows" aria-controls="view-workflows" data-view="workflows"><span class="k">01</span>Workflows<span class="muted text-[12px]">업무 흐름</span></button>
+      <button class="tab" role="tab" id="tab-traces" aria-controls="view-traces" data-view="traces"><span class="k">02</span>Traces<span class="muted text-[12px]">단계별 시간</span></button>
+      <button class="tab" role="tab" id="tab-usage" aria-controls="view-usage" data-view="usage"><span class="k">03</span>Usage<span class="muted text-[12px]">시간·토큰</span></button>
+      <button class="tab" role="tab" id="tab-agents" aria-controls="view-agents" data-view="agents"><span class="k">04</span>Agents<span class="muted text-[12px]">역할 목록</span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="gutter" style="padding-block:22px 48px">
+<div class="mx-auto max-w-6xl">
+
+<!-- 01 WORKFLOWS -->
+<section id="view-workflows" class="view" role="tabpanel" aria-labelledby="tab-workflows">
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
+    <div class="min-w-0">
+      <h2 class="text-[22px] font-bold">수석 비서실장이 단계를 나눠 맡깁니다</h2>
+      <p class="muted text-[14px] mt-1" style="max-width:62ch">가운데의 Claude Code 메인 세션이 스킬에 적힌 순서대로 각 역할에 일을 보내고 결과를 받습니다. 보라색 점은 지시, 청록색 점은 결과, 주황색 점은 사람 확인입니다.</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <div class="seg" role="group" aria-label="트랙 선택">
+        <button id="trk-analysis" aria-pressed="true" data-track="analysis">분석 글 <span class="mono muted text-[11px]">/blog-analysis</span></button>
+        <button id="trk-trend" aria-pressed="false" data-track="trend">동향 요약 <span class="mono muted text-[11px]">/blog-trend</span></button>
+      </div>
+      <button class="btn" id="playBtn" aria-pressed="true"><span id="playIcon">❚❚</span><span id="playTxt">일시정지</span></button>
+    </div>
+  </div>
+
+  <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+    <div class="panel grid-bg grid-fade overflow-hidden min-w-0" style="padding:8px">
+      <div class="flex items-center justify-between px-2 pt-1 relative" style="z-index:1">
+        <span class="label">live replay · <span id="trackName">blog-analysis</span></span>
+        <span class="mono num text-[12px] muted">T+<span id="simClock">00:00.0</span></span>
+      </div>
+      <svg id="flow" role="img" aria-label="수석 비서실장과 8개 역할 노드가 연결된 업무 흐름도" style="position:relative;z-index:1"></svg>
+    </div>
+
+    <aside class="flex flex-col gap-4 min-w-0">
+      <div class="panel p-4">
+        <div class="flex items-center justify-between gap-2">
+          <span class="label">지금 단계</span>
+          <span class="mono num text-[12px] muted"><span id="stepNo">1</span> / <span id="stepTotal">10</span></span>
+        </div>
+        <div class="mt-2 flex items-center gap-2">
+          <span id="stepRole" class="chip" style="color:var(--violet);background:var(--violet-dim);border:1px solid rgba(155,140,255,.4)">기획</span>
+          <h3 id="stepTitle" class="text-[17px] font-bold">주제와 질문</h3>
+        </div>
+        <p id="stepDesc" class="text-[13.5px] mt-2" style="color:#cfcbe4">—</p>
+        <div class="mt-3 text-[12px]">
+          <div class="label" style="font-size:10px">남기는 파일</div>
+          <div id="stepOut" class="mono mt-1 break-all" style="color:var(--teal)">—</div>
+        </div>
+        <div id="stepGate" class="mt-3 text-[12px]" style="color:var(--amber)"></div>
+      </div>
+      <div class="panel p-4 flex-1 min-h-0">
+        <div class="flex items-center justify-between gap-2">
+          <span class="label">이벤트 로그</span>
+          <span class="chip chip-demo">재생 화면</span>
+        </div>
+        <ol id="log" class="log mt-2" aria-live="polite"></ol>
+      </div>
+    </aside>
+  </div>
+  <p class="muted text-[12.5px] mt-3">단계 이름, 순서, 남기는 파일은 <span class="mono">.claude/skills/blog-analysis/SKILL.md</span>와 <span class="mono">blog-trend/SKILL.md</span>를 그대로 옮겼습니다. 화면 속 이동 속도와 T+ 시간은 보기 좋게 줄인 재생 속도입니다.</p>
+</section>
+
+<!-- 02 TRACES -->
+<section id="view-traces" class="view" role="tabpanel" aria-labelledby="tab-traces" hidden>
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
+    <div class="min-w-0">
+      <h2 class="text-[22px] font-bold">분석 글 한 편, 단계별로 몇 초 걸렸나</h2>
+      <p class="muted text-[14px] mt-1" style="max-width:62ch">리서치부터 발행 준비까지 에이전트가 일한 시간만 이어 붙였습니다. 사람이 확인하느라 기다린 시간은 빠져 있습니다.</p>
+    </div>
+    <button class="btn" id="replayTrace">↻ 다시 재생</button>
+  </div>
+
+  <div class="panel p-4 sm:p-5">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <div class="flex flex-wrap items-center gap-3 text-[12.5px]">
+        <span class="inline-flex items-center gap-2"><i style="width:14px;height:8px;border-radius:3px;background:var(--violet);display:inline-block"></i>생성 작업</span>
+        <span class="inline-flex items-center gap-2"><i style="width:14px;height:8px;border-radius:3px;background:var(--teal);display:inline-block"></i>검증·대조</span>
+      </div>
+      <span class="chip chip-demo"><span class="chip-dot"></span>시연용 예시 · 실제 측정값 아님</span>
+    </div>
+    <div id="gantt" class="flex flex-col gap-1"></div>
+    <div class="gantt-row mt-1" aria-hidden="true">
+      <span></span>
+      <div class="relative h-5 mono num text-[11px] muted" id="axis"></div>
+    </div>
+    <div class="mt-4 flex flex-wrap items-baseline justify-between gap-3 border-t pt-4" style="border-color:var(--line)">
+      <p id="traceDetail" class="text-[13.5px] min-w-0" style="max-width:62ch">막대를 누르면 그 단계에서 무엇을 했는지 보여 줍니다.</p>
+      <div class="mono num"><span class="muted text-[12px]">합계 </span><span id="traceTotal" class="text-[22px] font-bold" style="color:var(--teal)">0</span><span class="muted text-[12px]"> 초 (예시)</span></div>
+    </div>
+  </div>
+
+  <div class="panel p-4 sm:p-5 mt-4">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h3 class="text-[17px] font-bold">실제 기록: 검수 지적이 버전마다 줄었습니다</h3>
+        <p class="muted text-[13px] mt-1">검수 결과 파일에서 "수정 필요"가 적힌 줄을 센 값입니다.</p>
+      </div>
+      <span class="chip chip-real"><span class="chip-dot"></span>실제 기록 · 05_초안/</span>
+    </div>
+    <div id="realReview" class="grid gap-6 sm:grid-cols-2 mt-5"></div>
+    <p class="muted text-[12.5px] mt-4">이 과정에서 검수 체크리스트도 1.0에서 1.3까지 세 번 고쳤습니다. 1.3에서는 "출처 번호가 붙은 문장을 원문 페이지와 대조"하는 항목이 추가됐습니다. <span class="mono">00_기준문서/검수_체크리스트.md</span></p>
+  </div>
+</section>
+
+<!-- 03 USAGE -->
+<section id="view-usage" class="view" role="tabpanel" aria-labelledby="tab-usage" hidden>
+  <div class="mb-4">
+    <h2 class="text-[22px] font-bold">사람 손으로 3일, 에이전트와 5분</h2>
+    <p class="muted text-[14px] mt-1" style="max-width:62ch">시간과 토큰은 측정 기록이 아직 없어 시연용 예시로 채웠습니다. 아래 "실제 기록" 줄의 숫자만 저장소에 근거가 있습니다.</p>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-3">
+    <div class="panel p-5 md:col-span-2 min-w-0">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <span class="label">작업 시간 비교 · 글 1편</span>
+        <span class="chip chip-demo"><span class="chip-dot"></span>시연용 수치</span>
+      </div>
+      <div class="mt-5 flex flex-col gap-5">
+        <div>
+          <div class="flex items-baseline justify-between gap-3"><span class="text-[14px]">사람이 직접 조사·작성·검수</span><span class="mono num text-[20px] font-bold">3일</span></div>
+          <div class="hbar mt-2" style="height:14px;border-radius:7px"><i id="hManual" style="width:0;background:linear-gradient(90deg,#4b4870,#6d6a92);border-radius:7px"></i></div>
+          <div class="mono num text-[11px] muted mt-1">≈ 4,320분</div>
+        </div>
+        <div>
+          <div class="flex items-baseline justify-between gap-3"><span class="text-[14px]">에이전트 실행 (사람 확인 시간 제외)</span><span class="mono num text-[20px] font-bold" style="color:var(--teal)">5분</span></div>
+          <div class="hbar mt-2" style="height:14px;border-radius:7px"><i id="hAgent" style="width:0;background:var(--teal);border-radius:7px;min-width:0"></i></div>
+          <div class="mono num text-[11px] muted mt-1">≈ 5분 · 막대는 실제 비율(0.12%)보다 굵게 그렸습니다</div>
+        </div>
+      </div>
+      <p class="text-[13px] mt-5" style="color:#cfcbe4">줄어드는 것은 자료를 찾고 대조하는 시간입니다. 내 관점 쓰기와 발행 결정은 그대로 사람 몫입니다.</p>
+    </div>
+
+    <div class="panel p-5 min-w-0 flex flex-col items-center">
+      <div class="w-full flex items-center justify-between gap-2">
+        <span class="label">단축률</span>
+        <span class="chip chip-demo">시연용</span>
+      </div>
+      <svg viewBox="0 0 200 170" class="w-full mt-2" style="max-width:220px" role="img" aria-label="단축률 게이지">
+        <path id="g1track" class="gauge-track"/>
+        <path id="g1val" class="gauge-val" style="stroke:var(--teal)"/>
+        <text x="100" y="104" text-anchor="middle" class="mono num" style="font-size:30px;font-weight:700;fill:var(--fg)" id="g1txt">0%</text>
+        <text x="100" y="128" text-anchor="middle" style="font-size:11px;fill:var(--muted)">3일 → 5분</text>
+      </svg>
+    </div>
+
+    <div class="panel p-5 min-w-0 flex flex-col items-center">
+      <div class="w-full flex items-center justify-between gap-2">
+        <span class="label">토큰 · 1회 실행</span>
+        <span class="chip chip-demo">시연용</span>
+      </div>
+      <svg viewBox="0 0 200 170" class="w-full mt-2" style="max-width:220px" role="img" aria-label="토큰 사용 게이지">
+        <path id="g2track" class="gauge-track"/>
+        <path id="g2val" class="gauge-val" style="stroke:var(--violet)"/>
+        <text x="100" y="100" text-anchor="middle" class="mono num" style="font-size:26px;font-weight:700;fill:var(--fg)" id="g2txt">0</text>
+        <text x="100" y="124" text-anchor="middle" style="font-size:11px;fill:var(--muted)">200,000 토큰 창 중 사용</text>
+      </svg>
+    </div>
+
+    <div class="panel p-5 md:col-span-2 min-w-0">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <span class="label">단계별 토큰</span>
+        <span class="chip chip-demo"><span class="chip-dot"></span>시연용 수치</span>
+      </div>
+      <div id="tokBars" class="mt-4 grid gap-3"></div>
+      <p class="muted text-[12.5px] mt-4">원문을 직접 열어 읽는 리서치 단계가 가장 많이 쓴다는 흐름만 보여 주는 예시입니다.</p>
+    </div>
+  </div>
+
+  <div class="panel p-5 mt-4">
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      <h3 class="text-[17px] font-bold">실제 기록</h3>
+      <span class="chip chip-real"><span class="chip-dot"></span>저장소 파일 기준</span>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-5 mt-4" id="realKpi"></div>
+  </div>
+</section>
+
+<!-- 04 AGENTS -->
+<section id="view-agents" class="view" role="tabpanel" aria-labelledby="tab-agents" hidden>
+  <div class="mb-4">
+    <h2 class="text-[22px] font-bold">누가 무엇을 맡나</h2>
+    <p class="muted text-[14px] mt-1" style="max-width:66ch">역할 이름은 이해를 돕기 위해 붙였습니다. 실제로는 Claude Code 세션 하나가 스킬 두 개에 적힌 단계를 순서대로 실행하고, 각 단계에서 아래 문서를 읽고 파일을 남깁니다.</p>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-2">
+    <div class="panel p-5 min-w-0">
+      <div class="flex items-center justify-between gap-2"><span class="mono text-[15px] font-bold" style="color:var(--violet)">/blog-analysis</span><span class="chip" style="color:var(--amber);background:var(--amber-dim);border:1px solid rgba(242,180,90,.4)">단계마다 사람 확인</span></div>
+      <p class="text-[14px] mt-2">금융 고객 관점의 분석 글. 주제와 질문 → 조사 계획 → 조사 → 초안 → 초안 검수 → 발행 전 검수.</p>
+    </div>
+    <div class="panel p-5 min-w-0">
+      <div class="flex items-center justify-between gap-2"><span class="mono text-[15px] font-bold" style="color:var(--teal)">/blog-trend</span><span class="chip chip-real">한 번에 실행 후 보고</span></div>
+      <p class="text-[14px] mt-2">주간 AI·클라우드 동향 요약. 직전 7일 공식 발표 3~5개를 모아 출처·초안·검수까지 멈추지 않고 진행합니다.</p>
+    </div>
+  </div>
+
+  <div class="panel mt-4 overflow-x-auto">
+    <table class="w-full text-left text-[13.5px]" style="min-width:720px;border-collapse:collapse">
+      <thead>
+        <tr class="label" style="font-size:10.5px">
+          <th class="p-3 pl-5 font-normal">역할</th><th class="p-3 font-normal">하는 일</th><th class="p-3 font-normal">읽는 기준</th><th class="p-3 pr-5 font-normal">남기는 파일</th>
+        </tr>
+      </thead>
+      <tbody id="roster"></tbody>
+    </table>
+  </div>
+
+  <div class="panel p-5 mt-4">
+    <h3 class="text-[17px] font-bold">지키는 규칙</h3>
+    <ul class="grid gap-3 sm:grid-cols-2 mt-3 text-[14px]">
+      <li class="flex gap-3"><span class="mono" style="color:var(--teal)">✓</span><span>직접 연 원문에만 출처 번호를 붙이고, 검색 요약은 근거로 쓰지 않습니다.</span></li>
+      <li class="flex gap-3"><span class="mono" style="color:var(--teal)">✓</span><span>확인하지 못한 내용은 <span class="mono">[확인 필요: X번호]</span>로 남기고 목록에 올립니다.</span></li>
+      <li class="flex gap-3"><span class="mono" style="color:var(--teal)">✓</span><span>발행 전 검수에서는 <span class="mono">[확인 필요]</span>가 0건이어야 합니다.</span></li>
+      <li class="flex gap-3"><span class="mono" style="color:var(--amber)">!</span><span>블로그에 로그인하거나 게시하지 않습니다. 게시는 사람이 직접 합니다.</span></li>
+      <li class="flex gap-3"><span class="mono" style="color:var(--amber)">!</span><span>기준 문서는 사용자 승인 없이 고치지 않고, 개선안은 보고에만 적습니다.</span></li>
+      <li class="flex gap-3"><span class="mono" style="color:var(--amber)">!</span><span>규제 충족을 보장하거나 법률 자문처럼 단정하지 않습니다.</span></li>
+    </ul>
+  </div>
+</section>
+
+<footer class="mt-10 flex flex-wrap items-center justify-between gap-3 text-[12px] muted border-t pt-4" style="border-color:var(--line)">
+  <span>김지호 · jihodev · 개인 학습·실습용 비공식 프로젝트</span>
+  <a href="https://github.com/JIHOSW/jiho-agent" target="_blank" rel="noopener" class="mono" style="color:var(--violet)">github.com/JIHOSW/jiho-agent ↗</a>
+</footer>
+</div>
+</main>
+
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const NS = 'http://www.w3.org/2000/svg';
+
+/* ───────── 실제 구성: 역할 노드 ───────── */
+const NODES = [
+  {id:'plan',     ko:'기획',        en:'PLAN',     sub:'주제·조사 계획'},
+  {id:'research', ko:'리서치',      en:'RESEARCH', sub:'원문 직접 확인'},
+  {id:'source',   ko:'출처 관리',   en:'SOURCES',  sub:'출처·확인 필요 목록'},
+  {id:'draft',    ko:'초안 작성',   en:'DRAFT',    sub:'템플릿대로 vN'},
+  {id:'review',   ko:'검수 · 공격', en:'REVIEW',   sub:'체크리스트·원문 대조'},
+  {id:'fix',      ko:'보강',        en:'REVISE',   sub:'지적 반영 v+1'},
+  {id:'publish',  ko:'발행 준비',   en:'RENDER',   sub:'최종본·붙여넣기용'},
+  {id:'human',    ko:'작성자',      en:'HUMAN',    sub:'관점·발행 결정', human:true}
+];
+const NODE = Object.fromEntries(NODES.map(n=>[n.id,n]));
+
+const TRACKS = {
+  analysis:{name:'blog-analysis', steps:[
+    {node:'plan', title:'주제와 질문', desc:'금융 고객의 질문 1개와 가설을 제시합니다. 동향 요약의 분석 글 후보가 있으면 먼저 씁니다.', out:'— (대화로 보고)', gate:true},
+    {node:'plan', title:'조사 계획', desc:'필요한 자료와 1차 출처 후보를 기술 / 규제 / 회사 순으로 나눕니다.', out:'— (대화로 보고)', gate:true},
+    {node:'research', title:'조사', desc:'원문 페이지를 직접 열어 확인합니다. 검색 결과 요약은 근거로 쓰지 않습니다.', out:'—'},
+    {node:'source', title:'출처 정리', desc:'출처에 A(기술)·B(규제)·C(회사) 번호를, 확인하지 못한 내용에 X 번호를 붙입니다.', out:'04_출처/출처_목록.md\n04_출처/확인필요_목록.md', gate:true},
+    {node:'draft', title:'초안 v1', desc:'템플릿대로 씁니다. 미확인은 [확인 필요: X번호], 내 관점은 작성자 자리로 비워 둡니다.', out:'05_초안/<주제>_v1.md', gate:true},
+    {node:'review', title:'초안 검수', desc:'체크리스트로 점검하고 금지 표현을 셉니다. 출처 번호가 붙은 문장은 그 번호의 원문과 하나씩 대조합니다.', out:'05_초안/<주제>_검수결과_v1.md', gate:true},
+    {node:'fix', title:'보강 v2', desc:'"수정 필요" 판정을 반영해 다음 버전을 씁니다.', out:'05_초안/<주제>_v2.md'},
+    {node:'review', title:'재검수', desc:'고친 버전을 같은 기준으로 다시 봅니다.', out:'05_초안/<주제>_검수결과_v2.md', gate:true},
+    {node:'publish', title:'발행 준비', desc:'최종본, 블로그에 붙여넣을 평문, 발행 메모를 만듭니다.', out:'06_발행/<날짜>_<제목>_최종.md\n06_발행/<날짜>_<제목>_붙여넣기용.txt'},
+    {node:'human', title:'발행 결정', desc:'작성자가 내 관점을 쓰고 발행 여부를 정합니다. 블로그 게시는 사람이 직접 합니다.', out:'—'}
+  ]},
+  trend:{name:'blog-trend', steps:[
+    {node:'plan', title:'기간 정하기', desc:'기준일 직전 7일을 수집 기간으로 정하고 날짜 폴더를 만듭니다.', out:'03_동향/YYYY-MM-DD/'},
+    {node:'research', title:'수집과 선정', desc:'수집_소스.md의 1차 소스에서 발표를 찾고, 원문을 직접 열어 3~5개를 고릅니다.', out:'—'},
+    {node:'source', title:'출처 정리', desc:'기관, 제목, 발표일, URL, 확인일, 핵심 내용을 적고 미확인은 X 번호로 남깁니다.', out:'03_동향/YYYY-MM-DD/출처.md'},
+    {node:'draft', title:'초안', desc:'항목마다 사실 1~2문장과 금융 고객에게 의미 1문장을 씁니다.', out:'03_동향/YYYY-MM-DD/초안.md'},
+    {node:'review', title:'검수', desc:'동향 체크리스트로 점검하고 금지 표현은 Grep으로 셉니다.', out:'03_동향/YYYY-MM-DD/검수결과.md'},
+    {node:'fix', title:'한 번 고치고 재점검', desc:'고칠 수 있는 항목은 한 번 고친 뒤 다시 점검합니다.', out:'03_동향/YYYY-MM-DD/초안.md'},
+    {node:'publish', title:'결과 보고', desc:'항목 제목, 판정, 남은 [확인 필요], 분석 글 후보만 짧게 보고합니다.', out:'— (대화로 보고)'},
+    {node:'human', title:'보고 확인', desc:'작성자가 보고를 읽고 분석 글로 이어 갈 후보를 고릅니다.', out:'—'}
+  ]}
+};
+
+/* ───────── Workflows: SVG 그리기 ───────── */
+const svg = $('#flow');
+let mobile = null, P = {}, spokes = {}, nodeEls = {}, pk = null, amb = [];
+let track = 'analysis';
+
+function el(tag, attrs, parent){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+
+function computeLayout(){
+  P = {};
+  if (!mobile){
+    P.center = {x:500, y:300, w:206, h:88};
+    NODES.forEach((n,i)=>{ const a = (-135 + 45*i) * Math.PI/180; P[n.id] = {x:500 + 388*Math.cos(a), y:300 + 232*Math.sin(a), w:176, h:60}; });
+  } else {
+    P.center = {x:180, y:320, w:90, h:140};
+    const rows = [72, 232, 408, 568];
+    NODES.forEach((n,i)=>{ P[n.id] = i < 4 ? {x:60, y:rows[i], w:112, h:56} : {x:300, y:rows[7-i], w:112, h:56}; });
+  }
+}
+function curve(a, b){
+  const mx=(a.x+b.x)/2, my=(a.y+b.y)/2, dx=b.x-a.x, dy=b.y-a.y, L=Math.hypot(dx,dy)||1, k = mobile ? 12 : 26;
+  return `M${a.x.toFixed(1)},${a.y.toFixed(1)} Q${(mx-dy/L*k).toFixed(1)},${(my+dx/L*k).toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`;
+}
+function build(){
+  const m = svg.parentElement.clientWidth < 640;
+  if (m === mobile && svg.childNodes.length) return;
+  mobile = m;
+  svg.innerHTML = '';
+  svg.setAttribute('viewBox', mobile ? '0 0 360 640' : '0 0 1000 600');
+  computeLayout();
+  const defs = el('defs', {}, svg);
+  const f = el('filter', {id:'blur', x:'-200%', y:'-200%', width:'500%', height:'500%'}, defs);
+  el('feGaussianBlur', {stdDeviation: 4}, f);
+
+  // 순서 링 (점선)
+  const ring = NODES.map(n=>`${P[n.id].x.toFixed(1)},${P[n.id].y.toFixed(1)}`);
+  el('path', {class:'ring', d:'M' + ring.join(' L') + ' Z'}, svg);
+
+  spokes = {};
+  NODES.forEach(n=>{ spokes[n.id] = el('path', {class:'spoke', d:curve(P.center, P[n.id])}, svg); });
+
+  // 대기 패킷 (은은한 흐름)
+  amb = [];
+  if (!reduce) NODES.forEach((n,i)=>{ amb.push({id:n.id, off:i/NODES.length, c: el('circle', {r: mobile?1.8:2.2, class:'amb'}, svg)}); });
+
+  // 노드
+  nodeEls = {};
+  NODES.forEach(n=>{
+    const p = P[n.id];
+    const g = el('g', {class:'node' + (n.human?' human':''), transform:`translate(${(p.x-p.w/2).toFixed(1)},${(p.y-p.h/2).toFixed(1)})`}, svg);
+    el('rect', {width:p.w, height:p.h, rx:12}, g);
+    el('circle', {class:'dot', cx:p.w-12, cy:12, r:3.5}, g);
+    const t1 = el('text', {x:14, y: mobile ? 25 : 27, style:`font-size:${mobile?13:15}px;font-weight:700`}, g); t1.textContent = n.ko;
+    if (mobile){
+      el('text', {x:14, y:42, class:'t-en', style:'font-size:9.5px'}, g).textContent = n.en;
+    } else {
+      el('text', {x:p.w-24, y:27, 'text-anchor':'end', class:'t-en', style:'font-size:10px'}, g).textContent = n.en;
+      el('text', {x:14, y:46, style:'font-size:11.5px;fill:var(--muted)'}, g).textContent = n.sub;
+    }
+    nodeEls[n.id] = g;
+  });
+
+  // 중앙: 수석 비서실장
+  const c = P.center;
+  const cg = el('g', {class:'center'}, svg);
+  if (!reduce){ ['','h2'].forEach(cls=> el('rect', {class:'halo ' + cls, x:c.x-c.w/2, y:c.y-c.h/2, width:c.w, height:c.h, rx:16}, cg)); }
+  el('rect', {x:c.x-c.w/2, y:c.y-c.h/2, width:c.w, height:c.h, rx:16}, cg);
+  if (!mobile){
+    el('text', {x:c.x, y:c.y-16, 'text-anchor':'middle', class:'t-en', style:'font-size:10.5px;fill:var(--violet)'}, cg).textContent = 'ORCHESTRATOR';
+    el('text', {x:c.x, y:c.y+8, 'text-anchor':'middle', style:'font-size:18px;font-weight:700'}, cg).textContent = '수석 비서실장';
+    el('text', {x:c.x, y:c.y+29, 'text-anchor':'middle', style:'font-size:11.5px;fill:var(--muted)'}, cg).textContent = 'Claude Code 메인 세션';
+  } else {
+    el('text', {x:c.x, y:c.y-34, 'text-anchor':'middle', class:'t-en', style:'font-size:8.5px;fill:var(--violet)'}, cg).textContent = 'ORCH.';
+    [['수석',-6],['비서실장',14]].forEach(([s,dy])=> el('text', {x:c.x, y:c.y+dy, 'text-anchor':'middle', style:'font-size:14px;font-weight:700'}, cg).textContent = s);
+    el('text', {x:c.x, y:c.y+40, 'text-anchor':'middle', style:'font-size:9.5px;fill:var(--muted)'}, cg).textContent = 'Claude Code';
+  }
+
+  // 활성 패킷 (번짐 + 심)
+  const pg = el('g', {class:'pk', opacity:0}, svg);
+  const halo = el('circle', {r: mobile?7:10, filter:'url(#blur)', class:'glow-v'}, pg);
+  const core = el('circle', {r: mobile?3.6:4.6, class:'glow-v'}, pg);
+  pk = {g:pg, halo, core};
+  paintState();
+}
+
+/* ───────── Workflows: 재생 엔진 ───────── */
+let steps = TRACKS[track].steps, stepIdx = 0, phases = [], phaseIdx = 0, phaseT = 0, sim = 0, playing = true, done = new Set(), active = null;
+const SPEED = {move: 700, work: 1500, gateWork: 900, end: 2200};
+
+function fmt(ms){ const s = ms/1000; const m = Math.floor(s/60); return String(m).padStart(2,'0') + ':' + (s%60).toFixed(1).padStart(4,'0'); }
+function log(text, color){
+  const li = document.createElement('li');
+  li.innerHTML = `<span class="ts num">${fmt(sim)}</span><span></span>`;
+  li.lastChild.textContent = text;
+  if (color) li.lastChild.style.color = color;
+  const ol = $('#log'); ol.prepend(li);
+  while (ol.children.length > 7) ol.lastChild.remove();
+}
+function planStep(){
+  const s = steps[stepIdx];
+  phases = [];
+  if (s.node === 'human'){
+    phases.push({t:'move', from:'center', to:'human', c:'a', dur:SPEED.move, log:[`비서실장 → 작성자: ${s.title} 요청`, 'var(--amber)']});
+    phases.push({t:'work', node:'human', dur:SPEED.work});
+    phases.push({t:'move', from:'human', to:'center', c:'t', dur:SPEED.move, log:[`작성자 → 비서실장: 결정 완료`, 'var(--teal)']});
+  } else {
+    phases.push({t:'move', from:'center', to:s.node, c:'v', dur:SPEED.move, log:[`비서실장 → ${NODE[s.node].ko}: ${s.title}`, 'var(--violet)']});
+    phases.push({t:'work', node:s.node, dur:SPEED.work});
+    phases.push({t:'move', from:s.node, to:'center', c:'t', dur:SPEED.move, log:[`${NODE[s.node].ko} → 비서실장: ${s.out.split('\n')[0] === '—' ? '결과 보고' : s.out.split('\n')[0].split('/').pop() + ' 작성'}`, 'var(--teal)']});
+    if (s.gate){
+      phases.push({t:'move', from:'center', to:'human', c:'a', dur:SPEED.move, log:['작성자 확인 요청', 'var(--amber)']});
+      phases.push({t:'work', node:'human', dur:SPEED.gateWork});
+      phases.push({t:'move', from:'human', to:'center', c:'t', dur:SPEED.move, log:['작성자 확인 → 다음 단계', 'var(--teal)']});
+    }
+  }
+  phaseIdx = 0; phaseT = 0;
+  showStep(s);
+  startPhase();
+}
+function showStep(s){
+  $('#stepNo').textContent = stepIdx + 1;
+  $('#stepTotal').textContent = steps.length;
+  const n = NODE[s.node];
+  const role = $('#stepRole');
+  role.textContent = n.ko;
+  const col = n.human ? 'var(--amber)' : 'var(--violet)';
+  role.style.color = col; role.style.background = n.human ? 'var(--amber-dim)' : 'var(--violet-dim)';
+  role.style.borderColor = n.human ? 'rgba(242,180,90,.4)' : 'rgba(155,140,255,.4)';
+  $('#stepTitle').textContent = s.title;
+  $('#stepDesc').textContent = s.desc;
+  $('#stepOut').innerHTML = ''; s.out.split('\n').forEach(line=>{ const d = document.createElement('div'); d.textContent = line; $('#stepOut').appendChild(d); });
+  $('#stepGate').textContent = s.gate ? '■ 이 단계가 끝나면 작성자 확인을 받고 넘어갑니다.' : (track === 'trend' && s.node !== 'human' ? '■ 동향 요약은 멈추지 않고 다음 단계로 갑니다.' : '');
+}
+function startPhase(){
+  const p = phases[phaseIdx];
+  if (p.log) log(p.log[0], p.log[1]);
+  if (p.t === 'work'){ active = p.node; }
+  else { active = null; spokes[p.from === 'center' ? p.to : p.from].classList.add('on'); const cls = {v:'glow-v', t:'glow-t', a:'glow-a'}[p.c]; pk.halo.setAttribute('class', cls); pk.core.setAttribute('class', cls); }
+  paintState();
+}
+function endPhase(){
+  const p = phases[phaseIdx];
+  if (p.t === 'move') spokes[p.from === 'center' ? p.to : p.from].classList.remove('on');
+  if (p.t === 'work' && phases[phaseIdx-1] && phases[phaseIdx-1].from === 'center' && p.node === steps[stepIdx].node) done.add(p.node);
+  phaseIdx++;
+  if (phaseIdx < phases.length){ startPhase(); return; }
+  stepIdx++;
+  if (stepIdx < steps.length){ planStep(); return; }
+  // 한 바퀴 끝
+  phases = [{t:'end', dur:SPEED.end}]; phaseIdx = 0; active = null;
+  log('실행 완료 · 처음부터 다시 재생', 'var(--fg)');
+  pk.g.setAttribute('opacity', 0); paintState();
+}
+function paintState(){
+  NODES.forEach(n=>{ const g = nodeEls[n.id]; if (!g) return; g.classList.toggle('active', active === n.id); g.classList.toggle('done', done.has(n.id) && active !== n.id); });
+}
+function resetRun(){
+  steps = TRACKS[track].steps; stepIdx = 0; sim = 0; done = new Set();
+  Object.values(spokes).forEach(s=>s.classList.remove('on'));
+  $('#log').innerHTML = '';
+  $('#trackName').textContent = TRACKS[track].name;
+  log(`/${TRACKS[track].name} 실행 시작`, 'var(--fg)');
+  planStep();
+}
+
+let last = 0, ambT = 0;
+function frame(ts){
+  const dt = last ? Math.min(ts - last, 60) : 16; last = ts;
+  if (currentView === 'workflows' && playing){
+    sim += dt; ambT += dt;
+    $('#simClock').textContent = fmt(sim);
+    let p = phases[phaseIdx];
+    phaseT += dt;
+    if (p.t === 'move'){
+      if (reduce){ pk.g.setAttribute('opacity', 0); }
+      else {
+        const path = spokes[p.from === 'center' ? p.to : p.from];
+        const L = path.getTotalLength();
+        const k = Math.min(phaseT / p.dur, 1);
+        const e = k < .5 ? 2*k*k : 1 - Math.pow(-2*k+2, 2)/2;
+        const pt = path.getPointAtLength((p.from === 'center' ? e : 1 - e) * L);
+        pk.g.setAttribute('opacity', 1);
+        pk.halo.setAttribute('cx', pt.x); pk.halo.setAttribute('cy', pt.y);
+        pk.core.setAttribute('cx', pt.x); pk.core.setAttribute('cy', pt.y);
+      }
+    } else if (p.t === 'work') { pk.g.setAttribute('opacity', 0); }
+    if (phaseT >= p.dur){
+      phaseT = 0;
+      if (p.t === 'end'){ resetRun(); } else endPhase();
+    }
+    // 대기 패킷
+    amb.forEach(a=>{
+      const path = spokes[a.id]; const L = path.getTotalLength();
+      const k = ((ambT/5200) + a.off) % 1;
+      const pt = path.getPointAtLength(k * L);
+      a.c.setAttribute('cx', pt.x); a.c.setAttribute('cy', pt.y);
+      a.c.setAttribute('opacity', (Math.sin(k*Math.PI) * .45).toFixed(2));
+    });
+  }
+  requestAnimationFrame(frame);
+}
+
+document.querySelectorAll('[data-track]').forEach(b=> b.addEventListener('click', ()=>{
+  track = b.dataset.track;
+  document.querySelectorAll('[data-track]').forEach(x=> x.setAttribute('aria-pressed', x === b));
+  resetRun();
+}));
+$('#playBtn').addEventListener('click', ()=>{
+  playing = !playing;
+  $('#playBtn').setAttribute('aria-pressed', playing);
+  $('#playIcon').textContent = playing ? '❚❚' : '▶';
+  $('#playTxt').textContent = playing ? '일시정지' : '재생';
+});
+
+/* ───────── Traces (시연용 예시 수치) ───────── */
+const TRACE = [
+  {k:'기획',        en:'plan',      s:0,   e:6,   c:'v', d:'주제와 질문, 조사 계획을 정리했습니다.'},
+  {k:'리서치',      en:'research',  s:6,   e:58,  c:'v', d:'1차 출처 원문 페이지를 열어 내용을 모았습니다.'},
+  {k:'출처 대조',   en:'sources',   s:30,  e:66,  c:'t', d:'출처 번호를 붙이고, 확인하지 못한 내용은 X 번호로 목록에 올렸습니다. 리서치와 일부 겹쳐 진행됩니다.'},
+  {k:'초안',        en:'draft',     s:66,  e:104, c:'v', d:'템플릿대로 초안 v1을 썼습니다.'},
+  {k:'검수 · 공격', en:'review',    s:104, e:131, c:'t', d:'체크리스트 항목마다 통과 / 수정 필요를 판정하고 출처 문장을 원문과 대조했습니다.'},
+  {k:'보강',        en:'revise',    s:131, e:152, c:'v', d:'"수정 필요" 판정을 반영해 v2를 썼습니다.'},
+  {k:'재검수',      en:'re-review', s:152, e:166, c:'t', d:'v2를 같은 기준으로 다시 점검했습니다.'},
+  {k:'발행 준비',   en:'render',    s:166, e:178, c:'v', d:'최종본, 붙여넣기용 평문, 발행 메모를 만들었습니다.'}
+];
+const TMAX = 180;
+function buildGantt(){
+  const g = $('#gantt'); g.innerHTML = '';
+  TRACE.forEach((r,i)=>{
+    const row = document.createElement('div'); row.className = 'gantt-row';
+    row.innerHTML = `<div class="min-w-0"><div class="text-[13px] font-bold leading-tight"></div><div class="mono text-[10.5px] muted"></div></div><div class="track"><button class="bar ${r.c}" style="left:${r.s/TMAX*100}%;width:0" aria-label=""><span class="num">${r.e-r.s}s</span></button></div>`;
+    row.querySelector('.font-bold').textContent = r.k;
+    row.querySelector('.mono').textContent = r.en;
+    const bar = row.querySelector('.bar');
+    bar.setAttribute('aria-label', `${r.k} ${r.s}초부터 ${r.e}초까지, ${r.e-r.s}초 (예시)`);
+    bar.dataset.w = (r.e-r.s)/TMAX*100;
+    bar.addEventListener('click', ()=> pickBar(i));
+    bar.addEventListener('mouseenter', ()=> pickBar(i));
+    bar.addEventListener('focus', ()=> pickBar(i));
+    g.appendChild(row);
+  });
+  const ax = $('#axis'); ax.innerHTML = '';
+  for (let t=0; t<=TMAX; t+=30){ const s = document.createElement('span'); if (t % 60) s.className = 'ax-odd'; s.style.position='absolute'; s.style.left = (t/TMAX*100)+'%'; s.style.transform = t===0 ? 'none' : (t===TMAX ? 'translateX(-100%)' : 'translateX(-50%)'); s.textContent = t + 's'; ax.appendChild(s); }
+  const ph = document.createElement('div'); ph.className = 'playhead'; ph.id = 'playhead'; ph.style.left = '0%';
+  g.style.position = 'relative';
+  const holder = document.createElement('div'); holder.style.cssText = 'position:absolute;top:0;bottom:0;right:0;pointer-events:none';
+  holder.id = 'phHolder'; holder.appendChild(ph); g.appendChild(holder);
+  sizePlayhead();
+}
+function sizePlayhead(){ const tr = document.querySelector('#gantt .track'); const h = $('#phHolder'); if (!tr || !h) return; const gr = $('#gantt').getBoundingClientRect(), r = tr.getBoundingClientRect(); h.style.left = (r.left - gr.left) + 'px'; }
+function pickBar(i){
+  const r = TRACE[i];
+  document.querySelectorAll('#gantt .bar').forEach((b,j)=> b.classList.toggle('sel', i===j));
+  $('#traceDetail').innerHTML = `<b></b> <span class="mono num muted"></span><br><span></span>`;
+  const d = $('#traceDetail');
+  d.querySelector('b').textContent = r.k;
+  d.querySelector('.mono').textContent = `${r.s}s → ${r.e}s · ${r.e-r.s}초 (예시)`;
+  d.lastChild.textContent = r.d;
+}
+let traceRAF = 0;
+function playTrace(){
+  const bars = document.querySelectorAll('#gantt .bar');
+  bars.forEach(b=> b.style.width = '0');
+  const ph = $('#playhead'); const total = $('#traceTotal');
+  if (reduce){ bars.forEach(b=> b.style.width = b.dataset.w + '%'); ph.style.left = '100%'; total.textContent = TRACE[TRACE.length-1].e; return; }
+  cancelAnimationFrame(traceRAF);
+  const t0 = performance.now(), D = 3200;
+  const end = TRACE[TRACE.length-1].e;
+  const tick = now=>{
+    const k = Math.min((now - t0)/D, 1); const sec = k * end;
+    ph.style.left = (sec/TMAX*100) + '%';
+    total.textContent = Math.round(sec);
+    TRACE.forEach((r,i)=>{ const w = Math.max(0, Math.min(sec, r.e) - r.s); bars[i].style.transition = 'none'; bars[i].style.width = (w/TMAX*100) + '%'; });
+    if (k < 1) traceRAF = requestAnimationFrame(tick);
+  };
+  traceRAF = requestAnimationFrame(tick);
+}
+$('#replayTrace').addEventListener('click', playTrace);
+
+// 실제 기록: 검수결과 파일의 "수정 필요" 줄 수
+const REAL_REVIEW = [
+  {title:'분석 글 1편 · 서울 리전 내 추론', file:'05_초안/검수결과_v1~v3.md', vals:[9,1,1]},
+  {title:'분석 글 2편 · 에이전트 승인 지점', file:'05_초안/에이전트승인_검수결과_v1~v3.md', vals:[4,0,1]}
+];
+function buildReal(){
+  const box = $('#realReview'); box.innerHTML = '';
+  const max = 9;
+  REAL_REVIEW.forEach(r=>{
+    const d = document.createElement('div'); d.className = 'min-w-0';
+    d.innerHTML = `<div class="text-[14px] font-bold"></div><div class="mono text-[11px] muted break-all"></div><div class="grid grid-cols-3 gap-3 items-end mt-3" style="height:140px"></div>`;
+    d.children[0].textContent = r.title; d.children[1].textContent = r.file;
+    r.vals.forEach((v,i)=>{
+      const c = document.createElement('div'); c.className = 'flex flex-col items-center justify-end h-full gap-1';
+      c.innerHTML = `<span class="mono num text-[15px] font-bold">${v}</span><div class="vbar" style="height:${Math.max(v/max*96, 3)}px;${v===0?'background:var(--line-2)':''}"></div><span class="mono text-[11px] muted">v${i+1}</span>`;
+      d.children[2].appendChild(c);
+    });
+    box.appendChild(d);
+  });
+}
+
+/* ───────── Usage (시연용 예시 수치) ───────── */
+const TOK = [
+  {k:'리서치', v:31400}, {k:'검수 · 공격', v:16200}, {k:'초안 작성', v:14600},
+  {k:'출처 관리', v:9800}, {k:'보강', v:7900}, {k:'발행 준비', v:4300}
+];
+const TOK_SUM = TOK.reduce((a,b)=>a+b.v, 0); // 84,200
+function arcPath(){ // 240° 호, 중심 (100,100) r 72
+  const r = 72, a0 = 150*Math.PI/180, a1 = 390*Math.PI/180;
+  const p = a => `${(100 + r*Math.cos(a)).toFixed(2)} ${(100 + r*Math.sin(a)).toFixed(2)}`;
+  return `M ${p(a0)} A ${r} ${r} 0 1 1 ${p(a1)}`;
+}
+const ARC_LEN = 72 * (240*Math.PI/180);
+['g1','g2'].forEach(id=>{ $('#'+id+'track').setAttribute('d', arcPath()); const v = $('#'+id+'val'); v.setAttribute('d', arcPath()); v.style.strokeDasharray = `0 ${ARC_LEN}`; });
+function buildTok(){
+  const box = $('#tokBars'); box.innerHTML = '';
+  const max = TOK[0].v;
+  TOK.forEach((t,i)=>{
+    const r = document.createElement('div'); r.className = 'grid items-center gap-3'; r.style.gridTemplateColumns = 'minmax(72px,110px) 1fr 64px';
+    r.innerHTML = `<span class="text-[13px] truncate"></span><div class="hbar"><i style="width:0;background:${i===1?'var(--teal)':'var(--violet)'}" data-w="${t.v/max*100}"></i></div><span class="mono num text-[12px] text-right">${(t.v/1000).toFixed(1)}k</span>`;
+    r.firstChild.textContent = t.k;
+    box.appendChild(r);
+  });
+}
+const REAL_KPI = [
+  {v:'2', u:'편', k:'발행한 분석 글', src:'06_발행/'},
+  {v:'2', u:'호', k:'동향 요약', src:'03_동향/ (11-02, 11-06)'},
+  {v:'32', u:'건', k:'원문을 열어 확인한 출처', src:'README.md'},
+  {v:'18', u:'건', k:'확인 필요로 남긴 항목', src:'README.md'},
+  {v:'3', u:'회', k:'검수 체크리스트 개정', src:'1.0 → 1.3'}
+];
+function buildKpi(){
+  const box = $('#realKpi'); box.innerHTML = '';
+  REAL_KPI.forEach(k=>{
+    const d = document.createElement('div'); d.className = 'min-w-0';
+    d.innerHTML = `<div class="mono num"><span class="text-[30px] font-bold" style="color:var(--teal)">${k.v}</span><span class="muted text-[13px] ml-1">${k.u}</span></div><div class="text-[13px] mt-1"></div><div class="mono text-[10.5px] muted mt-0.5 break-all"></div>`;
+    d.children[1].textContent = k.k; d.children[2].textContent = k.src;
+    box.appendChild(d);
+  });
+}
+function countUp(node, to, fmtFn, D){
+  if (reduce){ node.textContent = fmtFn(to); return; }
+  const t0 = performance.now();
+  const tick = now=>{ const k = Math.min((now-t0)/D, 1); const e = 1 - Math.pow(1-k, 3); node.textContent = fmtFn(to*e); if (k<1) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+}
+function playUsage(){
+  const g1 = 99.9/100, g2 = TOK_SUM/200000;
+  const set = (id, k)=> $('#'+id+'val').style.strokeDasharray = `${(ARC_LEN*k).toFixed(1)} ${ARC_LEN}`;
+  ['g1','g2'].forEach(id=> $('#'+id+'val').style.strokeDasharray = `0 ${ARC_LEN}`);
+  document.querySelectorAll('#tokBars i').forEach(i=> i.style.width = '0');
+  $('#hManual').style.width = '0'; $('#hAgent').style.width = '0';
+  requestAnimationFrame(()=> requestAnimationFrame(()=>{
+    set('g1', g1); set('g2', g2);
+    document.querySelectorAll('#tokBars i').forEach(i=> i.style.width = i.dataset.w + '%');
+    $('#hManual').style.width = '100%'; $('#hAgent').style.width = '1.2%';
+  }));
+  countUp($('#g1txt'), 99.9, v=> v.toFixed(1) + '%', 1400);
+  countUp($('#g2txt'), TOK_SUM, v=> Math.round(v).toLocaleString('ko-KR'), 1400);
+}
+
+/* ───────── Agents ───────── */
+const ROSTER = [
+  ['수석 비서실장', 'ORCHESTRATOR', '스킬을 불러 단계 순서를 지키고, 사람 확인이 필요한 곳에서 멈춥니다.', '.claude/skills/*/SKILL.md', '대화 보고'],
+  ['기획', 'PLAN', '분석 글은 질문·가설·조사 계획, 동향 요약은 수집 기간을 정합니다.', '프로젝트_개요.md 10절', '—'],
+  ['리서치', 'RESEARCH', '1차 소스 원문을 직접 엽니다. 검색 요약은 근거로 쓰지 않습니다.', '수집_소스.md', '—'],
+  ['출처 관리', 'SOURCES', 'A·B·C 출처 번호와 X 확인 필요 번호를 붙입니다.', '수집_소스.md', '04_출처/ · 03_동향/*/출처.md'],
+  ['초안 작성', 'DRAFT', '템플릿대로 씁니다. 해석에는 해석 표지를 붙입니다.', 'style-guide.md · seo-guide.md · 템플릿', '05_초안/<주제>_vN.md'],
+  ['검수 · 공격', 'REVIEW', '항목마다 통과 / 수정 필요를 판정하고, 출처 문장을 원문과 대조합니다.', '검수_체크리스트.md 1.3 · 동향_체크리스트.md', '*_검수결과_vN.md'],
+  ['보강', 'REVISE', '"수정 필요" 판정을 반영해 다음 버전을 씁니다.', '직전 검수결과', '05_초안/<주제>_v(N+1).md'],
+  ['발행 준비', 'RENDER', '최종본, 블로그 붙여넣기용 평문, 발행 메모를 만듭니다.', 'seo-guide.md', '06_발행/'],
+  ['작성자 (사람)', 'HUMAN', '내 관점을 쓰고, 일반 정의를 확인하고, 발행 여부를 정해 직접 게시합니다.', '—', '블로그 게시']
+];
+function buildRoster(){
+  const tb = $('#roster'); tb.innerHTML = '';
+  ROSTER.forEach((r,i)=>{
+    const tr = document.createElement('tr');
+    tr.style.borderTop = '1px solid var(--line)';
+    const col = i===0 ? 'var(--violet)' : (i===ROSTER.length-1 ? 'var(--amber)' : 'var(--fg)');
+    tr.innerHTML = `<td class="p-3 pl-5 align-top" style="min-width:130px"><div class="font-bold"></div><div class="mono text-[10.5px] muted"></div></td><td class="p-3 align-top"></td><td class="p-3 align-top mono text-[12px] muted"></td><td class="p-3 pr-5 align-top mono text-[12px]" style="color:var(--teal)"></td>`;
+    tr.children[0].children[0].textContent = r[0]; tr.children[0].children[0].style.color = col;
+    tr.children[0].children[1].textContent = r[1];
+    tr.children[1].textContent = r[2]; tr.children[2].textContent = r[3]; tr.children[3].textContent = r[4];
+    tb.appendChild(tr);
+  });
+}
+
+/* ───────── 탭 라우팅 (#workflows 등) ───────── */
+const VIEWS = ['workflows','traces','usage','agents'];
+let currentView = null;
+function show(v){
+  if (!VIEWS.includes(v)) v = 'workflows';
+  if (v === currentView) return;
+  currentView = v;
+  VIEWS.forEach(x=>{
+    $('#view-'+x).hidden = x !== v;
+    const t = $('#tab-'+x); t.setAttribute('aria-selected', x === v); t.tabIndex = x === v ? 0 : -1;
+  });
+  if (v === 'workflows') build();
+  if (v === 'traces'){ sizePlayhead(); playTrace(); }
+  if (v === 'usage') playUsage();
+}
+document.querySelectorAll('.tab').forEach((t,i,all)=>{
+  t.addEventListener('click', ()=>{ show(t.dataset.view); try { if (location.hash !== '#'+t.dataset.view) location.hash = t.dataset.view; } catch(e){} });
+  t.addEventListener('keydown', e=>{
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const n = all[(i + (e.key === 'ArrowRight' ? 1 : all.length-1)) % all.length]; n.focus(); n.click();
+  });
+});
+window.addEventListener('hashchange', ()=> show(location.hash.slice(1)));
+let rz; window.addEventListener('resize', ()=>{ clearTimeout(rz); rz = setTimeout(()=>{ const before = mobile; if (currentView === 'workflows'){ build(); if (before !== mobile) paintState(); } sizePlayhead(); }, 120); });
+
+// 시계 (실제 현재 시각)
+const clock = $('#clock');
+const tickClock = ()=>{ clock.textContent = new Date().toLocaleTimeString('ko-KR', {hour12:false}); };
+tickClock(); setInterval(tickClock, 1000);
+
+buildGantt(); buildReal(); buildTok(); buildKpi(); buildRoster();
+show(location.hash.slice(1));
+build();
+resetRun();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

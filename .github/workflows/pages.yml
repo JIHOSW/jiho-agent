@@ -7,6 +7,7 @@ on:
       - 'html 모션 ppt/dist/**'
       - '고객 온보딩 에이전트 포트폴리오/demo-dist/**'
       - 'ai 직무적성검사/**'
+      - '에이전트 팀 관제 대시보드/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -44,6 +45,9 @@ jobs:
           mkdir -p "$RUNNER_TEMP/jiho-pages/ai 직무적성검사" "$RUNNER_TEMP/jiho-pages/career-agent"
           cp -a "ai 직무적성검사/." "$RUNNER_TEMP/jiho-pages/ai 직무적성검사/"
           cp -a "ai 직무적성검사/." "$RUNNER_TEMP/jiho-pages/career-agent/"
+          # 에이전트 팀 관제 대시보드(단일 HTML): 짧은 주소(agent-switchboard)
+          mkdir -p "$RUNNER_TEMP/jiho-pages/agent-switchboard"
+          cp -a "에이전트 팀 관제 대시보드/." "$RUNNER_TEMP/jiho-pages/agent-switchboard/"
       - name: Upload presentation
         uses: actions/upload-pages-artifact@v4
         with:
