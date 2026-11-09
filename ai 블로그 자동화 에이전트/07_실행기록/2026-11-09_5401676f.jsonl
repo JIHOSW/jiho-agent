@@ -1,0 +1,29 @@
+{"t":"2026-11-09T07:20:41.411Z","e":"prompt","len":11,"slash":"/blog-trend"}
+{"t":"2026-11-09T07:20:45.938Z","e":"tool","tool":"Glob","pattern":"**/{blog*.md,SKILL.md,CLAUDE.md,commands/*.md}"}
+{"t":"2026-11-09T07:20:48.085Z","e":"tool","tool":"Read","path":".claude/skills/blog-trend/SKILL.md"}
+{"t":"2026-11-09T07:20:49.385Z","e":"tool","tool":"PowerShell","cmd":"Get-ChildItem -Recurse \"ai 블로그 자동화 에이전트\\03_동향\" | Select-Obje…"}
+{"t":"2026-11-09T07:20:52.517Z","e":"tool","tool":"Skill","skill":"blog-trend"}
+{"t":"2026-11-09T07:20:57.749Z","e":"tool","tool":"Bash","cmd":"cat 00_기준문서/수집_소스.md 02_템플릿/동향_템플릿.md 00_기준문서/동향_체크리스트.md &&…"}
+{"t":"2026-11-09T07:24:02.859Z","e":"stop"}
+{"t":"2026-11-09T07:24:07.246Z","e":"prompt","len":11,"slash":"/blog-trend"}
+{"t":"2026-11-09T07:24:12.832Z","e":"tool","tool":"Bash","cmd":"sed -n '92,104p' 00_기준문서/프로젝트_개요.md && echo ===== && sed -n …"}
+{"t":"2026-11-09T07:24:19.727Z","e":"tool","tool":"WebFetch","url":"https://aws.amazon.com/about-aws/whats-new/recent/feed/"}
+{"t":"2026-11-09T07:24:20.726Z","e":"tool","tool":"WebFetch","url":"https://www.fsc.go.kr/no010101"}
+{"t":"2026-11-09T07:24:21.514Z","e":"tool","tool":"WebFetch","url":"https://www.anthropic.com/news"}
+{"t":"2026-11-09T07:24:22.024Z","e":"tool","tool":"WebFetch","url":"https://openai.com/news/"}
+{"t":"2026-11-09T07:24:48.378Z","e":"tool","tool":"WebFetch","url":"https://www.fsc.go.kr/no010101/88086"}
+{"t":"2026-11-09T07:24:49.382Z","e":"tool","tool":"WebFetch","url":"https://aws.amazon.com/about-aws/whats-new/2026/11/web-answer-amazon-bedrock/"}
+{"t":"2026-11-09T07:24:50.433Z","e":"tool","tool":"WebFetch","url":"https://aws.amazon.com/about-aws/whats-new/2026/11/q-developer-renamed-aws-assistant/"}
+{"t":"2026-11-09T07:24:51.385Z","e":"tool","tool":"WebFetch","url":"https://aws.amazon.com/about-aws/whats-new/2026/11/workspaces-ai-agents-linux-windows-11"}
+{"t":"2026-11-09T07:24:52.140Z","e":"tool","tool":"WebFetch","url":"https://aws.amazon.com/about-aws/whats-new/2026/11/security-hub-sbom-inventory/"}
+{"t":"2026-11-09T07:25:23.148Z","e":"tool","tool":"WebFetch","url":"https://aws.amazon.com/about-aws/whats-new/recent/feed/"}
+{"t":"2026-11-09T07:25:24.628Z","e":"tool","tool":"WebFetch","url":"https://www.pipc.go.kr/np/cop/bbs/selectBoardList.do?bbsId=BS074&mCode=C020010000"}
+{"t":"2026-11-09T07:25:42.884Z","e":"tool","tool":"WebFetch","url":"https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS074&mCode=C020010000&nttId=12609"}
+{"t":"2026-11-09T07:26:15.941Z","e":"tool","tool":"Write","path":"03_동향/2026-11-09/출처.md"}
+{"t":"2026-11-09T07:26:33.077Z","e":"tool","tool":"Write","path":"03_동향/2026-11-09/초안.md"}
+{"t":"2026-11-09T07:26:39.728Z","e":"tool","tool":"Edit","path":"03_동향/2026-11-09/초안.md"}
+{"t":"2026-11-09T07:26:43.777Z","e":"tool","tool":"Bash","cmd":"echo \"?: $(grep -o '?' 초안.md | wc -l) !: $(grep -o '!' 초안.md…"}
+{"t":"2026-11-09T07:26:49.565Z","e":"tool","tool":"PowerShell","cmd":"$t = Get-Content -Raw -Encoding utf8 \"03_동향\\2026-11-09\\초안.md…"}
+{"t":"2026-11-09T07:27:03.426Z","e":"tool","tool":"Write","path":"03_동향/2026-11-09/검수결과.md"}
+{"t":"2026-11-09T07:27:14.986Z","e":"stop"}
+{"t":"2026-11-09T07:27:14.986Z","e":"usage","msgs":[["2026-11-09T07:20:45.938Z",2,308,45741,21303],["2026-11-09T07:20:49.385Z",2,289,67044,549],["2026-11-09T07:20:52.517Z",2,78,67593,2841],["2026-11-09T07:20:57.749Z",4,429,70434,1327],["2026-11-09T07:24:02.859Z",0,0,0,0],["2026-11-09T07:24:12.832Z",2,557,71761,4482],["2026-11-09T07:24:16.472Z",2,171,76243,7179],["2026-11-09T07:24:22.024Z",4,551,83422,1199],["2026-11-09T07:24:52.140Z",2,942,84621,4412],["2026-11-09T07:25:24.628Z",2,573,89033,6993],["2026-11-09T07:25:42.884Z",2,315,96026,2409],["2026-11-09T07:26:15.941Z",2,3191,98435,1104],["2026-11-09T07:26:33.077Z",2,2014,99539,3443],["2026-11-09T07:26:43.777Z",2,1077,102982,2179],["2026-11-09T07:26:49.565Z",2,386,105161,1505],["2026-11-09T07:27:03.426Z",2,1649,106666,413],["2026-11-09T07:27:05.856Z",2,114,107079,1816],["2026-11-09T07:27:14.986Z",2,940,108895,172]]}

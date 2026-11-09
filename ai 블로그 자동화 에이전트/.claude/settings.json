@@ -1,8 +1,5 @@
 {
   "hooks": {
-    "SessionStart": [
-      { "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/trace.mjs\"", "async": true, "timeout": 10 }] }
-    ],
     "UserPromptSubmit": [
       { "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/trace.mjs\"", "async": true, "timeout": 10 }] }
     ],
