@@ -37,22 +37,3 @@ for (const [file, num, cat, title, lines, tags, ac] of cards) {
 }
 console.log('cards', cards.length);
 
-// '프로젝트 더 보기' 버튼 이미지: 접힌 표에 들어간 프로젝트가 바뀌면 아래 목록을 고치고 다시 실행
-const more = ['HTML 모션 PPT', 'AI 직군 적성검사', '에이전트 팀 관제 대시보드'];
-{
-  const sub = more.join('  ·  ');
-  writeFileSync(`${out}/more-projects.svg`, `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="128" viewBox="0 0 1200 128">
-<defs><linearGradient id="m" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E1323F" stop-opacity="0.28"/><stop offset="0.5" stop-color="#8B5CF6" stop-opacity="0.18"/><stop offset="1" stop-color="#06B6D4" stop-opacity="0.28"/></linearGradient>
-<clipPath id="c"><rect width="1200" height="128" rx="24"/></clipPath></defs>
-<g clip-path="url(#c)" font-family="${FONT}">
-<rect width="1200" height="128" fill="#0F1422"/><rect width="1200" height="128" fill="url(#m)"/>
-<rect x="1" y="1" width="1198" height="126" rx="23" fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="2"/>
-<rect x="40" y="34" width="60" height="60" rx="18" fill="#FFFFFF"/>
-<text x="70" y="77" fill="#0F1422" font-size="30" font-weight="800" text-anchor="middle">+${more.length}</text>
-<text x="124" y="60" fill="#FFFFFF" font-size="32" font-weight="800">프로젝트 더 보기</text>
-<text x="124" y="94" fill="#CBD5E1" font-size="19">${sub}</text>
-<rect x="1000" y="38" width="160" height="52" rx="26" fill="#FFFFFF"/>
-<text x="1062" y="72" fill="#0F1422" font-size="20" font-weight="800" text-anchor="middle">펼치기</text>
-<path d="M1112 58 l10 10 l10 -10" fill="none" stroke="#0F1422" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-</g></svg>`);
-}
