@@ -23,17 +23,13 @@
     <td width="50%" valign="top">
       <a href="https://jihosw.github.io/jiho-agent/b2b-proposal/"><img src=".github/assets/card-b2b.svg" width="100%" alt="B2B 영업제안서 모션 PPT"></a>
       <p align="center">
-        <a href="https://jihosw.github.io/jiho-agent/b2b-proposal/"><b>▶ 바로 보기</b></a> &nbsp;·&nbsp;
-        <a href="B2B%20%EC%98%81%EC%97%85%EC%A0%9C%EC%95%88%EC%84%9C%20html%20%EB%AA%A8%EC%85%98%20ppt/%EB%8C%80%ED%98%84%ED%85%8C%ED%81%AC_%EC%A0%9C%EC%95%88%EC%84%9C_%EC%B4%88%EC%95%88.pptx?raw=true"><b>PPT 초안</b></a> &nbsp;·&nbsp;
-        <a href="B2B%20%EC%98%81%EC%97%85%EC%A0%9C%EC%95%88%EC%84%9C%20html%20%EB%AA%A8%EC%85%98%20ppt/"><b>폴더</b></a>
+        <a href="https://jihosw.github.io/jiho-agent/b2b-proposal/"><img src="https://img.shields.io/badge/%E2%96%B6%20%EB%B0%94%EB%A1%9C%20%EB%B3%B4%EA%B8%B0-10B981?style=for-the-badge" alt="▶ 바로 보기" height="28"></a>&nbsp;<a href="B2B%20%EC%98%81%EC%97%85%EC%A0%9C%EC%95%88%EC%84%9C%20html%20%EB%AA%A8%EC%85%98%20ppt/%EB%8C%80%ED%98%84%ED%85%8C%ED%81%AC_%EC%A0%9C%EC%95%88%EC%84%9C_%EC%B4%88%EC%95%88.pptx?raw=true"><img src="https://img.shields.io/badge/PPT%20%EC%B4%88%EC%95%88-1E293B?style=for-the-badge" alt="PPT 초안" height="28"></a>&nbsp;<a href="B2B%20%EC%98%81%EC%97%85%EC%A0%9C%EC%95%88%EC%84%9C%20html%20%EB%AA%A8%EC%85%98%20ppt/"><img src="https://img.shields.io/badge/%ED%8F%B4%EB%8D%94-1E293B?style=for-the-badge&logo=github&logoColor=white" alt="폴더" height="28"></a>
       </p>
     </td>
     <td width="50%" valign="top">
       <a href="%EA%B8%B0%EC%97%85%EC%9A%A9%20%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C%20%EB%AC%B8%EC%84%9C%EA%B4%80%EB%A6%AC%20%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B0%9C%EB%B0%9C/"><img src=".github/assets/card-saas.svg" width="100%" alt="jihodev 고객 온보딩 지원 서비스"></a>
       <p align="center">
-        <a href="https://firstmile-onboarding-1104.day1companyk-6083.chatgpt.site/"><b>웹 체험 ↗</b></a> &nbsp;·&nbsp;
-        <a href="%EA%B8%B0%EC%97%85%EC%9A%A9%20%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C%20%EB%AC%B8%EC%84%9C%EA%B4%80%EB%A6%AC%20%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B0%9C%EB%B0%9C/portfolio/jihodev-onboarding-portfolio.pptx?raw=true"><b>6장 PPT</b></a> &nbsp;·&nbsp;
-        <a href="%EA%B8%B0%EC%97%85%EC%9A%A9%20%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C%20%EB%AC%B8%EC%84%9C%EA%B4%80%EB%A6%AC%20%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B0%9C%EB%B0%9C/"><b>폴더</b></a>
+        <a href="https://firstmile-onboarding-1104.day1companyk-6083.chatgpt.site/"><img src="https://img.shields.io/badge/%EC%9B%B9%20%EC%B2%B4%ED%97%98%20%E2%86%97-E1323F?style=for-the-badge" alt="웹 체험 ↗" height="28"></a>&nbsp;<a href="%EA%B8%B0%EC%97%85%EC%9A%A9%20%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C%20%EB%AC%B8%EC%84%9C%EA%B4%80%EB%A6%AC%20%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B0%9C%EB%B0%9C/portfolio/jihodev-onboarding-portfolio.pptx?raw=true"><img src="https://img.shields.io/badge/6%EC%9E%A5%20PPT-1E293B?style=for-the-badge" alt="6장 PPT" height="28"></a>&nbsp;<a href="%EA%B8%B0%EC%97%85%EC%9A%A9%20%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C%20%EB%AC%B8%EC%84%9C%EA%B4%80%EB%A6%AC%20%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B0%9C%EB%B0%9C/"><img src="https://img.shields.io/badge/%ED%8F%B4%EB%8D%94-1E293B?style=for-the-badge&logo=github&logoColor=white" alt="폴더" height="28"></a>
       </p>
     </td>
   </tr>
@@ -41,18 +37,13 @@
     <td width="50%" valign="top">
       <a href="%EA%B3%A0%EA%B0%9D%20%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/"><img src=".github/assets/card-onboarding.svg" width="100%" alt="고객 온보딩 에이전트"></a>
       <p align="center">
-        <a href="https://jihosw.github.io/jiho-agent/onboarding-agent/"><b>▶ 프로그램 보기</b></a> &nbsp;·&nbsp;
-        시연 <a href="https://jihosw.github.io/jiho-agent/onboarding-agent/?play=hanbit">한빛물류</a> ·
-        <a href="https://jihosw.github.io/jiho-agent/onboarding-agent/?play=greenfood">그린푸드</a> ·
-        <a href="https://jihosw.github.io/jiho-agent/onboarding-agent/?play=seum">세움건설</a>
+        <a href="https://jihosw.github.io/jiho-agent/onboarding-agent/"><img src="https://img.shields.io/badge/%E2%96%B6%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8%20%EB%B3%B4%EA%B8%B0-F97316?style=for-the-badge" alt="▶ 프로그램 보기" height="28"></a>&nbsp;<a href="https://jihosw.github.io/jiho-agent/onboarding-agent/?play=hanbit"><img src="https://img.shields.io/badge/%ED%95%9C%EB%B9%9B%EB%AC%BC%EB%A5%98-1E293B?style=for-the-badge" alt="한빛물류 시연" height="28"></a>&nbsp;<a href="https://jihosw.github.io/jiho-agent/onboarding-agent/?play=greenfood"><img src="https://img.shields.io/badge/%EA%B7%B8%EB%A6%B0%ED%91%B8%EB%93%9C-1E293B?style=for-the-badge" alt="그린푸드 시연" height="28"></a>&nbsp;<a href="https://jihosw.github.io/jiho-agent/onboarding-agent/?play=seum"><img src="https://img.shields.io/badge/%EC%84%B8%EC%9B%80%EA%B1%B4%EC%84%A4-1E293B?style=for-the-badge" alt="세움건설 시연" height="28"></a>
       </p>
     </td>
     <td width="50%" valign="top">
       <a href="ai%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8/"><img src=".github/assets/card-blog.svg" width="100%" alt="AI 블로그 자동화 에이전트"></a>
       <p align="center">
-        <a href="ai%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8/portfolio/AI%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pptx?raw=true"><b>6장 PPT</b></a> &nbsp;·&nbsp;
-        <a href="ai%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8/portfolio/AI%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pdf"><b>PDF</b></a> &nbsp;·&nbsp;
-        <a href="ai%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8/"><b>폴더</b></a>
+        <a href="ai%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8/portfolio/AI%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pptx?raw=true"><img src="https://img.shields.io/badge/6%EC%9E%A5%20PPT-8B5CF6?style=for-the-badge" alt="6장 PPT" height="28"></a>&nbsp;<a href="ai%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8/portfolio/AI%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pdf"><img src="https://img.shields.io/badge/PDF-1E293B?style=for-the-badge" alt="PDF" height="28"></a>&nbsp;<a href="ai%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8/"><img src="https://img.shields.io/badge/%ED%8F%B4%EB%8D%94-1E293B?style=for-the-badge&logo=github&logoColor=white" alt="폴더" height="28"></a>
       </p>
     </td>
   </tr>
@@ -68,15 +59,13 @@
     <td width="50%" valign="top">
       <a href="https://jihosw.github.io/jiho-agent/"><img src=".github/assets/card-motion.svg" width="100%" alt="HTML 모션 PPT"></a>
       <p align="center">
-        <a href="https://jihosw.github.io/jiho-agent/"><b>▶ 바로 보기</b></a> &nbsp;·&nbsp;
-        <a href="html%20%EB%AA%A8%EC%85%98%20ppt/"><b>폴더</b></a>
+        <a href="https://jihosw.github.io/jiho-agent/"><img src="https://img.shields.io/badge/%E2%96%B6%20%EB%B0%94%EB%A1%9C%20%EB%B3%B4%EA%B8%B0-3B82F6?style=for-the-badge" alt="▶ 바로 보기" height="28"></a>&nbsp;<a href="html%20%EB%AA%A8%EC%85%98%20ppt/"><img src="https://img.shields.io/badge/%ED%8F%B4%EB%8D%94-1E293B?style=for-the-badge&logo=github&logoColor=white" alt="폴더" height="28"></a>
       </p>
     </td>
     <td width="50%" valign="top">
       <a href="https://jihosw.github.io/jiho-agent/ai%20%EC%A7%81%EB%AC%B4%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC/"><img src=".github/assets/card-career.svg" width="100%" alt="AI 직군 적성검사"></a>
       <p align="center">
-        <a href="https://jihosw.github.io/jiho-agent/ai%20%EC%A7%81%EB%AC%B4%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC/"><b>▶ 검사해 보기</b></a> &nbsp;·&nbsp;
-        <a href="ai%20%EC%A7%81%EB%AC%B4%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC/"><b>폴더</b></a>
+        <a href="https://jihosw.github.io/jiho-agent/ai%20%EC%A7%81%EB%AC%B4%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC/"><img src="https://img.shields.io/badge/%E2%96%B6%20%EA%B2%80%EC%82%AC%ED%95%B4%20%EB%B3%B4%EA%B8%B0-06B6D4?style=for-the-badge" alt="▶ 검사해 보기" height="28"></a>&nbsp;<a href="ai%20%EC%A7%81%EB%AC%B4%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC/"><img src="https://img.shields.io/badge/%ED%8F%B4%EB%8D%94-1E293B?style=for-the-badge&logo=github&logoColor=white" alt="폴더" height="28"></a>
       </p>
     </td>
   </tr>
@@ -84,8 +73,7 @@
     <td width="50%" valign="top">
       <a href="https://jihosw.github.io/jiho-agent/agent-switchboard/"><img src=".github/assets/card-switchboard.svg" width="100%" alt="에이전트 팀 관제 대시보드"></a>
       <p align="center">
-        <a href="https://jihosw.github.io/jiho-agent/agent-switchboard/"><b>▶ 바로 보기</b></a> &nbsp;·&nbsp;
-        <a href="%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8C%80%20%EA%B4%80%EC%A0%9C%20%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/"><b>폴더</b></a>
+        <a href="https://jihosw.github.io/jiho-agent/agent-switchboard/"><img src="https://img.shields.io/badge/%E2%96%B6%20%EB%B0%94%EB%A1%9C%20%EB%B3%B4%EA%B8%B0-EAB308?style=for-the-badge" alt="▶ 바로 보기" height="28"></a>&nbsp;<a href="%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8C%80%20%EA%B4%80%EC%A0%9C%20%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/"><img src="https://img.shields.io/badge/%ED%8F%B4%EB%8D%94-1E293B?style=for-the-badge&logo=github&logoColor=white" alt="폴더" height="28"></a>
       </p>
     </td>
     <td width="50%" valign="top"></td>
