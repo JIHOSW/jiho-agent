@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>대현테크 운송 개선 제안</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --y:#FFD60A; --y-deep:#F5C400; --ink:#0B0B0C; --ink-2:#2B2B2E; --sub:#6E6E73; --mute:#A1A1A6;
+  --bg:#F2F2F0; --card:#FFFFFF; --soft:#E9E9E6; --red:#E5252A; --red-on-dark:#FF6464;
+  --r:28px; --r-sm:16px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--ink);
+  -webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}
+.blank{color:var(--red);font-weight:700}
+.on-dark .blank,.dark .blank{color:var(--red-on-dark)}
+.on-y .blank{color:#C1121F}
+
+/* ---------- 무대 ---------- */
+#viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#deck{position:relative;width:1280px;height:720px;transform-origin:center;flex:none}
+.slide{position:absolute;inset:0;background:var(--bg);overflow:hidden;opacity:0;visibility:hidden;
+  transform:scale(1.03);filter:blur(12px);
+  transition:opacity .6s var(--ease),transform .9s var(--ease),filter .6s var(--ease),visibility 0s .9s}
+.slide.active{opacity:1;visibility:visible;transform:none;filter:none;
+  transition:opacity .6s var(--ease),transform .9s var(--ease),filter .6s var(--ease),visibility 0s}
+.slide.past{transform:scale(.97)}
+
+/* 등장: 흐림 → 선명 */
+.a{opacity:0;transform:translateY(26px);filter:blur(10px);
+  transition:opacity .8s var(--ease),transform 1s var(--ease),filter .8s var(--ease)}
+.active .a{opacity:1;transform:none;filter:none;transition-delay:calc(var(--d,0) * 1s + .2s)}
+.pop{opacity:0;transform:scale(.94);transition:opacity .8s var(--ease),transform 1s var(--ease)}
+.active .pop{opacity:1;transform:none;transition-delay:calc(var(--d,0) * 1s + .15s)}
+.grow{transform:scaleX(0);transform-origin:left;transition:transform 1.1s var(--ease)}
+.active .grow{transform:scaleX(1);transition-delay:calc(var(--d,0) * 1s + .3s)}
+
+/* ---------- 공통 ---------- */
+.hd{position:absolute;left:56px;right:56px;top:44px;display:flex;align-items:center;justify-content:space-between}
+.pill{display:inline-flex;align-items:center;gap:10px;height:34px;padding:0 16px 0 6px;border-radius:999px;background:var(--card);
+  font:700 13px/1 var(--mono);letter-spacing:.04em;color:var(--ink-2)}
+.pill i{font-style:normal;height:24px;min-width:24px;padding:0 8px;border-radius:999px;background:var(--y);color:var(--ink);display:grid;place-items:center;font-size:12px}
+.dark .pill,.on-dark .pill{background:#1C1C1F;color:#D8D8DC}
+.pg{font:500 13px/1 var(--mono);color:var(--mute);letter-spacing:.06em}
+.title{position:absolute;left:56px;right:56px;top:100px;font-size:46px;font-weight:800;letter-spacing:-.04em;line-height:1.15}
+.title em{font-style:normal;background:linear-gradient(transparent 62%,var(--y) 62%)}
+.grid{position:absolute;left:56px;right:56px;top:196px;bottom:56px;display:grid;gap:16px}
+.card{background:var(--card);border-radius:var(--r);padding:32px;position:relative;overflow:hidden}
+.card.dark{background:var(--ink);color:#fff}
+.card.y{background:var(--y)}
+.label{font:700 12px/1 var(--mono);letter-spacing:.12em;color:var(--sub);text-transform:uppercase}
+.dark .label{color:#8E8E93}.y .label{color:#5C4A00}
+ul.pts{list-style:none;display:flex;flex-direction:column;gap:16px}
+ul.pts li{position:relative;padding-left:24px;font-size:20px;line-height:1.5;font-weight:500;letter-spacing:-.02em;color:var(--ink-2)}
+ul.pts li::before{content:"";position:absolute;left:2px;top:.6em;width:9px;height:9px;border-radius:50%;background:var(--y);box-shadow:0 0 0 4px rgba(255,214,10,.22)}
+.dark ul.pts li{color:#E5E5EA}
+.y ul.pts li{color:var(--ink)} .y ul.pts li::before{background:var(--ink);box-shadow:none}
+.ico{width:52px;height:52px;border-radius:16px;background:var(--y);display:grid;place-items:center;flex:none}
+.ico svg{width:26px;height:26px;stroke:var(--ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.chip{display:inline-flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;background:var(--bg);font-size:16px;font-weight:600}
+.chip b{font:700 12px/1 var(--mono);color:var(--sub);letter-spacing:.08em}
+.dashed{border:2px dashed #D4D4D0;background:transparent;border-radius:var(--r-sm);display:grid;place-items:center;font-size:15px}
+
+/* ---------- 1 표지 ---------- */
+.s1{background:var(--ink);color:#fff}
+.s1 .glow{position:absolute;right:-180px;top:-200px;width:760px;height:760px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,214,10,.35),rgba(255,214,10,0) 65%);filter:blur(10px)}
+.s1 .kick{position:absolute;left:72px;top:92px}
+.s1 h1{position:absolute;left:72px;top:170px;width:640px;font-size:68px;font-weight:800;letter-spacing:-.05em;line-height:1.08}
+.s1 h1 span{color:var(--y)}
+.s1 .sub{position:absolute;left:72px;top:440px;font-size:20px;color:#C7C7CC;font-weight:500;letter-spacing:-.02em;line-height:1.7}
+.s1 .meta{position:absolute;left:72px;bottom:64px;display:flex;gap:10px}
+.s1 .meta .chip{background:#1C1C1F;color:#E5E5EA}
+.map{position:absolute;right:64px;top:110px;width:420px;height:500px;border-radius:36px;background:var(--y);padding:36px}
+.map .node{position:absolute;left:50%;transform:translateX(-50%);width:240px;height:74px;border-radius:20px;background:var(--ink);color:#fff;
+  display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:20px;font-weight:700}
+.map .node small{font:700 11px/1 var(--mono);color:var(--y);letter-spacing:.1em}
+.map .node.hub{background:#fff;color:var(--ink)} .map .node.hub small{color:var(--sub)}
+.map .rail{position:absolute;left:50%;width:3px;margin-left:-1.5px;background:repeating-linear-gradient(var(--ink) 0 8px,transparent 8px 15px)}
+.map .runner{position:absolute;left:50%;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#fff;border:3px solid var(--ink)}
+.active .map .runner{animation:run 3.2s var(--ease) infinite}
+@keyframes run{0%{top:118px}45%{top:218px}55%{top:218px}100%{top:378px}}
+
+/* ---------- 2 ---------- */
+.s2 .grid{grid-template-columns:440px 1fr;grid-template-rows:1fr 120px}
+.s2 .stat{grid-row:1 / 3;display:flex;flex-direction:column;justify-content:space-between}
+.s2 .big{font-size:190px;font-weight:800;letter-spacing:-.07em;line-height:.9;color:var(--y)}
+.s2 .big small{font-size:96px;letter-spacing:-.04em}
+.s2 .stat p{font-size:18px;color:#C7C7CC;margin-top:14px}
+.s2 .stat .bars{display:flex;align-items:flex-end;gap:10px;height:70px}
+.s2 .stat .bars span{flex:1;border-radius:8px;background:#2A2A2E}
+.s2 .stat .bars span:last-child{background:var(--y)}
+
+/* ---------- 3 ---------- */
+.s3 .grid{grid-template-columns:1.1fr 1fr;grid-template-rows:1fr auto}
+.s3 .diagram{grid-row:1 / 3;display:flex;flex-direction:column;justify-content:space-between}
+.plants{display:flex;align-items:center;gap:0;margin-top:30px}
+.plant{width:170px;height:120px;border-radius:22px;display:flex;flex-direction:column;justify-content:center;padding:0 22px;font-size:26px;font-weight:800;letter-spacing:-.03em}
+.plant small{font:700 11px/1 var(--mono);letter-spacing:.1em;margin-bottom:10px;opacity:.7}
+.plant.p1{background:var(--ink);color:#fff}.plant.p2{background:var(--y)}
+.route{position:relative;flex:1;height:64px}
+.route .ln{position:absolute;left:8px;right:8px;height:3px;border-radius:3px;background:repeating-linear-gradient(90deg,var(--ink) 0 9px,transparent 9px 16px)}
+.route .ln.t{top:16px}.route .ln.b{bottom:16px}
+.route .dot{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--y);border:3px solid var(--ink)}
+.route .dot.go{top:10px}.route .dot.back{bottom:10px}
+.active .route .dot.go{animation:go 2.4s var(--ease) infinite}
+.active .route .dot.back{animation:back 2.4s var(--ease) infinite 1.2s}
+@keyframes go{from{left:0}to{left:calc(100% - 14px)}}
+@keyframes back{from{left:calc(100% - 14px)}to{left:0}}
+.chips{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+
+/* ---------- 4 ---------- */
+.s4 .grid{grid-template-columns:repeat(3,1fr);grid-template-rows:230px 1fr}
+.step{display:flex;flex-direction:column;justify-content:space-between}
+.step .top{display:flex;justify-content:space-between;align-items:flex-start}
+.step .no{font-size:64px;font-weight:800;letter-spacing:-.05em;line-height:.9;color:transparent;-webkit-text-stroke:1.6px var(--ink)}
+.step.y .no{color:var(--ink);-webkit-text-stroke:0}
+.step h3{font-size:30px;font-weight:800;letter-spacing:-.04em}
+.step p{font-size:17px;color:var(--sub);margin-top:6px;font-weight:500}
+.step.y p{color:#4A3C00}
+.step.y .ico{background:var(--ink)} .step.y .ico svg{stroke:var(--y)}
+.s4 .wide{grid-column:1 / 4;display:flex;align-items:center}
+
+/* ---------- 5 ---------- */
+.s5 .grid{grid-template-columns:1fr 64px 1fr;grid-template-rows:230px 1fr}
+.ba h3{font-size:34px;font-weight:800;letter-spacing:-.04em;margin:18px 0 22px}
+.ba p{font-size:18px;font-weight:500}
+.ba.dark p{color:#C7C7CC}
+.mid{display:grid;place-items:center}
+.mid span{width:56px;height:56px;border-radius:50%;background:var(--y);display:grid;place-items:center}
+.mid svg{width:26px;height:26px;stroke:var(--ink);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.s5 .wide{grid-column:1 / 4;display:flex;align-items:center}
+
+/* ---------- 6 ---------- */
+.s6 .grid{grid-template-columns:1.45fr 1fr}
+table.cmp{width:100%;border-collapse:separate;border-spacing:0 8px;font-size:16px;margin-top:14px}
+table.cmp th{font:700 12px/1 var(--mono);letter-spacing:.08em;color:var(--sub);text-align:center;padding:6px 6px 4px}
+table.cmp th:first-child{text-align:left;padding-left:16px}
+table.cmp td{background:var(--bg);padding:16px 6px;text-align:center;font-size:15px}
+table.cmp td:first-child{border-radius:14px 0 0 14px;text-align:left;padding-left:16px;font-weight:700;color:var(--ink);font-size:16px}
+table.cmp td:last-child{border-radius:0 14px 14px 0}
+table.cmp tbody tr{opacity:0;transform:translateY(12px);transition:opacity .6s var(--ease),transform .8s var(--ease)}
+.active table.cmp tbody tr{opacity:1;transform:none}
+.active table.cmp tbody tr:nth-child(1){transition-delay:.45s}.active table.cmp tbody tr:nth-child(2){transition-delay:.6s}.active table.cmp tbody tr:nth-child(3){transition-delay:.75s}
+.s6 .foot-note{font-size:15px;color:var(--sub);margin-top:14px}
+.s6 .y{display:flex;flex-direction:column;justify-content:space-between}
+.s6 .y ul.pts li{font-size:19px}
+
+/* ---------- 7 ---------- */
+.s7 .grid{grid-template-rows:1fr 1fr}
+.tl-top{display:flex;justify-content:space-between;font-size:15px;margin:18px 0 12px}
+.tl{display:flex;gap:8px;height:66px}
+.tl div{border-radius:18px;display:flex;align-items:center;padding:0 22px;font-size:19px;font-weight:700;letter-spacing:-.02em}
+.tl .d{flex:2;background:var(--y)}.tl .p{flex:6;background:var(--ink);color:#fff}.tl .g{flex:2;background:var(--bg);border:2px dashed #CFCFCB}
+.tl-bot{display:flex;font:600 12px/1 var(--mono);color:var(--sub);letter-spacing:.06em;margin-top:12px}
+.tl-bot span{padding-left:22px}
+.s7 .wide{display:flex;align-items:center}
+
+/* ---------- 8 ---------- */
+.s8 .grid{grid-template-columns:repeat(3,1fr);grid-template-rows:200px 1fr}
+.who{display:flex;flex-direction:column;justify-content:space-between}
+.who .top{display:flex;justify-content:space-between;align-items:center}
+.who .no{font:700 13px/1 var(--mono);color:var(--sub);letter-spacing:.1em}
+.who h3{font-size:28px;font-weight:800;letter-spacing:-.04em}
+.who h3 span{color:var(--sub);font-weight:600;font-size:20px;margin-left:6px}
+.who p{font-size:17px;color:var(--sub);margin-top:6px;font-weight:500}
+.s8 .wide{grid-column:1 / 4;display:flex;align-items:center}
+
+/* ---------- 9 ---------- */
+.s9 .grid{top:44px;grid-template-columns:1.05fr 1fr;grid-template-rows:repeat(3,1fr)}
+.s9 .lead{grid-row:1 / 4;display:flex;flex-direction:column;justify-content:space-between;padding:40px}
+.s9 .lead h2{font-size:46px;font-weight:800;letter-spacing:-.045em;line-height:1.15;margin-top:40px}
+.s9 .lead h2 span{color:var(--y)}
+.s9 .lead .glow{position:absolute;right:-160px;bottom:-200px;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(255,214,10,.28),transparent 65%)}
+.why{display:flex;gap:20px;align-items:center}
+.why h3{font-size:22px;font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
+.why p{font-size:16px}
+.why.y .ico{background:var(--ink)}.why.y .ico svg{stroke:var(--y)}
+
+/* ---------- 10 ---------- */
+.s10{background:var(--y)}
+.s10 .grid{top:56px;grid-template-columns:1.6fr 1fr}
+.s10 .main{display:flex;flex-direction:column;justify-content:space-between;padding:48px}
+.s10 h2{font-size:60px;font-weight:800;letter-spacing:-.05em;line-height:1.08}
+.s10 h2 span{background:linear-gradient(transparent 60%,var(--y) 60%)}
+.s10 ol{list-style:none;display:flex;flex-direction:column;gap:12px}
+.s10 li{display:flex;align-items:center;gap:16px;font-size:21px;font-weight:600;letter-spacing:-.02em;padding:14px 18px;border-radius:18px;background:var(--bg)}
+.s10 li b{font:700 12px/1 var(--mono);background:var(--ink);color:var(--y);padding:7px 9px;border-radius:8px}
+.s10 .side{display:flex;flex-direction:column;justify-content:space-between;padding:40px}
+.s10 .side p{font-size:24px;font-weight:700;letter-spacing:-.03em;line-height:1.5}
+.s10 .side .big{font-size:120px;font-weight:800;letter-spacing:-.07em;color:var(--y);line-height:.9}
+
+/* ---------- 조작 UI ---------- */
+#progress{position:fixed;left:0;top:0;height:3px;background:var(--y);transition:width .6s var(--ease);z-index:20}
+#controls{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:4px;padding:5px;border-radius:999px;
+  background:rgba(20,20,22,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:20;opacity:0;transition:opacity .3s}
+body.ui #controls,#controls:hover,#controls:focus-within{opacity:1}
+#controls button{border:none;background:transparent;color:#E5E5EA;font:600 12px/1 var(--mono);padding:9px 13px;border-radius:999px;cursor:pointer;letter-spacing:.04em}
+#controls button:hover{background:var(--y);color:var(--ink)}
+#controls .cnt{color:#8E8E93;font:600 12px/1 var(--mono);padding:9px 10px;align-self:center}
+#notes{position:fixed;left:50%;bottom:66px;transform:translateX(-50%);width:min(880px,92vw);max-height:40vh;overflow:auto;
+  background:rgba(14,14,16,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:#EDEDF0;border-radius:22px;
+  padding:20px 24px;font-size:15px;line-height:1.75;white-space:pre-line;z-index:30;display:none}
+#notes.show{display:block}
+#notes h4{font:700 11px/1 var(--mono);color:var(--y);letter-spacing:.16em;margin-bottom:10px}
+body.overview #deck{transform:none!important;width:auto;height:auto;display:grid;grid-template-columns:repeat(5,256px);gap:18px}
+body.overview #viewport{overflow:auto;align-items:flex-start;padding:40px}
+body.overview .slide{position:relative;width:1280px;height:720px;transform:scale(.2)!important;transform-origin:top left;opacity:1;visibility:visible;filter:none;
+  cursor:pointer;margin:0 -1024px -576px 0;border-radius:60px;outline:14px solid transparent}
+body.overview .slide.active{outline-color:var(--y)}
+body.overview .a,body.overview .pop,body.overview .grow,body.overview table.cmp tbody tr{opacity:1;transform:none;filter:none}
+
+@media (prefers-reduced-motion: reduce){
+  .slide,.a,.pop,.grow,table.cmp tbody tr{transition:opacity .2s!important;transform:none!important;filter:none!important}
+  .active .route .dot,.active .map .runner{animation:none}
+}
+@media print{
+  @page{size:1280px 720px;margin:0}
+  html,body{overflow:visible;height:auto;background:#fff}
+  #viewport{position:static;display:block}
+  #deck{transform:none!important}
+  .slide{position:relative;opacity:1;visibility:visible;transform:none;filter:none;break-after:page}
+  .a,.pop,.grow,table.cmp tbody tr{opacity:1!important;transform:none!important;filter:none!important}
+  #progress,#controls,#notes{display:none!important}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="viewport"><div id="deck">
+
+<!-- 1 표지 -->
+<section class="slide s1 on-dark" data-notes="오늘 자리 마련해 주셔서 감사합니다.
+지난번 미팅에서 O과장님, 김대리님께서 말씀해 주신 내용을 바탕으로 정리한 제안입니다.
+핵심은 하나입니다. 3분기에 오른 운송비를, 2공장이 가동되기 전에 잡아두자는 것입니다.
+순서는 왜 지금 해야 하는지, 무엇을 하는지, 얼마나 줄어드는지, 어떻게 진행하는지, 마지막으로 왜 저희인지로 말씀드리겠습니다.">
+  <div class="glow"></div>
+  <div class="kick a"><span class="pill"><i>PROPOSAL</i>대현테크 · 초안</span></div>
+  <h1 class="a" style="--d:.15">평택 1·2공장 운송비,<br><span>2공장 가동 전</span>에<br>잡겠습니다</h1>
+  <p class="sub a" style="--d:.35">대현테크 공장 간 운송 개선 제안<br>동선 진단 2주 → 시범 운영 3개월</p>
+  <div class="meta a" style="--d:.5"><span class="chip"><span class="blank">[우리 회사명: 확인 필요]</span></span><span class="chip"><span class="blank">[제안 날짜: 확인 필요]</span></span></div>
+  <div class="map pop" style="--d:.3">
+    <div class="rail" style="top:150px;height:70px"></div>
+    <div class="rail" style="top:302px;height:70px"></div>
+    <div class="node" style="top:76px"><span>1공장</span><small>PLANT 01</small></div>
+    <div class="node hub" style="top:222px"><span>평택센터</span><small>HUB</small></div>
+    <div class="node" style="top:374px"><span>2공장</span><small>PLANT 02</small></div>
+    <div class="runner"></div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="slide s2" data-notes="먼저 왜 지금인지입니다.
+과장님께서 3분기 운송비가 18% 올랐고, 팀장님께서 원가를 줄이라고 하셨다고 말씀해 주셨습니다.
+다만 18%가 물량이 늘어서인지, 단가가 올라서인지, 동선 문제인지는 아직 저희가 모릅니다.
+3분기 운송 내역을 주시면 원인을 나눠서 보여드리겠습니다. 원인을 알아야 어디를 줄일지 정할 수 있습니다.
+(확인할 것: 3분기 운송 내역 공유 가능 여부, 분기별 운송비 자료)">
+  <div class="hd a"><span class="pill"><i>01</i>왜 지금</span><span class="pg">02 / 10</span></div>
+  <h2 class="title a" style="--d:.08">운송비가 <em>18%</em>나 올랐는데, 왜 그런 거예요?</h2>
+  <div class="grid">
+    <div class="card dark stat pop" style="--d:.2">
+      <div><div class="label">Q3 운송비 상승 · 고객 말씀</div></div>
+      <div><div class="big"><span class="count" data-to="18">0</span><small>%</small></div><p>팀장님 지시: 원가 절감</p></div>
+    </div>
+    <div class="card pop" style="--d:.32;display:flex;align-items:center">
+      <ul class="pts">
+        <li class="a" style="--d:.45">3분기 운송비 18% 상승, 팀장님께서 원가 절감을 지시하신 상황</li>
+        <li class="a" style="--d:.58">상승 원인: <span class="blank">[물량 증가 / 단가 인상 / 동선 문제: 확인 필요]</span></li>
+        <li class="a" style="--d:.7">원인을 나눠 봐야 줄일 곳이 보입니다 → <span class="blank">[3분기 운송 내역: 확인 필요]</span></li>
+      </ul>
+    </div>
+    <div class="dashed pop" style="--d:.45"><span class="blank">[분기별 운송비 그래프: 확인 필요]</span></div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="slide s3" data-notes="두 번째는 2공장입니다.
+2공장이 내년 3월에 가동되면 1·2공장 왕복이 더 늘 거라고 말씀하셨습니다.
+지금도 운송비가 오른 상태인데, 여기에 왕복까지 늘어나면 부담은 더 커집니다.
+그래서 2공장이 돌아가기 전에 운송 방식을 정리해 두는 게 좋겠다고 봤습니다. 일정은 6장에서 자세히 말씀드리겠습니다.
+(확인할 것: 3월 가동이 확정인지, 왕복이 얼마나 늘어날지 예상치)">
+  <div class="hd a"><span class="pill"><i>02</i>왜 지금</span><span class="pg">03 / 10</span></div>
+  <h2 class="title a" style="--d:.08">2공장 돌아가면 더 늘 텐데, 지금 손써야 하나요?</h2>
+  <div class="grid">
+    <div class="card diagram pop" style="--d:.2">
+      <div class="label">1·2공장 왕복</div>
+      <div class="plants">
+        <div class="plant p1"><small>PLANT 01</small>1공장</div>
+        <div class="route"><div class="ln t"></div><div class="ln b"></div><div class="dot go"></div><div class="dot back"></div></div>
+        <div class="plant p2"><small>PLANT 02</small>2공장</div>
+      </div>
+      <div class="chips">
+        <span class="chip a" style="--d:.5"><b>왕복</b><span class="blank">[늘어날 횟수: 확인 필요]</span></span>
+        <span class="chip a" style="--d:.6"><b>가동</b><span class="blank">[내년 3월 예정, 확정 여부: 확인 필요]</span></span>
+      </div>
+    </div>
+    <div class="card pop" style="--d:.32;grid-row:1 / 3;display:flex;align-items:center">
+      <ul class="pts">
+        <li class="a" style="--d:.45">2공장이 가동되면 1·2공장 왕복이 늘어납니다 (고객 말씀)</li>
+        <li class="a" style="--d:.58">지금 대비하지 않으면 오른 운송비에 늘어난 왕복이 더해집니다</li>
+        <li class="a" style="--d:.7">3월 전에 준비를 끝낼 수 있는 일정으로 짰습니다 (6장)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="slide s4" data-notes="그래서 저희가 무엇을 하느냐입니다. 세 단계입니다.
+첫째, 2주 동안 무료로 공장 간 운송 동선을 진단합니다. 어디서 비용이 새는지 먼저 찾습니다.
+둘째, 3개월 시범 운영입니다. 평택센터를 거쳐 1·2공장 운송을 묶고, 배차는 저희가 드리는 화면으로 하시게 됩니다.
+셋째, 매주 결과를 보고드립니다. 과장님, 대리님은 매주, 팀장님께는 단계마다 숫자로 보여드리겠습니다.
+진단이 무료라서, 먼저 해보시고 시범 운영을 할지 판단하셔도 됩니다.">
+  <div class="hd a"><span class="pill"><i>03</i>무엇을</span><span class="pg">04 / 10</span></div>
+  <h2 class="title a" style="--d:.08">그래서 뭘 해주신다는 거예요?</h2>
+  <div class="grid">
+    <div class="card y step pop" style="--d:.2"><div class="top"><div class="no">01</div><div class="ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg></div></div>
+      <div><h3>동선 진단</h3><p>2주 · 무료</p></div></div>
+    <div class="card step pop" style="--d:.3"><div class="top"><div class="no">02</div><div class="ico"><svg viewBox="0 0 24 24"><rect x="1" y="7" width="13" height="10" rx="1"/><path d="M14 10h5l3 3v4h-8"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></div></div>
+      <div><h3>시범 운영</h3><p>3개월 · 평택센터 경유</p></div></div>
+    <div class="card step pop" style="--d:.4"><div class="top"><div class="no">03</div><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div></div>
+      <div><h3>매주 보고</h3><p>결과를 숫자로</p></div></div>
+    <div class="card wide pop" style="--d:.5">
+      <ul class="pts">
+        <li class="a" style="--d:.6">2주 무료 진단으로 1·2공장 사이 운송 동선에서 비용이 새는 곳을 찾습니다</li>
+        <li class="a" style="--d:.7">3개월 시범 운영: 평택센터를 거쳐 운송을 묶고, 배차는 화면으로 합니다</li>
+        <li class="a" style="--d:.8">매주 결과를 보고해 실무는 매주, 팀장님은 단계마다 숫자로 확인하십니다</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="slide s5" data-notes="다음은 배차입니다.
+지금은 엑셀로 배차하고, 김대리님께서 매일 전화로 맞추신다고 들었습니다.
+시범 운영 동안은 배차 화면에서 한 번에 보시게 됩니다. 전화로 하나하나 확인하시던 일을 줄이는 게 목표입니다.
+또 김대리님이 자리를 비우셔도 다른 분이 화면을 보고 이어받을 수 있습니다.
+지금 배차에 하루 얼마나 쓰시는지는 진단 때 같이 재서, 전후를 숫자로 비교해 드리겠습니다.
+(확인할 것: 현재 배차에 드는 하루 시간 — 김대리님께 직접 여쭤보기)">
+  <div class="hd a"><span class="pill"><i>04</i>무엇을</span><span class="pg">05 / 10</span></div>
+  <h2 class="title a" style="--d:.08">김대리가 매일 전화로 맞추는 건 없어지나요?</h2>
+  <div class="grid">
+    <div class="card ba pop" style="--d:.2"><div class="label">Before · 지금</div><h3>엑셀 + 매일 전화</h3><p>하루 <span class="blank">[배차 시간: 확인 필요]</span></p></div>
+    <div class="mid pop" style="--d:.4"><span><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    <div class="card dark ba pop" style="--d:.5"><div class="label">After · 바뀐 뒤</div><h3>배차 화면 하나로 확인</h3><p>하루 <span class="blank">[개선 후 시간: 확인 필요]</span></p></div>
+    <div class="card wide pop" style="--d:.6">
+      <ul class="pts">
+        <li class="a" style="--d:.7">엑셀과 전화로 하던 배차를 배차 화면으로 옮깁니다</li>
+        <li class="a" style="--d:.8">한 사람에게 기대던 배차를 누구나 보고 이어받을 수 있게 됩니다</li>
+        <li class="a" style="--d:.9">김대리님 하루 업무가 전후로 어떻게 달라지는지 진단 때 함께 재겠습니다</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="slide s6" data-notes="가장 궁금하실 부분입니다. 얼마나 줄어드느냐입니다.
+구매팀을 거쳐야 해서 숫자가 분명해야 한다고 말씀하셨습니다. 그래서 이 장은 지금 일부러 비워 두었습니다.
+진단을 마치면 현재 비용과 시범 운영 비용을 이 표에 나란히 넣고, 칸마다 근거 자료를 붙여 드리겠습니다.
+진단은 무료이고, 시범 운영 비용은 진단 결과를 보고 확정해서 말씀드리겠습니다.
+구매팀에서 어떤 기준으로 보시는지 알려주시면 표 항목도 거기에 맞추겠습니다.
+(주의: 진단 전에는 절감 숫자를 말하지 않기. 확인할 것: 구매팀 검토 기준, 시범 운영 가격)">
+  <div class="hd a"><span class="pill"><i>05</i>얼마나</span><span class="pg">06 / 10</span></div>
+  <h2 class="title a" style="--d:.08">얼마나 줄어요? <em>구매팀에 낼 숫자</em>로요</h2>
+  <div class="grid">
+    <div class="card pop" style="--d:.2">
+      <div class="label">구매팀 검토용 전후 비교</div>
+      <table class="cmp">
+        <thead><tr><th>항목</th><th>현재</th><th>시범 후</th><th>차이</th><th>근거 자료</th></tr></thead>
+        <tbody>
+        <tr><td>운송비</td><td class="blank">[확인 필요]</td><td class="blank">[확인 필요]</td><td class="blank">[확인 필요]</td><td class="blank">[확인 필요]</td></tr>
+        <tr><td>운행 횟수</td><td class="blank">[확인 필요]</td><td class="blank">[확인 필요]</td><td class="blank">[확인 필요]</td><td class="blank">[확인 필요]</td></tr>
+        <tr><td>배차 시간</td><td class="blank">[확인 필요]</td><td class="blank">[확인 필요]</td><td class="blank">[확인 필요]</td><td class="blank">[확인 필요]</td></tr>
+        </tbody>
+      </table>
+      <p class="foot-note">항목은 <span class="blank">[구매팀 검토 기준: 확인 필요]</span>에 맞춰 조정</p>
+    </div>
+    <div class="card y on-y pop" style="--d:.35">
+      <div class="label">기대 효과</div>
+      <ul class="pts">
+        <li class="a" style="--d:.5">운송비 <span class="blank">[운송비 절감액: 확인 필요]</span> 절감, 절감률 <span class="blank">[절감률: 확인 필요]</span></li>
+        <li class="a" style="--d:.62">비용: 진단은 무료, 시범 운영 <span class="blank">[시범 운영 비용: 확인 필요]</span></li>
+        <li class="a" style="--d:.74">모든 숫자에 근거 자료를 붙여 구매팀에 그대로 올릴 수 있게 드립니다</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="slide s7" data-notes="일정입니다.
+진단 2주, 시범 운영 3개월입니다. 2공장 가동 전에 시범 결과를 손에 쥐실 수 있도록 거꾸로 계산해서 짰습니다.
+단계마다 진단 보고서, 주간 보고, 최종 보고를 드립니다.
+시작이 늦어지면 시범 결과가 2공장 가동 뒤로 밀릴 수 있어서, 오늘 시작 가능한 날짜를 여쭤보고 싶습니다.
+(확인할 것: 진단 시작 가능 날짜, 3월 가동 확정 여부 — 시작일에 따라 3월 전 종료 가능한지 다시 계산)">
+  <div class="hd a"><span class="pill"><i>06</i>어떻게</span><span class="pg">07 / 10</span></div>
+  <h2 class="title a" style="--d:.08">언제 시작해서 언제 결과가 나와요?</h2>
+  <div class="grid">
+    <div class="card pop" style="--d:.2">
+      <div class="label">Timeline</div>
+      <div class="tl-top"><span class="blank">[시작일: 확인 필요]</span><span class="blank">[3월 가동 확정 여부: 확인 필요]</span></div>
+      <div class="tl">
+        <div class="d grow" style="--d:.25">진단 2주</div>
+        <div class="p grow" style="--d:.45">시범 운영 3개월 · 매주 보고</div>
+        <div class="g grow" style="--d:.65">2공장 가동</div>
+      </div>
+      <div class="tl-bot"><span style="flex:2">진단 보고서</span><span style="flex:6">주간 보고 → 최종 보고</span><span style="flex:2"></span></div>
+    </div>
+    <div class="card wide pop" style="--d:.4">
+      <ul class="pts">
+        <li class="a" style="--d:.55">진단 2주 → 시범 3개월, 2공장 가동 전에 결과가 나오도록 거꾸로 짰습니다</li>
+        <li class="a" style="--d:.65">단계마다 받으시는 것: 진단 보고서, 주간 보고, 최종 보고</li>
+        <li class="a" style="--d:.75">시작이 늦어지면 시범 결과가 가동 뒤로 밀리므로 시작일을 먼저 정하고 싶습니다</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="slide s8" data-notes="대현테크에서 준비해 주실 것은 두 가지입니다. 3분기 운송 내역, 그리고 지금 쓰시는 배차 엑셀입니다.
+보고는 매주 같은 양식으로 드립니다.
+저희 생각에는 과장님, 대리님은 매주 보시고, 팀장님은 진단과 최종 단계에서, 구매팀은 최종 비교표를 보시는 흐름이 맞을 것 같습니다.
+이 부분은 저희 짐작이라, 실제로 누가 언제 보실지는 맞춰 주시면 그대로 따르겠습니다.
+(확인할 것: 보고 대상과 주기, 주간 보고 양식 샘플 준비)">
+  <div class="hd a"><span class="pill"><i>07</i>어떻게</span><span class="pg">08 / 10</span></div>
+  <h2 class="title a" style="--d:.08">우리 쪽은 뭘 준비하고, 결과는 어떻게 받아요?</h2>
+  <div class="grid">
+    <div class="card who pop" style="--d:.2"><div class="top"><span class="no">01 · WEEKLY</span><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></div></div>
+      <div><h3>실무<span>매주</span></h3><p>주간 보고로 배차·운행 확인</p></div></div>
+    <div class="card who pop" style="--d:.3"><div class="top"><span class="no">02 · STAGE</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h9"/></svg></div></div>
+      <div><h3>팀장<span>단계마다</span></h3><p>진단·최종 보고로 결정</p></div></div>
+    <div class="card dark who pop" style="--d:.4"><div class="top"><span class="no" style="color:#8E8E93">03 · FINAL</span><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/></svg></div></div>
+      <div><h3>구매팀<span style="color:#8E8E93">최종</span></h3><p style="color:#A1A1A6">근거 붙은 비교표로 검토</p></div></div>
+    <div class="card wide pop" style="--d:.5">
+      <ul class="pts">
+        <li class="a" style="--d:.6">준비해 주실 것: 3분기 운송 내역, 지금 쓰시는 배차 엑셀</li>
+        <li class="a" style="--d:.7">매주 같은 양식으로 결과를 보고드립니다 (양식 샘플 첨부 예정)</li>
+        <li class="a" style="--d:.8">누가 언제 보실지는 <span class="blank">[보고 대상·주기: 고객과 협의 필요]</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="slide s9" data-notes="마지막으로 왜 저희인지 짧게 말씀드리겠습니다.
+평택센터가 있어서 1·2공장 운송을 한곳에서 묶을 수 있습니다.
+비슷한 공장 간 운송 개선 사례도 있습니다. (사례 내용 채워 넣기)
+진단부터 매주 보고까지 한 담당자가 끝까지 맡아서, 과장님께서 여러 사람을 상대하실 일은 없게 하겠습니다.
+(확인할 것: 평택센터와 1·2공장 거리, 실제 사례, 담당자 배정 — 모두 자료 받은 뒤 채우기)">
+  <div class="grid">
+    <div class="card dark lead pop" style="--d:.1">
+      <div class="glow"></div>
+      <div>
+        <span class="pill a"><i>08</i>왜 우리</span>
+        <h2 class="a" style="--d:.2">이 일을 왜<br><span>거기에</span> 맡겨야<br>하죠?</h2>
+      </div>
+      <ul class="pts">
+        <li class="a" style="--d:.4">평택센터를 거쳐 1·2공장 운송을 묶을 수 있습니다</li>
+        <li class="a" style="--d:.5">비슷한 공장 간 운송 개선 경험을 사례로 보여드립니다</li>
+        <li class="a" style="--d:.6">진단부터 매주 보고까지 한 담당자가 끝까지 맡습니다</li>
+      </ul>
+    </div>
+    <div class="card y on-y why pop" style="--d:.3"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.5-7-12a7 7 0 0114 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
+      <div><h3>평택센터</h3><p><span class="blank">[1·2공장과의 거리·장점: 확인 필요]</span></p></div></div>
+    <div class="card why pop" style="--d:.42"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/></svg></div>
+      <div><h3>비슷한 사례</h3><p><span class="blank">[운송 개선 사례: 확인 필요]</span></p></div></div>
+    <div class="card why pop" style="--d:.54"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></div>
+      <div><h3>회사 개요</h3><p><span class="blank">[회사 소개·담당자 연락처: 확인 필요]</span></p></div></div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="slide s10" data-notes="정리하겠습니다. 첫걸음은 2주 무료 진단입니다.
+3분기 운송 내역과 배차 엑셀을 주시면, 시작일을 정해 바로 진단에 들어가겠습니다.
+진단 결과를 보시고 시범 운영을 할지 정하시면 됩니다. 비용 부담 없이 숫자부터 확인하실 수 있습니다.
+오늘 시작 가능한 날짜와 자료 공유 방법만 정해 주시면 감사하겠습니다.
+(마무리 후 질문 받기 / 오늘 꼭 받아갈 것: 시작일, 자료 공유 담당자, 구매팀 검토 기준)">
+  <div class="grid">
+    <div class="card main pop" style="--d:.1">
+      <div>
+        <span class="pill a" style="background:var(--bg)"><i>NEXT</i>다음 단계</span>
+        <h2 class="a" style="--d:.2" ><br>첫걸음은<br><span>2주 무료 진단</span>입니다</h2>
+      </div>
+      <ol>
+        <li class="a" style="--d:.45"><b>01</b>3분기 운송 내역과 배차 엑셀 공유</li>
+        <li class="a" style="--d:.55"><b>02</b><span>진단 시작일 확정 <span class="blank">[시작일: 확인 필요]</span></span></li>
+        <li class="a" style="--d:.65"><b>03</b>진단 보고 뒤 시범 운영 여부 결정</li>
+      </ol>
+    </div>
+    <div class="card dark side pop" style="--d:.3">
+      <div class="label">Today</div>
+      <div class="big a" style="--d:.5">2주</div>
+      <p class="a" style="--d:.6">오늘 정할 것<br>시작일 · 자료 담당자<br>구매팀 검토 기준</p>
+    </div>
+  </div>
+</section>
+
+</div></div>
+
+<div id="notes"><h4>SPEAKER NOTES · 발표 메모</h4><div id="notes-body"></div></div>
+<div id="controls">
+  <button id="b-prev" title="이전 (←)">←</button>
+  <span class="cnt" id="counter"></span>
+  <button id="b-next" title="다음 (→)">→</button>
+  <button id="b-notes" title="발표 메모 (N)">메모 N</button>
+  <button id="b-over" title="전체 보기 (O)">전체 O</button>
+  <button id="b-full" title="전체화면 (F)">전체화면 F</button>
+  <button id="b-print" title="인쇄 / PDF">PDF</button>
+</div>
+
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('.slide')];
+  const deck=document.getElementById('deck');
+  const notes=document.getElementById('notes'), notesBody=document.getElementById('notes-body');
+  const counter=document.getElementById('counter'), progress=document.getElementById('progress');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let cur=0;
+  function fit(){
+    if(document.body.classList.contains('overview')){deck.style.transform='';return;}
+    deck.style.transform='scale('+Math.min(innerWidth/1280,innerHeight/720)+')';
+  }
+  function countUp(slide){
+    slide.querySelectorAll('.count').forEach(el=>{
+      const to=+el.dataset.to;
+      if(reduce){el.textContent=to;return;}
+      const t0=performance.now(), dur=1400, delay=500;
+      el.textContent='0';
+      (function step(t){
+        const p=Math.min(Math.max((t-t0-delay)/dur,0),1);
+        el.textContent=Math.round(to*(1-Math.pow(1-p,4)));
+        if(p<1) requestAnimationFrame(step);
+      })(t0);
+    });
+  }
+  function go(i){
+    i=Math.max(0,Math.min(slides.length-1,i));
+    slides.forEach((s,k)=>{s.classList.toggle('active',k===i);s.classList.toggle('past',k<i);});
+    cur=i;
+    counter.textContent=String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+    progress.style.width=((i+1)/slides.length*100)+'%';
+    notesBody.textContent=slides[i].dataset.notes||'';
+    countUp(slides[i]);
+    history.replaceState(null,'','#'+(i+1));
+  }
+  function toggleOverview(){document.body.classList.toggle('overview');fit();}
+  function fullscreen(){
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(cur+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+    else if(e.key==='Home') go(0);
+    else if(e.key==='End') go(slides.length-1);
+    else if(e.key==='n'||e.key==='N') notes.classList.toggle('show');
+    else if(e.key==='o'||e.key==='O') toggleOverview();
+    else if(e.key==='f'||e.key==='F') fullscreen();
+    else if(e.key==='Escape'&&document.body.classList.contains('overview')) toggleOverview();
+  });
+  slides.forEach((s,k)=>s.addEventListener('click',()=>{
+    if(document.body.classList.contains('overview')){toggleOverview();go(k);}
+  }));
+  let tx=null;
+  addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+  addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)go(cur+(dx<0?1:-1));tx=null;});
+  document.getElementById('b-prev').onclick=()=>go(cur-1);
+  document.getElementById('b-next').onclick=()=>go(cur+1);
+  document.getElementById('b-notes').onclick=()=>notes.classList.toggle('show');
+  document.getElementById('b-over').onclick=toggleOverview;
+  document.getElementById('b-full').onclick=fullscreen;
+  document.getElementById('b-print').onclick=()=>print();
+  let uiT;
+  addEventListener('mousemove',()=>{document.body.classList.add('ui');clearTimeout(uiT);uiT=setTimeout(()=>document.body.classList.remove('ui'),2000);});
+  addEventListener('resize',fit);
+  fit();
+  const h=parseInt(location.hash.slice(1),10);
+  go(isNaN(h)?0:h-1);
+})();
+</script>
+</body>
+</html>
