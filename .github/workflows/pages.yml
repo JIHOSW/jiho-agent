@@ -8,6 +8,7 @@ on:
       - '고객 온보딩 에이전트 포트폴리오/demo-dist/**'
       - 'ai 직무적성검사/**'
       - '에이전트 팀 관제 대시보드/**'
+      - 'B2B 영업제안서 html 모션 ppt/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -48,6 +49,9 @@ jobs:
           # 에이전트 팀 관제 대시보드(단일 HTML): 짧은 주소(agent-switchboard)
           mkdir -p "$RUNNER_TEMP/jiho-pages/agent-switchboard"
           cp -a "에이전트 팀 관제 대시보드/." "$RUNNER_TEMP/jiho-pages/agent-switchboard/"
+          # B2B 영업제안서 모션 HTML(단일 파일): 짧은 주소(b2b-proposal)
+          mkdir -p "$RUNNER_TEMP/jiho-pages/b2b-proposal"
+          cp "B2B 영업제안서 html 모션 ppt/대현테크_제안서_모션.html" "$RUNNER_TEMP/jiho-pages/b2b-proposal/index.html"
       - name: Upload presentation
         uses: actions/upload-pages-artifact@v4
         with:
