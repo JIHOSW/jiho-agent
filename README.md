@@ -16,10 +16,18 @@
 
 ## 🚀 Projects
 
-<!-- 프로젝트 추가: .github/assets/cards.mjs 의 cards 배열에 항목을 넣고 node .github/assets/cards.mjs 실행 → 아래 표에 <td> 칸 하나 추가 (한 줄에 2칸) -->
+<!-- 프로젝트 추가: .github/assets/cards.mjs 의 cards 배열에 항목을 넣고 node .github/assets/cards.mjs 실행 → 아래 첫 표 맨 앞에 <td> 칸 추가 (한 줄에 2칸, 첫 화면은 4칸 유지, 밀려난 칸은 '더 보기' 표로 옮김) -->
 
 <table>
   <tr>
+    <td width="50%" valign="top">
+      <a href="https://jihosw.github.io/jiho-agent/b2b-proposal/"><img src=".github/assets/card-b2b.svg" width="100%" alt="B2B 영업제안서 모션 PPT"></a>
+      <p align="center">
+        <a href="https://jihosw.github.io/jiho-agent/b2b-proposal/"><b>▶ 바로 보기</b></a> &nbsp;·&nbsp;
+        <a href="B2B%20%EC%98%81%EC%97%85%EC%A0%9C%EC%95%88%EC%84%9C%20html%20%EB%AA%A8%EC%85%98%20ppt/%EB%8C%80%ED%98%84%ED%85%8C%ED%81%AC_%EC%A0%9C%EC%95%88%EC%84%9C_%EC%B4%88%EC%95%88.pptx?raw=true"><b>PPT 초안</b></a> &nbsp;·&nbsp;
+        <a href="B2B%20%EC%98%81%EC%97%85%EC%A0%9C%EC%95%88%EC%84%9C%20html%20%EB%AA%A8%EC%85%98%20ppt/"><b>폴더</b></a>
+      </p>
+    </td>
     <td width="50%" valign="top">
       <a href="%EA%B8%B0%EC%97%85%EC%9A%A9%20%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C%20%EB%AC%B8%EC%84%9C%EA%B4%80%EB%A6%AC%20%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B0%9C%EB%B0%9C/"><img src=".github/assets/card-saas.svg" width="100%" alt="jihodev 고객 온보딩 지원 서비스"></a>
       <p align="center">
@@ -28,6 +36,8 @@
         <a href="%EA%B8%B0%EC%97%85%EC%9A%A9%20%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C%20%EB%AC%B8%EC%84%9C%EA%B4%80%EB%A6%AC%20%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B0%9C%EB%B0%9C/"><b>폴더</b></a>
       </p>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="%EA%B3%A0%EA%B0%9D%20%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4/"><img src=".github/assets/card-onboarding.svg" width="100%" alt="고객 온보딩 에이전트"></a>
       <p align="center">
@@ -37,8 +47,6 @@
         <a href="https://jihosw.github.io/jiho-agent/onboarding-agent/?play=seum">세움건설</a>
       </p>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="ai%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8/"><img src=".github/assets/card-blog.svg" width="100%" alt="AI 블로그 자동화 에이전트"></a>
       <p align="center">
@@ -47,6 +55,16 @@
         <a href="ai%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8/"><b>폴더</b></a>
       </p>
     </td>
+  </tr>
+</table>
+
+<details>
+<summary><b>📂 프로젝트 더 보기 (3개)</b></summary>
+
+<br>
+
+<table>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://jihosw.github.io/jiho-agent/"><img src=".github/assets/card-motion.svg" width="100%" alt="HTML 모션 PPT"></a>
       <p align="center">
@@ -54,8 +72,6 @@
         <a href="html%20%EB%AA%A8%EC%85%98%20ppt/"><b>폴더</b></a>
       </p>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
       <a href="https://jihosw.github.io/jiho-agent/ai%20%EC%A7%81%EB%AC%B4%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC/"><img src=".github/assets/card-career.svg" width="100%" alt="AI 직군 적성검사"></a>
       <p align="center">
@@ -63,6 +79,8 @@
         <a href="ai%20%EC%A7%81%EB%AC%B4%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC/"><b>폴더</b></a>
       </p>
     </td>
+  </tr>
+  <tr>
     <td width="50%" valign="top">
       <a href="https://jihosw.github.io/jiho-agent/agent-switchboard/"><img src=".github/assets/card-switchboard.svg" width="100%" alt="에이전트 팀 관제 대시보드"></a>
       <p align="center">
@@ -70,11 +88,14 @@
         <a href="%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8C%80%20%EA%B4%80%EC%A0%9C%20%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C/"><b>폴더</b></a>
       </p>
     </td>
+    <td width="50%" valign="top"></td>
   </tr>
 </table>
 
+</details>
+
 <details>
-<summary><b>프로젝트 자세히 보기</b></summary>
+<summary><b>📝 프로젝트 자세히 보기</b></summary>
 
 <br>
 
@@ -86,6 +107,7 @@
 | **HTML 모션 PPT** | 발표 노트와 화면 전환, 가정 기반 계산 기능을 포함한 10장 HTML 발표자료입니다. 오프라인에서 여는 단일 HTML도 제공합니다. |
 | **AI 직군 적성검사** | 현재 상황과 관심 AI 영역에 따라 질문 갈래가 나뉘는 대화형 검사입니다. 짧은 버전(17~20문항)과 긴 버전(34~40문항) 중 골라 역량·직업가치관·업무 스타일을 분석해 AI 직군 42개 중 TOP 5와 준비 로드맵을 추천합니다. 서버 없이 규칙 기반으로 동작하며 결과 링크 공유와 이미지·PDF 저장을 지원합니다. |
 | **에이전트 팀 관제 대시보드** | AI 블로그 자동화 에이전트의 역할 구조와 업무 흐름을 보여 주는 단일 HTML 대시보드입니다. 업무 흐름(Workflows), 단계별 시간(Traces), 시간·토큰(Usage), 역할 목록(Agents) 4개 화면을 애니메이션으로 보여 줍니다. 단계 이름과 검수 기록은 저장소의 실제 구성을 따릅니다. 시간·토큰은 기본으로 시연용 예시를 보여 주고, 블로그 에이전트의 실행 기록 훅이 남긴 파일을 열거나 로컬 서버(`node serve.mjs`)에 연결하면 실제 측정값으로 바뀝니다. |
+| **B2B 영업제안서 모션 PPT** | 고객 미팅에서 들은 말을 요구표(고객의 말·속사정·관심 대상)로 정리하고, 목차 8장과 핵심 장 내용을 거쳐 만든 10장 제안서입니다. 모션 HTML 발표자료(발표 메모·전체 보기·전체화면)와 같은 내용의 PPT 초안을 함께 담았습니다. 확인되지 않은 숫자는 지어내지 않고 빨간 빈칸으로 남겼습니다. 가상 고객사 자료로 만든 교육용 시연입니다. |
 
 </details>
 
