@@ -16,7 +16,7 @@
 
 ## 🚀 Projects
 
-<!-- 프로젝트 추가: .github/assets/cards.mjs 의 cards 배열에 항목을 넣고 node .github/assets/cards.mjs 실행 → 아래 첫 표 맨 앞에 <td> 칸 추가 (한 줄에 2칸, 첫 화면은 4칸 유지, 밀려난 칸은 '더 보기' 표로 옮김) -->
+<!-- 프로젝트 추가: .github/assets/cards.mjs 의 cards 배열에 항목을 넣고 node .github/assets/cards.mjs 실행 → 아래 첫 표 맨 앞에 <td> 칸 추가 (한 줄에 2칸, 첫 화면은 4칸 유지, 밀려난 칸은 '더 보기' 표로 옮기고 cards.mjs 의 more 목록도 고친 뒤 다시 실행) -->
 
 <table>
   <tr>
@@ -50,7 +50,7 @@
 </table>
 
 <details>
-<summary><b>📂 프로젝트 더 보기 (3개)</b></summary>
+<summary><img src=".github/assets/more-projects.svg" width="100%" alt="프로젝트 더 보기 (3개): HTML 모션 PPT, AI 직군 적성검사, 에이전트 팀 관제 대시보드"></summary>
 
 <br>
 
