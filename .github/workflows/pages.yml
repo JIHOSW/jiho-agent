@@ -9,6 +9,7 @@ on:
       - 'ai 직무적성검사/**'
       - '에이전트 팀 관제 대시보드/**'
       - 'B2B 영업제안서 html 모션 ppt/**'
+      - '기술지원 티켓 에이전트/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -52,6 +53,9 @@ jobs:
           # B2B 영업제안서 모션 HTML(단일 파일): 짧은 주소(b2b-proposal)
           mkdir -p "$RUNNER_TEMP/jiho-pages/b2b-proposal"
           cp "B2B 영업제안서 html 모션 ppt/대현테크_제안서_모션.html" "$RUNNER_TEMP/jiho-pages/b2b-proposal/index.html"
+          # 기술지원 티켓 에이전트(단일 HTML): 짧은 주소(support-agent)
+          mkdir -p "$RUNNER_TEMP/jiho-pages/support-agent"
+          cp "기술지원 티켓 에이전트/index.html" "$RUNNER_TEMP/jiho-pages/support-agent/index.html"
       - name: Upload presentation
         uses: actions/upload-pages-artifact@v4
         with:
