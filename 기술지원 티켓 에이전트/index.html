@@ -57,6 +57,7 @@ h1{font-size:22px;font-weight:700;letter-spacing:-.01em}
 .newbox h3{font-size:13.5px;margin-bottom:6px}
 .newbox input,.newbox textarea,.draft,.note{width:100%;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff;margin-bottom:6px;resize:vertical}
 .newbox textarea{min-height:84px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
 .chip{font-size:12px;border:1px dashed #b9b3a4;border-radius:999px;padding:1px 9px;background:#fff;cursor:pointer}
 .btn{border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:9px;padding:7px 14px;font-weight:600;cursor:pointer}
@@ -145,11 +146,13 @@ footer{color:var(--muted);font-size:12.5px;margin-top:18px;text-align:center}
       <h2>티켓함 <button class="btn ghost sm" id="reset">처음으로</button></h2>
       <div class="pad" id="inbox"></div>
       <div class="newbox">
-        <h3>문의를 직접 넣어 보기</h3>
+        <h3>티켓 직접 추가</h3>
         <div class="chips" id="chips"></div>
-        <input id="fCo" placeholder="고객사 이름 (선택)" maxlength="30">
-        <textarea id="fBody" placeholder="예) 비밀번호 재설정 메일이 안 와요" maxlength="400"></textarea>
-        <button class="btn" id="fGo">티켓 접수</button>
+        <div class="two"><input id="fCo" placeholder="고객사 (선택)" maxlength="30"><input id="fPerson" placeholder="담당자 (선택)" maxlength="20"></div>
+        <input id="fSub" placeholder="제목 (비우면 내용 첫 줄)" maxlength="40">
+        <textarea id="fBody" placeholder="문의 내용. 예) 비밀번호 재설정 메일이 안 와요" maxlength="400"></textarea>
+        <div class="actions"><button class="btn" id="fAdd">티켓함에 추가</button><button class="btn ghost" id="fGo">추가하고 바로 처리</button></div>
+        <p class="hint" style="font-size:12px;color:var(--muted);margin-top:8px">추가한 티켓과 쌓인 KB는 이 브라우저에 저장됩니다. [처음으로]를 누르면 지워집니다.</p>
       </div>
     </section>
 
@@ -357,9 +360,20 @@ const $ = id => document.getElementById(id);
 const fast = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const wait = ms => new Promise(r => setTimeout(r, fast ? 60 : ms));
 
-function init(){
-  kb = seedKB(); tickets = seedTickets(); tickets.forEach(t => t.status = '대기');
-  stats = {done:0, first:0, esc:0, fed:0}; seq = 2500; devSeq = 318; kbSeq = 110; activeId = null; runId++;
+// 티켓·KB·집계는 이 브라우저(localStorage)에 저장해 새로 고쳐도 이어진다
+const KEY = 'wb-support-v1';
+function save(){ try { localStorage.setItem(KEY, JSON.stringify({kb, tickets, stats, seq, devSeq, kbSeq})); } catch (e) {} }
+function init(reset){
+  let s = null;
+  if (reset) { try { localStorage.removeItem(KEY); } catch (e) {} }
+  else { try { s = JSON.parse(localStorage.getItem(KEY)); } catch (e) {} }
+  if (s && Array.isArray(s.kb) && Array.isArray(s.tickets) && s.stats) {
+    ({kb, tickets, stats, seq, devSeq, kbSeq} = s); tickets.forEach(t => { if (!t.final) t.status = '대기'; });
+  } else {
+    kb = seedKB(); tickets = seedTickets(); tickets.forEach(t => t.status = '대기');
+    stats = {done:0, first:0, esc:0, fed:0}; seq = 2500; devSeq = 318; kbSeq = 110;
+  }
+  activeId = null; runId++;
   $('stage').innerHTML = '<div class="empty"><b>왼쪽에서 티켓을 고르세요</b>1번부터 순서대로 보면, 3번에서 새로 만든 KB 문서가 4번 티켓을 1차에서 해결하는 흐름을 볼 수 있습니다.</div>';
   renderInbox(); renderKB(); renderStats();
 }
@@ -385,7 +399,7 @@ function renderStats(){
   const s = [['처리한 티켓',stats.done],['1차 해결',stats.first],['2차 전달',stats.esc],['KB 환류',stats.fed]];
   $('stats').innerHTML = s.map(([l,v]) => `<div class="stat"><span>${l}</span><b>${v}</b></div>`).join('');
 }
-function setStatus(t, s){ t.status = s; renderInbox(); }
+function setStatus(t, s){ t.status = s; renderInbox(); save(); }
 
 /* ───────── 4. 에이전트 실행 ───────── */
 async function run(t){
@@ -422,7 +436,7 @@ async function run(t){
     if (res !== 'ok') { finish('엔지니어 직접 처리'); return null; }
     setStatus(t, '처리 중'); return true;
   };
-  const finish = (status) => { t.final = true; stats.done++; setStatus(t, status); renderStats(); t.saved = stage.innerHTML; };
+  const finish = (status) => { t.final = true; stats.done++; setStatus(t, status); renderStats(); t.saved = stage.innerHTML; save(); };
 
   // ① 분류
   const text = t.subject + ' ' + t.body, cs = extractConcepts(text), cls = classify(text, cs), sla = SLA[cls.pri];
@@ -529,16 +543,20 @@ $('inbox').onclick = e => {
 };
 $('chips').innerHTML = SAMPLES.map(s => `<button class="chip">${esc(s)}</button>`).join('');
 $('chips').onclick = e => { if (e.target.classList.contains('chip')) $('fBody').value = e.target.textContent; };
-$('fGo').onclick = () => {
-  const body = $('fBody').value.trim(); if (!body) { $('fBody').focus(); return; }
-  const now = new Date(), first = body.split('\n')[0];
-  const t = {id:'T-' + (++seq), co: $('fCo').value.trim() || '직접 입력 고객', person:'', free:true, status:'대기',
+function addTicket(){
+  const body = $('fBody').value.trim(); if (!body) { $('fBody').focus(); return null; }
+  const now = new Date(), first = $('fSub').value.trim() || body.split('\n')[0];
+  const t = {id:'T-' + (++seq), co: $('fCo').value.trim() || '직접 추가 고객', person: $('fPerson').value.trim(), free:true, status:'대기', hint:'직접 추가한 티켓',
     at: String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0'),
     subject: first.length > 34 ? first.slice(0,34) + '…' : first, body};
-  tickets.push(t); $('fBody').value = ''; run(t);
+  tickets.push(t); ['fBody','fSub'].forEach(id => $(id).value = ''); renderInbox(); save(); return t;
+}
+$('fAdd').onclick = () => { if (addTicket()) $('inbox').lastElementChild.scrollIntoView({block:'nearest', behavior:'smooth'}); };
+$('fGo').onclick = () => {
+  const t = addTicket(); if (!t) return; run(t);
   if (innerWidth <= 760) $('main').scrollIntoView({behavior:'smooth'});
 };
-$('reset').onclick = init;
+$('reset').onclick = () => init(true);
 init();
 const play = new URLSearchParams(location.search).get('play');
 if (play && tickets[play-1]) run(tickets[play-1]);
