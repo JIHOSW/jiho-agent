@@ -17,6 +17,7 @@ const cards = [
   ['card-career', '05', '개인 기획·구현', 'AI 직군 적성검사', ['상황·관심 영역에 따라 갈래가 나뉘는', '대화형 AI 직군 적성검사 에이전트'], ['규칙 기반', 'AI 직군 42개', '웹 체험'], '#06B6D4'],
   ['card-switchboard', '06', '개인 학습·실습', '에이전트 팀 관제 대시보드', ['블로그 에이전트의 역할과 업무 흐름을', '애니메이션으로 보여 주는 관제 화면'], ['Tailwind', '애니메이션', '시연용 수치 표시'], '#EAB308'],
   ['card-b2b', '07', '개인 학습·실습', 'B2B 영업제안서 모션 PPT', ['고객 미팅 내용을 요구표·목차로 정리해', '만든 10장 모션 HTML 제안서'], ['요구 분석', '모션 HTML', 'PPT 초안'], '#10B981'],
+  ['card-support', '08', '개인 기획·구현', '기술지원 티켓 에이전트', ['문의 분류부터 답변 초안, KB 환류까지', '잇는 기술지원 1차 대응 에이전트'], ['SLA 분류', '사람 승인', 'KB 환류'], '#0F766E'],
 ];
 for (const [file, num, cat, title, lines, tags, ac] of cards) {
   let x = 40;
@@ -38,7 +39,7 @@ for (const [file, num, cat, title, lines, tags, ac] of cards) {
 console.log('cards', cards.length);
 
 // '프로젝트 더 보기' 버튼 이미지: 접힌 표에 들어간 프로젝트가 바뀌면 아래 목록을 고치고 다시 실행
-const more = ['HTML 모션 PPT', 'AI 직군 적성검사', '에이전트 팀 관제 대시보드'];
+const more = ['AI 블로그 자동화 에이전트', 'HTML 모션 PPT', 'AI 직군 적성검사', '에이전트 팀 관제 대시보드'];
 {
   const sub = more.join('  ·  ');
   writeFileSync(`${out}/more-projects.svg`, `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="128" viewBox="0 0 1200 128">
@@ -50,7 +51,7 @@ const more = ['HTML 모션 PPT', 'AI 직군 적성검사', '에이전트 팀 관
 <rect x="40" y="34" width="60" height="60" rx="18" fill="#FFFFFF"/>
 <text x="70" y="77" fill="#0F1422" font-size="30" font-weight="800" text-anchor="middle">+${more.length}</text>
 <text x="124" y="60" fill="#FFFFFF" font-size="32" font-weight="800">프로젝트 더 보기</text>
-<text x="124" y="94" fill="#CBD5E1" font-size="19">${sub}</text>
+<text x="124" y="94" fill="#CBD5E1" font-size="17">${sub}</text>
 <rect x="1000" y="38" width="160" height="52" rx="26" fill="#FFFFFF"/>
 <text x="1062" y="72" fill="#0F1422" font-size="20" font-weight="800" text-anchor="middle">펼치기</text>
 <path d="M1112 58 l10 10 l10 -10" fill="none" stroke="#0F1422" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>

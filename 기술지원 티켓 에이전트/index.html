@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>기술지원 티켓 에이전트 · 워크브릿지</title>
+<meta name="description" content="고객 문의를 분류하고, 지식베이스를 찾아 답변 초안을 쓰고, 해결된 티켓을 다시 지식베이스로 돌려보내는 기술지원 에이전트 시연">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#f3f1ec; --card:#ffffff; --ink:#17202b; --muted:#667085; --line:#e2ded5; --soft:#f8f6f1;
+  --teal:#0f766e; --teal-bg:#e3f3f0; --amber:#b45309; --amber-bg:#fdf1dc; --red:#b42318; --red-bg:#fde8e6;
+  --blue:#1d4ed8; --blue-bg:#e6edfd; --violet:#6d28d9; --violet-bg:#efe8fd;
+  --body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:var(--body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+button,textarea,input{font:inherit;color:inherit}
+h1,h2,h3,p{margin:0}
+.wrap{max-width:1400px;margin:0 auto;padding:0 16px 48px}
+header.top{padding:22px 0 14px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:42px;height:42px;border-radius:12px;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:700;font-family:var(--mono);font-size:14px}
+h1{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.flow{color:var(--muted);font-size:13.5px}
+.flow b{color:var(--ink);font-weight:600}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 12px;min-width:86px}
+.stat span{display:block;font-size:11.5px;color:var(--muted)}
+.stat b{font-size:18px;font-variant-numeric:tabular-nums}
+.notice{background:var(--amber-bg);border:1px solid #f1d9a8;color:#7a4a08;border-radius:10px;padding:9px 14px;font-size:13.5px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:300px minmax(0,1fr) 340px;gap:14px;align-items:start}
+.col{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.col>h2{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--muted);padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.pad{padding:12px}
+.mono{font-family:var(--mono);font-size:12px}
+.badge{display:inline-flex;align-items:center;font-size:11.5px;font-weight:600;border-radius:999px;padding:1px 9px;white-space:nowrap;background:var(--soft);color:var(--muted);border:1px solid var(--line)}
+.b-teal{background:var(--teal-bg);color:var(--teal);border-color:transparent}
+.b-amber{background:var(--amber-bg);color:var(--amber);border-color:transparent}
+.b-red{background:var(--red-bg);color:var(--red);border-color:transparent}
+.b-blue{background:var(--blue-bg);color:var(--blue);border-color:transparent}
+.b-violet{background:var(--violet-bg);color:var(--violet);border-color:transparent}
+
+/* 티켓함 */
+.ticket{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.ticket:hover{border-color:#b9b3a4}
+.ticket.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.ticket .row{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.ticket .who{font-size:12px;color:var(--muted)}
+.ticket .sub{font-weight:600;font-size:14px;margin:3px 0 2px;line-height:1.4}
+.ticket .hint{font-size:12px;color:var(--muted)}
+.newbox{border-top:1px solid var(--line);padding:12px;background:var(--soft)}
+.newbox h3{font-size:13.5px;margin-bottom:6px}
+.newbox input,.newbox textarea,.draft,.note{width:100%;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff;margin-bottom:6px;resize:vertical}
+.newbox textarea{min-height:84px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.chip{font-size:12px;border:1px dashed #b9b3a4;border-radius:999px;padding:1px 9px;background:#fff;cursor:pointer}
+.btn{border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:9px;padding:7px 14px;font-weight:600;cursor:pointer}
+.btn:hover{opacity:.9}
+.btn.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn.ok{background:var(--teal);border-color:var(--teal)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.sm{padding:3px 10px;font-size:12.5px}
+
+/* 처리 과정 */
+.empty{padding:56px 24px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
+.thead{padding:14px 16px;border-bottom:1px solid var(--line);background:var(--soft)}
+.thead .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}
+.thead h3{font-size:17px;line-height:1.4}
+.quote{margin-top:8px;border-left:3px solid var(--line);padding:2px 0 2px 12px;color:#3b4654;white-space:pre-wrap;overflow-wrap:anywhere}
+.log{padding:16px 16px 20px}
+.step{position:relative;padding:0 0 16px 40px;animation:in .35s ease both}
+.step::before{content:"";position:absolute;left:13px;top:28px;bottom:0;width:2px;background:var(--line)}
+.step:last-child::before{display:none}
+.dot{position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;background:var(--teal-bg);color:var(--teal);display:grid;place-items:center;font-size:12.5px;font-weight:700;font-family:var(--mono)}
+.step.human .dot{background:var(--amber-bg);color:var(--amber)}
+.step.esc .dot{background:var(--violet-bg);color:var(--violet)}
+.step.kb .dot{background:var(--blue-bg);color:var(--blue)}
+.step .t{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;min-height:28px}
+.step .t b{font-size:15px}
+.step .tool{font-family:var(--mono);font-size:11.5px;color:var(--muted);background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:0 6px}
+.step .body{margin-top:6px;font-size:14px}
+.step ul,.step ol{margin:4px 0;padding-left:20px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px}
+.kv dt{color:var(--muted);font-size:13px}
+.kv dd{margin:0;overflow-wrap:anywhere}
+.box{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--soft);margin-top:6px}
+.box.amber{background:var(--amber-bg);border-color:#f1d9a8}
+.box h4{margin:0 0 4px;font-size:13px;color:var(--muted);font-weight:600}
+.hit{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--line)}
+.hit:last-child{border-bottom:0}
+.bar{width:64px;height:6px;border-radius:3px;background:var(--line);overflow:hidden;flex:none}
+.bar i{display:block;height:100%;background:var(--teal)}
+.draft{min-height:230px;font-size:13.5px;line-height:1.65;margin:6px 0 8px}
+.note{min-height:70px;font-size:13.5px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.think{display:flex;gap:5px;padding:2px 0 14px 40px}
+.think i{width:7px;height:7px;border-radius:50%;background:#b9b3a4;animation:bl 1s infinite}
+.think i:nth-child(2){animation-delay:.15s}.think i:nth-child(3){animation-delay:.3s}
+@keyframes bl{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes flash{0%{background:#d6ecff}100%{background:transparent}}
+
+/* KB */
+.kbitem{border-bottom:1px solid var(--line);padding:10px 14px}
+.kbitem:last-child{border-bottom:0}
+.kbitem.flash{animation:flash 2.4s ease}
+.kbitem summary{cursor:pointer;list-style:none}
+.kbitem summary::-webkit-details-marker{display:none}
+.kbitem .ttl{font-weight:600;font-size:14px;line-height:1.4;margin:2px 0}
+.kbitem .in{font-size:13px;margin-top:8px;color:#3b4654}
+.kbitem .in h4{font-size:12px;color:var(--muted);margin:8px 0 2px}
+.sla{font-size:12.5px;width:100%;border-collapse:collapse}
+.sla td,.sla th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left}
+.sla th{color:var(--muted);font-weight:600}
+footer{color:var(--muted);font-size:12.5px;margin-top:18px;text-align:center}
+@media (max-width:1100px){.grid{grid-template-columns:280px minmax(0,1fr)}.kbcol{grid-column:1/-1}}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}h1{font-size:19px}.stat{min-width:70px;flex:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brand">
+        <div class="logo">WB</div>
+        <div>
+          <h1>기술지원 티켓 에이전트</h1>
+          <p class="flow"><b>분류</b> → <b>고객 기록 조회</b> → <b>KB 검색</b> → <b>답변 초안</b> → <b>사람 승인</b> → <b>KB 환류</b></p>
+        </div>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+  </header>
+  <p class="notice">가상의 문서관리 SaaS <b>워크브릿지</b>의 기술지원팀을 가정한 시연입니다. 고객사·기록·지식베이스(KB)는 모두 가상 데이터이고, 분류와 검색은 규칙 기반으로 이 브라우저 안에서만 동작합니다(LLM 호출 없음). 고객에게 보내는 답변은 지원 엔지니어가 승인해야 발송됩니다.</p>
+
+  <div class="grid">
+    <section class="col">
+      <h2>티켓함 <button class="btn ghost sm" id="reset">처음으로</button></h2>
+      <div class="pad" id="inbox"></div>
+      <div class="newbox">
+        <h3>문의를 직접 넣어 보기</h3>
+        <div class="chips" id="chips"></div>
+        <input id="fCo" placeholder="고객사 이름 (선택)" maxlength="30">
+        <textarea id="fBody" placeholder="예) 비밀번호 재설정 메일이 안 와요" maxlength="400"></textarea>
+        <button class="btn" id="fGo">티켓 접수</button>
+      </div>
+    </section>
+
+    <section class="col" id="main">
+      <h2>처리 과정</h2>
+      <div id="stage">
+        <div class="empty"><b>왼쪽에서 티켓을 고르세요</b>1번부터 순서대로 보면, 3번에서 새로 만든 KB 문서가 4번 티켓을 1차에서 해결하는 흐름을 볼 수 있습니다.</div>
+      </div>
+    </section>
+
+    <section class="col kbcol">
+      <h2>지식베이스 <span class="badge" id="kbCount"></span></h2>
+      <div id="kb"></div>
+      <div class="newbox">
+        <h3>긴급도와 SLA 기준</h3>
+        <table class="sla">
+          <tr><th>등급</th><th>기준</th><th>첫 응답</th><th>해결 목표</th></tr>
+          <tr><td><span class="badge b-red">P1</span></td><td>전체 사용 불가</td><td>30분</td><td>4시간</td></tr>
+          <tr><td><span class="badge b-amber">P2</span></td><td>일부 기능 오류</td><td>2시간</td><td>1영업일</td></tr>
+          <tr><td><span class="badge b-blue">P3</span></td><td>사용 중 불편</td><td>4시간</td><td>3영업일</td></tr>
+          <tr><td><span class="badge">P4</span></td><td>사용법 문의</td><td>1영업일</td><td>5영업일</td></tr>
+        </table>
+      </div>
+    </section>
+  </div>
+  <footer>개인 학습용 포트폴리오입니다. 워크브릿지와 고객사는 실제 회사·제품이 아닙니다.</footer>
+</div>
+
+<script>
+/* ───────── 1. 기준 데이터 ───────── */
+// 개념 사전: 고객이 쓰는 여러 표현을 하나의 개념으로 묶는다. cat은 문의 유형.
+const CONCEPTS = {
+  login:{l:'로그인',cat:'계정·로그인',v:['로그인','로그온','접속이 안','접속 불가']},
+  sso:{l:'SSO',cat:'계정·로그인',v:['sso','saml','통합인증','싱글사인온','사내 계정']},
+  allusers:{l:'전체 사용자',v:['전 직원','전직원','전체 사용자','모든 직원','모든 사용자','전사','아무도']},
+  password:{l:'비밀번호',cat:'계정·로그인',v:['비밀번호','패스워드','비번']},
+  mail:{l:'메일',cat:'계정·로그인',v:['메일']},
+  notreceived:{l:'미수신',v:['안 와','안와','미수신','오지 않','못 받','안 옵','안옵']},
+  csv:{l:'일괄 등록',cat:'계정·로그인',v:['csv','일괄 등록','일괄등록']},
+  newuser:{l:'사용자 등록',cat:'계정·로그인',v:['사용자 등록','사용자를 등록','계정 생성','신규 사용자','신입']},
+  search:{l:'검색',cat:'검색·게시',v:['검색','찾을 수','찾아도']},
+  draft:{l:'임시 저장',cat:'검색·게시',v:['임시 저장','임시저장','저장했','저장은','저장한']},
+  publish:{l:'게시',cat:'검색·게시',v:['게시']},
+  colleague:{l:'다른 사용자',v:['동료','다른 사람','팀원','다른 사용자','다른 직원']},
+  permission:{l:'권한',cat:'권한',v:['권한','접근이 거부','접근 거부','403']},
+  folder:{l:'문서함',cat:'권한',v:['문서함','폴더']},
+  upload:{l:'업로드',cat:'업로드·이관',v:['업로드','올리','올린','올라가']},
+  large:{l:'대용량',cat:'업로드·이관',v:['대용량','용량','gb','큰 파일']},
+  migration:{l:'이관',cat:'업로드·이관',v:['이관','마이그레이션','옮기','옮긴']},
+  missing:{l:'누락',cat:'업로드·이관',v:['누락','빠졌','빠져','없어졌','사라졌']},
+  version:{l:'버전',cat:'문서 보기·버전',v:['버전','복원','되돌리','덮어']},
+  preview:{l:'미리보기',cat:'문서 보기·버전',v:['미리보기','미리 보기','프리뷰','preview']},
+  blank:{l:'빈 화면',cat:'문서 보기·버전',v:['빈 화면','하얗','흰 화면','백지','아무것도 안']},
+  excel:{l:'엑셀',cat:'문서 보기·버전',v:['엑셀','xlsx','excel']},
+  slow:{l:'지연',cat:'성능·장애',v:['느려','느립','느림','지연','오래 걸']},
+  outage:{l:'서비스 장애',cat:'성능·장애',v:['장애','다운됐','서버 오류','500','502','503']},
+  billing:{l:'계약·요금',cat:'계약·요금',v:['요금','결제','청구','계약','라이선스','세금계산서']},
+};
+const CAT_ORDER = ['성능·장애','계정·로그인','권한','검색·게시','업로드·이관','문서 보기·버전','계약·요금'];
+const SLA = {
+  P1:{cls:'b-red',why:'전체 사용자가 쓰지 못하는 상황',first:30,firstL:'30분',goal:'4시간'},
+  P2:{cls:'b-amber',why:'일부 사용자·기능에서 오류 발생',first:120,firstL:'2시간',goal:'1영업일'},
+  P3:{cls:'b-blue',why:'사용은 가능하나 불편이 있는 상황',first:240,firstL:'4시간',goal:'3영업일'},
+  P4:{cls:'',why:'사용법·일반 문의',first:480,firstL:'1영업일',goal:'5영업일'},
+};
+const QUESTIONS = {
+  '계정·로그인':['로그인 화면에 표시되는 오류 문구를 그대로 알려 주세요.','한 분만 그런지, 여러 분이 같은 증상인지 알려 주세요.','사내 계정(SSO)으로 로그인하는지, 워크브릿지 비밀번호로 로그인하는지 알려 주세요.'],
+  '권한':['접근하려는 문서함 이름과 사용자 계정(이메일)을 알려 주세요.','화면에 표시되는 오류 문구를 알려 주세요.'],
+  '검색·게시':['찾으려는 문서의 제목이나 문서 번호를 알려 주세요.','문서를 올린 분과 검색하는 분이 같은 분인지 알려 주세요.'],
+  '업로드·이관':['파일 형식과 크기를 알려 주세요.','오류 문구가 나오면 그대로 알려 주세요.'],
+  '문서 보기·버전':['증상이 나타나는 파일의 형식과 이름을 알려 주세요.','모든 파일에서 그런지, 일부 파일만 그런지 알려 주세요.'],
+  '성능·장애':['증상이 시작된 시각을 알려 주세요.','모든 사용자가 같은 증상인지 알려 주세요.'],
+  '기타':['어떤 화면에서 어떤 작업을 하다가 생긴 일인지 알려 주세요.','화면에 표시되는 오류 문구가 있으면 그대로 알려 주세요.','언제부터, 몇 분에게 나타나는지 알려 주세요.'],
+};
+
+function seedKB(){ return [
+  {id:'KB-101',title:'저장한 문서가 다른 사용자에게 검색되지 않음',c:['draft','publish','colleague','search'],
+   cause:'임시 저장 상태의 문서는 작성자만 볼 수 있습니다. 게시해야 문서함 구성원에게 공유되고 검색됩니다.',
+   steps:['문서를 열고 오른쪽 위의 [게시]를 누릅니다.','게시할 문서함과 공개 범위를 확인하고 [확인]을 누릅니다.','게시 후 검색에 반영되기까지 최대 10분이 걸릴 수 있습니다.'],
+   verify:'동료 계정에서 문서 제목으로 검색해 결과에 나오는지 확인합니다.',cases:14},
+  {id:'KB-102',title:'문서함에 들어가면 "접근 권한이 없습니다"가 표시됨',c:['permission','folder'],
+   cause:'사용자가 해당 문서함의 권한 그룹에 포함되어 있지 않습니다.',
+   steps:['고객사 관리자가 [관리자 > 문서함 > 권한]을 엽니다.','사용자 또는 소속 부서를 "보기" 이상 권한으로 추가합니다.','사용자가 다시 로그인합니다.'],
+   verify:'사용자 화면의 문서함 목록에 해당 문서함이 보이는지 확인합니다.',cases:22},
+  {id:'KB-103',title:'SSO 로그인 실패 (SAML 인증 오류)',c:['sso','login'],
+   cause:'고객사 인증 서버(IdP)에 등록된 ACS URL이 워크브릿지의 값과 다르면 SAML 응답 검증에 실패해 모든 SSO 로그인이 거부됩니다.',
+   steps:['워크브릿지 [관리자 > 인증 설정]에 표시된 ACS URL을 복사합니다.','고객사 IdP 관리 화면에서 워크브릿지 앱의 ACS URL을 복사한 값으로 맞추고 저장합니다.','테스트 계정으로 SSO 로그인을 시도합니다.','복구 전까지 급한 사용자는 관리자가 [임시 비밀번호 발급]으로 로그인하게 할 수 있습니다.'],
+   verify:'테스트 계정 로그인이 성공하고 인증 실패 기록이 더 쌓이지 않는지 확인합니다.',cases:6},
+  {id:'KB-104',title:'비밀번호 재설정 메일이 오지 않음',c:['password','mail','notreceived'],
+   cause:'고객사 메일 서버가 발신 주소(no-reply@workbridge.example)를 스팸으로 분류하거나 차단한 경우가 가장 많습니다.',
+   steps:['스팸 메일함을 확인합니다.','고객사 메일 관리자에게 발신 도메인 workbridge.example 허용을 요청합니다.','급하면 고객사 관리자가 [관리자 > 사용자]에서 임시 비밀번호를 발급합니다.'],
+   verify:'재설정 메일을 다시 요청해 5분 안에 도착하는지 확인합니다.',cases:31},
+  {id:'KB-105',title:'큰 파일 업로드가 실패함',c:['upload','large'],
+   cause:'웹 브라우저 업로드는 파일 1개당 2GB까지 지원합니다.',
+   steps:['2GB가 넘는 파일은 데스크톱 앱으로 올립니다.','데스크톱 앱을 쓸 수 없으면 파일을 나누어 올립니다.'],
+   verify:'업로드한 파일이 문서함 목록에 나타나고 크기가 원본과 같은지 확인합니다.',cases:9},
+  {id:'KB-106',title:'문서를 이전 버전으로 되돌리는 방법',c:['version'],
+   cause:'같은 이름으로 다시 올리면 새 버전으로 쌓이고, 이전 버전은 지워지지 않습니다.',
+   steps:['문서를 열고 [버전 기록]을 누릅니다.','되돌릴 버전을 고르고 [이 버전으로 복원]을 누릅니다.'],
+   verify:'문서의 현재 버전 번호가 올라가고 내용이 복원한 버전과 같은지 확인합니다.',cases:17},
+  {id:'KB-107',title:'문서 이관 후 일부 파일이 누락됨',c:['migration','missing'],
+   cause:'파일 이름에 \\ / : * ? 같은 문자가 있거나 경로가 255자를 넘으면 이관에서 제외됩니다.',
+   steps:['[관리자 > 이관 > 결과 보고서]에서 제외된 파일 목록을 내려받습니다.','파일 이름과 경로를 고친 뒤 [실패 항목 재시도]를 누릅니다.'],
+   verify:'결과 보고서의 실패 건수가 0인지 확인합니다.',cases:8},
+  {id:'KB-108',title:'사용자 일괄 등록(CSV)에서 오류가 남',c:['csv','newuser'],
+   cause:'CSV 파일의 인코딩이 UTF-8이 아니거나 필수 열(이메일, 이름, 부서)이 비어 있으면 등록이 거부됩니다.',
+   steps:['[관리자 > 사용자 > 일괄 등록]에서 양식을 내려받습니다.','양식의 열 순서를 그대로 두고 UTF-8(CSV)로 저장합니다.','다시 올리고 오류 행 번호를 확인합니다.'],
+   verify:'등록 결과의 성공 건수가 CSV의 행 수와 같은지 확인합니다.',cases:11},
+  {id:'KB-109',title:'게시한 문서가 검색에 늦게 나타남',c:['publish','search','slow'],
+   cause:'게시한 문서가 검색에 반영되기까지 최대 10분이 걸립니다.',
+   steps:['게시 후 10분 뒤에 다시 검색합니다.','30분이 지나도 나오지 않으면 문서 번호와 함께 기술지원팀에 알려 주세요.'],
+   verify:'문서 제목으로 검색해 결과에 나오는지 확인합니다.',cases:5},
+]; }
+
+const DEV_NOTE = {
+  cause:'시트 보호(암호)가 걸린 xlsx 파일은 미리보기 변환기가 내용을 읽지 못해 빈 화면으로 표시됩니다.',
+  fix:'엑셀에서 [검토 > 시트 보호 해제]를 한 뒤 파일을 다시 올립니다.\n바로 내용을 봐야 하면 파일을 내려받아 엽니다.\n변환기 수정은 다음 정기 배포(2.8.1)에 포함될 예정입니다.',
+  verify:'다시 올린 파일의 미리보기에 첫 시트 내용이 보이는지 확인합니다.',
+};
+function seedTickets(){ return [
+  {id:'T-2411',co:'모노랩',person:'박서연 대리',at:'09:12',subject:'저장한 문서가 동료에게 검색되지 않습니다',
+   body:'어제 품의서 문서를 저장했는데 동료가 검색해도 안 나온다고 합니다. 제 화면에서는 잘 보입니다.',
+   hint:'사용법 문의 · KB로 1차 해결',
+   records:['문서 DOC-104 현재 상태: DRAFT (임시 저장)','최근 7일 동안 게시 이벤트 기록 없음','작성자 권한: 문서함 "경영지원" 편집자 (게시 가능)'],
+   evidence:'문서가 임시 저장 상태이고 게시 기록이 없어 KB 문서의 원인과 일치합니다.'},
+  {id:'T-2412',co:'한빛물류',person:'이정훈 과장',at:'08:47',subject:'전 직원 SSO 로그인 실패',
+   body:'오늘 아침부터 전 직원이 SSO 로그인이 안 됩니다. 로그인 화면에서 인증 오류가 나고 업무가 중단됐습니다. 긴급 확인 부탁드립니다.',
+   hint:'P1 긴급 · 30분 안에 첫 응답',
+   records:['08:31부터 SAML 인증 실패 142건 (오류 코드 SAML_DESTINATION_MISMATCH)','어제 18:20 고객사 IdP 설정 변경 이력: ACS URL 수정','워크브릿지 서비스 상태 정상 (같은 시간 다른 고객사 로그인 성공)'],
+   evidence:'어제 저녁 ACS URL이 바뀐 뒤부터 Destination 불일치 오류가 나고 있어 KB 문서의 원인과 일치합니다.'},
+  {id:'T-2413',co:'그린푸드',person:'최민지 주임',at:'10:05',subject:'엑셀 파일 미리보기가 빈 화면으로 나옵니다',
+   body:'일부 엑셀 파일을 열면 미리보기가 빈 화면으로 나옵니다. 다른 파일은 괜찮고, 내려받으면 정상으로 열립니다.',
+   hint:'KB에 없는 문제 · 2차 전달 후 KB 문서 생성',
+   records:['미리보기 변환 실패 9건 (오류 코드 PREVIEW_RENDER_FAIL)','실패한 9건 모두 .xlsx 파일이고 구매팀이 등록','같은 기간 pdf, docx 미리보기는 정상'],
+   repro:['구매팀 문서함에서 "6월 단가표.xlsx"를 연다','미리보기 영역이 빈 화면으로 표시된다','파일을 내려받으면 정상으로 열린다'],
+   impact:'구매팀 사용자 12명, 파일 9건. 내려받아 여는 것은 가능',
+   evidence:'오류 코드와 파일 형식이 KB 문서의 증상과 같습니다.',dev:DEV_NOTE,kbTitle:'엑셀(xlsx) 미리보기가 빈 화면으로 표시됨'},
+  {id:'T-2414',co:'세움건설',person:'강태호 차장',at:'13:40',subject:'현장 엑셀 발주서 미리보기가 하얗게 보입니다',
+   body:'현장에서 올린 엑셀 발주서가 미리보기에서 하얗게만 보입니다. 휴대폰과 PC 모두 같습니다.',
+   hint:'3번과 같은 문제 · 3번을 끝낸 뒤 열어 보세요',
+   records:['미리보기 변환 실패 3건 (오류 코드 PREVIEW_RENDER_FAIL)','실패한 3건 모두 .xlsx 파일이고 시트 보호가 설정됨'],
+   repro:['현장관리 문서함에서 "7월 발주서.xlsx"를 연다','미리보기 영역이 하얗게 표시된다'],
+   impact:'현장 관리자 4명, 파일 3건',
+   evidence:'실패한 파일이 모두 시트 보호가 걸린 xlsx여서 KB 문서의 원인과 일치합니다.',dev:DEV_NOTE,kbTitle:'엑셀(xlsx) 미리보기가 빈 화면으로 표시됨'},
+]; }
+const SAMPLES = ['비밀번호 재설정 메일이 안 와요','신입 사원 50명을 CSV로 일괄 등록하는데 오류가 납니다','문서함에 들어가면 접근 권한이 없다고 나옵니다','대용량 엑셀 파일 미리보기가 너무 느립니다','로그인이 안 돼요','세금계산서 재발행 부탁드립니다'];
+
+/* ───────── 2. 에이전트가 쓰는 도구 (규칙 기반) ───────── */
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function extractConcepts(text){
+  const t = text.toLowerCase();
+  return Object.keys(CONCEPTS).filter(k => CONCEPTS[k].v.some(v => t.includes(v)));
+}
+function classify(text, cs){
+  const count = {};
+  cs.forEach(k => { const c = CONCEPTS[k].cat; if (c) count[c] = (count[c]||0) + 1; });
+  const cat = CAT_ORDER.filter(c => count[c]).sort((a,b) => count[b]-count[a])[0] || '기타';
+  const errWord = ['오류','실패','에러','안 됩','안 돼','안돼','안됩','불가'].find(w => text.includes(w));
+  const askWord = ['방법','어떻게','알려','문의드','가능한가','되나요'].find(w => text.includes(w));
+  const urgent = ['긴급','급합','중단','마비','당장'].find(w => text.includes(w));
+  let lv, why;
+  if (cs.includes('allusers') || cs.includes('outage')) { lv = 1; why = cs.includes('allusers') ? '전체 사용자에게 영향' : '서비스 장애 표현'; }
+  else if (errWord || ['blank','permission','missing','login'].some(k => cs.includes(k))) { lv = 2; why = errWord ? `"${errWord}" 표현, 기능이 동작하지 않음` : '기능이 정상 동작하지 않음'; }
+  else if (askWord && !cs.includes('notreceived')) { lv = 4; why = '사용법·일반 문의'; }
+  else { lv = 3; why = '사용은 가능하나 불편이 있음'; }
+  if (urgent && lv > 1) { lv--; why += `, "${urgent}" 표현으로 한 단계 올림`; }
+  return {cat, pri:'P'+lv, why};
+}
+function searchKB(kb, cs){
+  return kb.map(a => {
+    const m = a.c.filter(k => cs.includes(k));
+    return {a, m, score: m.length / a.c.length};
+  }).filter(r => r.m.length).sort((x,y) => y.score - x.score || y.m.length - x.m.length).slice(0,3);
+}
+const isHit = r => r && r.score >= 0.5 && (r.m.length >= 2 || r.a.c.length === 1);
+function addMinutes(hhmm, min){
+  const [h,m] = hhmm.split(':').map(Number); const t = h*60 + m + min;
+  return (t >= 1440 ? '다음 날 ' : '') + String(Math.floor(t/60)%24).padStart(2,'0') + ':' + String(t%60).padStart(2,'0');
+}
+const hello = t => `${t.co}${t.person ? ' ' + t.person : ' 담당자'}님, 안녕하세요.\n워크브릿지 기술지원팀입니다.\n`;
+const bye = '\n감사합니다.\n워크브릿지 기술지원팀 드림';
+const numbered = arr => arr.map((s,i) => `${i+1}. ${s}`).join('\n');
+function replySolve(t, a, pri, fromDev){
+  return hello(t) + `\n문의하신 "${t.subject}" 건${fromDev ? '의 원인을 확인해' : '을 확인해'} 안내드립니다.\n`
+    + (t.records && !fromDev ? `\n[확인한 내용]\n${t.records.slice(0,2).map(r => '- ' + r).join('\n')}\n` : '')
+    + `\n[원인]\n${a.cause}\n\n[조치 방법]\n${numbered(a.steps)}\n\n[확인 방법]\n${a.verify}\n`
+    + (t.records || fromDev ? '' : '\n고객사 기록을 직접 확인하지 못한 상태에서 드리는 안내입니다. 위 방법으로 해결되지 않으면 화면에 나오는 오류 문구를 알려 주세요.\n')
+    + (pri === 'P1' ? '\n해결될 때까지 30분 간격으로 진행 상황을 알려 드리겠습니다.\n' : '\n조치 후에도 같은 증상이 있으면 이 메일에 회신해 주세요.\n') + bye;
+}
+function replyHold(t, pri, issueId){
+  return hello(t) + `\n문의하신 "${t.subject}" 건은 바로 안내드릴 수 있는 해결 방법이 확인되지 않아 개발 담당 부서에 전달했습니다(접수 번호 ${issueId}).\n`
+    + (t.records ? `\n[지금까지 확인한 내용]\n${t.records.map(r => '- ' + r).join('\n')}\n` : '')
+    + `\n원인이 확인되는 대로 다시 안내드리겠습니다. 진행 상황은 ${SLA[pri].goal} 안에 한 번 더 알려 드리겠습니다.\n` + bye;
+}
+function replyAsk(t, cat){
+  return hello(t) + `\n문의 주신 내용을 정확히 확인하기 위해 아래 사항을 알려 주시면 바로 살펴보겠습니다.\n\n${numbered(QUESTIONS[cat] || QUESTIONS['기타'])}\n\n화면을 캡처해 함께 보내 주시면 더 빨리 확인할 수 있습니다.\n` + bye;
+}
+function replyBilling(t){
+  return hello(t) + `\n문의하신 내용은 계약·요금 관련 사항이어서 담당 부서인 고객성공팀에 전달했습니다. 담당자가 1영업일 안에 연락드리겠습니다.\n\n제품 사용 중 불편한 점이 있으면 언제든지 기술지원팀으로 알려 주세요.\n` + bye;
+}
+
+/* ───────── 3. 상태와 화면 ───────── */
+let kb, tickets, stats, runId = 0, activeId = null, seq, devSeq, kbSeq;
+const $ = id => document.getElementById(id);
+const fast = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const wait = ms => new Promise(r => setTimeout(r, fast ? 60 : ms));
+
+function init(){
+  kb = seedKB(); tickets = seedTickets(); tickets.forEach(t => t.status = '대기');
+  stats = {done:0, first:0, esc:0, fed:0}; seq = 2500; devSeq = 318; kbSeq = 110; activeId = null; runId++;
+  $('stage').innerHTML = '<div class="empty"><b>왼쪽에서 티켓을 고르세요</b>1번부터 순서대로 보면, 3번에서 새로 만든 KB 문서가 4번 티켓을 1차에서 해결하는 흐름을 볼 수 있습니다.</div>';
+  renderInbox(); renderKB(); renderStats();
+}
+const STATUS_CLS = {'대기':'','처리 중':'b-blue','승인 대기':'b-amber','2차 확인 중':'b-violet','종결':'b-teal','고객 회신 대기':'b-teal','타 부서 전달':'b-teal','엔지니어 직접 처리':''};
+function renderInbox(){
+  $('inbox').innerHTML = tickets.map((t,i) => `<button class="ticket ${t.id===activeId?'on':''}" data-id="${t.id}">
+    <div class="row"><span class="who mono">${t.id} · ${esc(t.at)}</span><span class="badge ${STATUS_CLS[t.status]||''}">${t.status}</span></div>
+    <div class="sub">${t.free ? '' : (i+1)+'. '}${esc(t.subject)}</div>
+    <div class="who">${esc(t.co)}${t.person ? ' · '+esc(t.person) : ''}</div>
+    ${t.hint ? `<div class="hint">${esc(t.hint)}</div>` : ''}</button>`).join('');
+}
+function renderKB(flashId){
+  $('kbCount').textContent = `문서 ${kb.length}건`;
+  $('kb').innerHTML = kb.slice().reverse().map(a => `<details class="kbitem ${a.id===flashId?'flash':''}" ${a.id===flashId?'open':''}>
+    <summary><div class="row" style="display:flex;justify-content:space-between;gap:6px"><span class="mono">${a.id}</span>
+      <span>${a.isNew ? '<span class="badge b-blue">티켓에서 생성</span> ' : ''}<span class="badge">해결 ${a.cases}건</span></span></div>
+      <div class="ttl">${esc(a.title)}</div>
+      <div>${a.c.map(k => `<span class="badge">${CONCEPTS[k].l}</span>`).join(' ')}</div></summary>
+    <div class="in"><h4>원인</h4>${esc(a.cause)}<h4>조치 방법</h4><ol style="margin:0;padding-left:18px">${a.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
+      <h4>확인 방법</h4>${esc(a.verify)}${a.from ? `<h4>출처</h4>티켓 ${a.from} 해결 내용` : ''}</div></details>`).join('');
+}
+function renderStats(){
+  const s = [['처리한 티켓',stats.done],['1차 해결',stats.first],['2차 전달',stats.esc],['KB 환류',stats.fed]];
+  $('stats').innerHTML = s.map(([l,v]) => `<div class="stat"><span>${l}</span><b>${v}</b></div>`).join('');
+}
+function setStatus(t, s){ t.status = s; renderInbox(); }
+
+/* ───────── 4. 에이전트 실행 ───────── */
+async function run(t){
+  const my = ++runId, alive = () => my === runId;
+  tickets.forEach(x => { if (x.id !== t.id && !x.final) x.status = '대기'; });
+  activeId = t.id; setStatus(t, '처리 중');
+  const stage = $('stage');
+  stage.innerHTML = `<div class="thead"><div class="meta"><span class="mono">${t.id}</span><span class="badge">${esc(t.co)}${t.person ? ' · '+esc(t.person) : ''}</span><span class="badge">${esc(t.at)} 접수</span><span id="hBadges"></span></div>
+    <h3>${esc(t.subject)}</h3><div class="quote">${esc(t.body)}</div></div><div class="log" id="log"></div>`;
+  const log = $('log'); let n = 0;
+  const step = async (o, ms = 800) => {
+    const th = document.createElement('div'); th.className = 'think'; th.innerHTML = '<i></i><i></i><i></i>'; log.appendChild(th);
+    th.scrollIntoView({block:'nearest', behavior:'smooth'});
+    await wait(ms); th.remove(); if (!alive()) return null;
+    const el = document.createElement('div'); el.className = 'step ' + (o.kind || '');
+    el.innerHTML = `<div class="dot">${o.kind === 'human' ? '人' : ++n}</div><div class="t"><b>${o.title}</b>${o.tool ? `<span class="tool">${o.tool}</span>` : ''}${o.badge || ''}</div><div class="body">${o.html}</div>`;
+    log.appendChild(el); el.scrollIntoView({block:'nearest', behavior:'smooth'}); return el;
+  };
+  // 사람 승인: 초안을 고쳐 쓸 수 있고, 승인해야만 발송된다
+  const approve = async (title, draft) => {
+    setStatus(t, '승인 대기');
+    const el = await step({kind:'human', title, badge:'<span class="badge b-amber">사람 승인 필요</span>',
+      html:`<div class="box amber">에이전트는 초안까지만 씁니다. 내용을 확인하고 필요하면 고친 뒤 승인하세요.
+        <textarea class="draft" aria-label="답변 초안">${esc(draft)}</textarea>
+        <div class="actions"><button class="btn ok" data-a="ok">승인하고 발송</button><button class="btn ghost" data-a="no">반려 (직접 처리)</button></div></div>`}, 900);
+    if (!el) return null;
+    const ta = el.querySelector('textarea');
+    const res = await new Promise(r => el.querySelectorAll('button').forEach(b => b.onclick = () => r(b.dataset.a)));
+    if (!alive()) return null;
+    const edited = ta.value.trim() !== draft.trim();
+    ta.readOnly = true; el.querySelector('.actions').innerHTML = res === 'ok'
+      ? `<span class="badge b-teal">${edited ? '엔지니어가 수정한 뒤 승인 · 발송됨(시연)' : '승인 · 발송됨(시연)'}</span>`
+      : '<span class="badge b-red">반려 · 엔지니어가 직접 처리</span>';
+    if (res !== 'ok') { finish('엔지니어 직접 처리'); return null; }
+    setStatus(t, '처리 중'); return true;
+  };
+  const finish = (status) => { t.final = true; stats.done++; setStatus(t, status); renderStats(); t.saved = stage.innerHTML; };
+
+  // ① 분류
+  const text = t.subject + ' ' + t.body, cs = extractConcepts(text), cls = classify(text, cs), sla = SLA[cls.pri];
+  if (!await step({title:'문의 분류', tool:'classify_ticket', html:`<dl class="kv">
+      <dt>읽어 낸 표현</dt><dd>${cs.length ? cs.map(k => `<span class="badge">${CONCEPTS[k].l}</span>`).join(' ') : '제품 관련 표현을 찾지 못했습니다'}</dd>
+      <dt>유형</dt><dd><b>${cls.cat}</b></dd>
+      <dt>긴급도</dt><dd><span class="badge ${sla.cls}">${cls.pri}</span> ${esc(cls.why)}</dd>
+      <dt>SLA</dt><dd>첫 응답 기한 <b>${addMinutes(t.at, sla.first)}</b> (접수 후 ${sla.firstL}) · 해결 목표 ${sla.goal}</dd></dl>`})) return;
+  $('hBadges').innerHTML = `<span class="badge ${sla.cls}">${cls.pri}</span> <span class="badge">${cls.cat}</span>`;
+
+  // 기술지원 범위 밖
+  if (cls.cat === '계약·요금') {
+    if (!await step({title:'판단: 기술지원 범위가 아님', tool:'decide', html:'계약·요금 문의는 고객성공팀 담당입니다. 고객에게 전달 사실을 안내하고 티켓을 넘깁니다.'})) return;
+    if (!await approve('고객 안내 초안', replyBilling(t))) return;
+    await step({title:'고객성공팀으로 전달', tool:'handoff', html:'티켓과 문의 원문을 고객성공팀 대기열로 넘겼습니다. KB는 바꾸지 않습니다.'}, 500);
+    return finish('타 부서 전달');
+  }
+
+  // ② 고객 기록 조회
+  if (!await step({title:'고객 기록 조회', tool:'get_customer_records', html: t.records
+      ? `<ul>${t.records.map(r => `<li>${esc(r)}</li>`).join('')}</ul>`
+      : '직접 입력한 문의라 연결된 고객 기록이 없습니다. 기록으로 확인하지 못한 내용은 답변에서 고객에게 묻습니다.'})) return;
+
+  // ③ KB 검색
+  const hits = searchKB(kb, cs), best = hits[0], hit = isHit(best);
+  if (!await step({title:'지식베이스 검색', tool:'search_kb', html: hits.length
+      ? `<div class="box">${hits.map(r => `<div class="hit"><div><span class="mono">${r.a.id}</span> ${esc(r.a.title)}<br><span style="font-size:12.5px;color:var(--muted)">일치: ${r.m.map(k => CONCEPTS[k].l).join(', ')}</span></div>
+          <div style="display:flex;gap:6px;align-items:center"><div class="bar"><i style="width:${Math.round(r.score*100)}%"></i></div><span class="mono">${Math.round(r.score*100)}%</span></div></div>`).join('')}</div>
+          <div style="margin-top:6px;font-size:13px;color:var(--muted)">일치도 50% 이상이고 표현 2개 이상이 맞아야 답변 근거로 씁니다.</div>`
+      : '일치하는 KB 문서가 없습니다.'})) return;
+
+  // ④ 판단
+  if (cs.length < 2 && !hit) {
+    if (!await step({title:'판단: 정보가 부족해 먼저 확인 질문', tool:'decide', html:'문의에서 읽어 낸 내용이 적어 원인을 좁힐 수 없습니다. 추측으로 답하지 않고, 확인에 필요한 질문을 먼저 보냅니다.'})) return;
+    if (!await approve('확인 질문 초안', replyAsk(t, cls.cat))) return;
+    await step({title:'고객 회신 대기', html:'고객이 답하면 그 내용을 붙여 다시 분류부터 진행합니다. KB는 바꾸지 않습니다.'}, 500);
+    return finish('고객 회신 대기');
+  }
+
+  if (hit) {
+    const a = best.a;
+    if (!await step({title:`판단: ${a.id}로 1차 해결 가능`, tool:'decide', html:`${t.records ? esc(t.evidence || '기록이 KB 문서의 증상과 같습니다.') : 'KB 문서의 증상과 문의 내용이 같습니다. 다만 고객 기록으로 확인한 것은 아니어서 답변에 그 점을 밝힙니다.'}${cls.pri === 'P1' ? '<br><b>P1 건이어서 조치 방법과 함께 임시 우회 방법을 안내하고, 30분 간격 공유를 약속합니다.</b>' : ''}`})) return;
+    if (!await approve('답변 초안', replySolve(t, a, cls.pri))) return;
+    if (!await step({title:'고객 확인: 해결됨', badge:'<span class="badge">시연용 회신</span>', html:`${esc(t.co)} 담당자가 안내대로 조치해 해결됐다고 회신했습니다. 티켓을 종결합니다.`}, 1100)) return;
+    a.cases++; stats.first++; stats.fed++; renderKB(a.id);
+    await step({kind:'kb', title:'KB 환류: 해결 사례 추가', tool:'update_kb', html:`<span class="mono">${a.id}</span>의 해결 건수를 ${a.cases}건으로 올리고 이 티켓을 사례로 연결했습니다. 새 문서는 만들지 않습니다.`}, 600);
+    return finish('종결');
+  }
+
+  // 2차 전달
+  const issueId = 'DEV-' + (devSeq++);
+  if (!await step({kind:'esc', title:'판단: 1차에서 해결할 수 없어 2차 전달', tool:'decide', html:'근거로 쓸 KB 문서가 없습니다. 추측으로 안내하지 않고, 개발 담당이 바로 볼 수 있게 정리해 전달합니다.'})) return;
+  if (!await step({kind:'esc', title:`개발 이슈 등록 ${issueId}`, tool:'create_dev_issue', html:`<div class="box"><dl class="kv">
+      <dt>제목</dt><dd>[${cls.pri}] ${esc(t.subject)}</dd><dt>고객</dt><dd>${esc(t.co)} (${t.id})</dd>
+      <dt>증상</dt><dd>${esc(t.body)}</dd>
+      <dt>재현 절차</dt><dd>${t.repro ? `<ol>${t.repro.map(r => `<li>${esc(r)}</li>`).join('')}</ol>` : '확인되지 않음. 고객에게 확인이 필요합니다.'}</dd>
+      <dt>관련 기록</dt><dd>${t.records ? `<ul>${t.records.map(r => `<li>${esc(r)}</li>`).join('')}</ul>` : '없음'}</dd>
+      <dt>영향 범위</dt><dd>${esc(t.impact || '확인되지 않음')}</dd>
+      <dt>KB 검색</dt><dd>${hits.length ? '비슷한 문서는 있으나 기준 미달 (' + hits.map(r => r.a.id).join(', ') + ')' : '일치하는 문서 없음'}</dd></dl></div>`})) return;
+  stats.esc++; renderStats();
+  if (!await approve('접수 안내 초안', replyHold(t, cls.pri, issueId))) return;
+
+  setStatus(t, '2차 확인 중');
+  const d = t.dev || {cause:'', fix:'', verify:''};
+  const el = await step({kind:'human', title:`2차 회신 입력 (${issueId})`, badge:'<span class="badge b-violet">개발 담당 회신</span>',
+    html:`<div class="box">${t.dev ? '시연용 회신 예시가 채워져 있습니다. 고쳐 써도 됩니다.' : '개발 담당에게 받은 원인과 조치 방법을 적어 주세요. 이 내용으로 고객 답변과 KB 문서를 만듭니다.'}
+      <h4 style="margin-top:8px">원인</h4><textarea class="note" data-f="cause">${esc(d.cause)}</textarea>
+      <h4>조치 방법 (한 줄에 하나씩)</h4><textarea class="note" data-f="fix">${esc(d.fix)}</textarea>
+      <h4>확인 방법</h4><textarea class="note" data-f="verify" style="min-height:44px">${esc(d.verify)}</textarea>
+      <div class="actions"><button class="btn">회신 반영</button> <span class="mono" style="color:var(--red)" data-err></span></div></div>`}, 1200);
+  if (!el) return;
+  const get = f => el.querySelector(`[data-f=${f}]`).value.trim();
+  await new Promise(r => el.querySelector('button').onclick = () => {
+    if (!get('cause') || !get('fix')) { el.querySelector('[data-err]').textContent = '원인과 조치 방법을 적어 주세요.'; return; } r();
+  });
+  if (!alive()) return;
+  el.querySelectorAll('textarea').forEach(x => x.readOnly = true);
+  el.querySelector('.actions').innerHTML = '<span class="badge b-teal">회신 반영됨</span>';
+  setStatus(t, '처리 중');
+  const art = {id:'KB-' + (kbSeq++), title: t.kbTitle || t.subject, c: cs.filter(k => CONCEPTS[k].cat), cause:get('cause'),
+    steps:get('fix').split('\n').map(s => s.trim()).filter(Boolean), verify:get('verify') || '조치 후 같은 증상이 다시 나타나지 않는지 확인합니다.', cases:1, isNew:true, from:t.id};
+  if (!await approve('해결 안내 초안', replySolve(t, art, cls.pri, true))) return;
+  if (!await step({title:'고객 확인: 해결됨', badge:'<span class="badge">시연용 회신</span>', html:`${esc(t.co)} 담당자가 안내대로 조치해 해결됐다고 회신했습니다. 티켓을 종결합니다.`}, 1100)) return;
+  if (art.c.length) {
+    kb.push(art); stats.fed++; renderKB(art.id);
+    await step({kind:'kb', title:`KB 환류: 새 문서 ${art.id} 생성`, tool:'create_kb_article', html:`<div class="box"><b>${esc(art.title)}</b><br>
+      <span style="font-size:13px;color:var(--muted)">검색 표현</span> ${art.c.map(k => `<span class="badge">${CONCEPTS[k].l}</span>`).join(' ')}<br>
+      <span style="font-size:13px;color:var(--muted)">원인</span> ${esc(art.cause)}</div>
+      <div style="margin-top:6px">다음에 같은 증상의 문의가 오면 2차 전달 없이 이 문서로 바로 답할 수 있습니다.</div>`}, 700);
+  } else {
+    await step({kind:'kb', title:'KB 환류 보류', tool:'create_kb_article', html:'문의에서 검색에 쓸 표현을 찾지 못해 문서를 자동으로 만들지 않았습니다. 엔지니어가 검색 표현을 정해 직접 등록해야 합니다.'}, 600);
+  }
+  finish('종결');
+}
+
+/* ───────── 5. 이벤트 ───────── */
+$('inbox').onclick = e => {
+  const b = e.target.closest('.ticket'); if (!b) return;
+  const t = tickets.find(x => x.id === b.dataset.id);
+  if (t.final) { runId++; tickets.forEach(x => { if (!x.final) x.status = '대기'; }); activeId = t.id; renderInbox(); $('stage').innerHTML = t.saved; $('stage').querySelectorAll('textarea').forEach(x => x.readOnly = true); return; }
+  if (t.id === activeId) return;
+  run(t);
+  if (innerWidth <= 760) $('main').scrollIntoView({behavior:'smooth'});
+};
+$('chips').innerHTML = SAMPLES.map(s => `<button class="chip">${esc(s)}</button>`).join('');
+$('chips').onclick = e => { if (e.target.classList.contains('chip')) $('fBody').value = e.target.textContent; };
+$('fGo').onclick = () => {
+  const body = $('fBody').value.trim(); if (!body) { $('fBody').focus(); return; }
+  const now = new Date(), first = body.split('\n')[0];
+  const t = {id:'T-' + (++seq), co: $('fCo').value.trim() || '직접 입력 고객', person:'', free:true, status:'대기',
+    at: String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0'),
+    subject: first.length > 34 ? first.slice(0,34) + '…' : first, body};
+  tickets.push(t); $('fBody').value = ''; run(t);
+  if (innerWidth <= 760) $('main').scrollIntoView({behavior:'smooth'});
+};
+$('reset').onclick = init;
+init();
+const play = new URLSearchParams(location.search).get('play');
+if (play && tickets[play-1]) run(tickets[play-1]);
+</script>
+</body>
+</html>
