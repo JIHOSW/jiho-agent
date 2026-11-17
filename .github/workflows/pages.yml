@@ -10,6 +10,7 @@ on:
       - '에이전트 팀 관제 대시보드/**'
       - 'B2B 영업제안서 html 모션 ppt/**'
       - '기술지원 티켓 에이전트/**'
+      - '포트폴리오 html 모션 ppt/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -56,6 +57,9 @@ jobs:
           # 기술지원 티켓 에이전트(단일 HTML): 짧은 주소(support-agent)
           mkdir -p "$RUNNER_TEMP/jiho-pages/support-agent"
           cp "기술지원 티켓 에이전트/index.html" "$RUNNER_TEMP/jiho-pages/support-agent/index.html"
+          # 포트폴리오 모션 HTML(index.html + assets): 짧은 주소(portfolio)
+          mkdir -p "$RUNNER_TEMP/jiho-pages/portfolio"
+          cp -a "포트폴리오 html 모션 ppt/." "$RUNNER_TEMP/jiho-pages/portfolio/"
       - name: Upload presentation
         uses: actions/upload-pages-artifact@v4
         with:

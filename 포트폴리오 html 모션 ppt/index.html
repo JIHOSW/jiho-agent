@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>김지호 입사지원 포트폴리오</title>
+<meta name="description" content="김지호 포트폴리오 · AI 에이전트, 업무용 발표자료, 웹 앱 작업물 모음">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+  --blue:#3F82EC; --blue-d:#1F56C8; --blue-dd:#163E96; --blue-l:#DCE9FD; --blue-ll:#EEF4FE;
+  --ink:#18202F; --ink2:#4A5568; --ink3:#8792A6; --line:#DDE5F2; --bg:#E6EBF4; --card:#fff;
+  --mint:#12B5A0; --amber:#F5A524; --red:#E5484D;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);overflow:hidden}
+body{font-family:"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;word-break:keep-all}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+
+/* ---------- stage ---------- */
+#viewport{position:fixed;inset:0;display:grid;place-items:center}
+#stage{width:1920px;height:1080px;position:absolute;left:50%;top:50%;transform-origin:0 0;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 40px 120px rgba(31,60,120,.18)}
+.slide{position:absolute;inset:0;padding:110px 110px 96px;opacity:0;visibility:hidden;transform:translateX(60px);transition:opacity .5s var(--ease),transform .7s var(--ease),visibility 0s .7s;background:#F4F7FC}
+.slide.active{opacity:1;visibility:visible;transform:none;transition:opacity .5s var(--ease),transform .7s var(--ease);z-index:2}
+.slide.prev{transform:translateX(-60px)}
+.slide:not(.cover):not(.toc):not(.end){display:flex;flex-direction:column}
+.body{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;padding-bottom:20px}
+
+/* staggered entrance */
+[data-a]{opacity:0}
+.slide.active [data-a]{animation:up .8s var(--ease) both;animation-delay:calc(var(--i,0)*70ms + 150ms)}
+.slide.active [data-a="pop"]{animation-name:pop}
+.slide.active [data-a="left"]{animation-name:fromL}
+.slide.active [data-a="right"]{animation-name:fromR}
+.slide.active [data-a="fade"]{animation-name:fade}
+@keyframes up{from{opacity:0;transform:translateY(34px);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+@keyframes pop{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
+@keyframes fromL{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:none}}
+@keyframes fromR{from{opacity:0;transform:translateX(80px) rotate(1.5deg)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* ---------- common header ---------- */
+.hd{display:flex;align-items:center;gap:22px;margin-bottom:24px;flex:none}
+.no{width:64px;height:64px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:800;font-size:24px;flex:none;box-shadow:0 8px 20px rgba(63,130,236,.35)}
+.hd small{display:block;font-size:19px;font-weight:700;color:var(--blue-d);letter-spacing:.02em;margin-bottom:6px}
+.hd h2{font-size:42px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+.brand{position:absolute;right:110px;top:54px;font-size:16px;font-weight:700;letter-spacing:.16em;color:var(--ink3)}
+.pg{position:absolute;right:110px;bottom:44px;font-size:17px;font-weight:600;color:var(--ink3);font-variant-numeric:tabular-nums}
+.note{position:absolute;left:110px;bottom:44px;font-size:16px;color:var(--ink3)}
+.card{background:var(--card);border-radius:24px;box-shadow:0 10px 30px rgba(31,60,120,.07);border:1px solid #E8EEF8}
+.chip{display:inline-flex;align-items:center;height:40px;padding:0 18px;border-radius:999px;background:var(--blue-ll);color:var(--blue-d);font-size:18px;font-weight:700;border:1px solid var(--blue-l)}
+.chip.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.red{background:#FDECEC;color:#C8343A;border-color:#F9D5D6}
+.btn{display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 26px;border-radius:999px;background:var(--blue);color:#fff;font-size:20px;font-weight:700;box-shadow:0 10px 24px rgba(63,130,236,.35);transition:transform .25s var(--ease),box-shadow .25s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 16px 30px rgba(63,130,236,.45)}
+.btn.ghost{background:#fff;color:var(--blue-d);border:2px solid var(--blue-l);box-shadow:none}
+.btn svg{width:18px;height:18px}
+
+/* ---------- cover ---------- */
+.cover{padding:0;background:#fff}
+.cover .band{position:absolute;left:0;top:0;right:0;height:400px;background:var(--blue)}
+.cover svg.wave{position:absolute;inset:0;width:100%;height:100%}
+.cover .logo{position:absolute;left:110px;top:70px;color:#fff;font-size:30px;font-weight:800;letter-spacing:.02em;display:flex;gap:14px;align-items:center}
+.cover .logo i{width:44px;height:44px;border-radius:12px;background:#fff;color:var(--blue);display:grid;place-items:center;font-style:normal;font-size:22px}
+.cover .txt{position:absolute;left:110px;top:500px;width:1000px}
+.cover .kicker{font-size:38px;font-weight:700;color:var(--blue)}
+.cover h1{font-size:108px;line-height:1.2;font-weight:500;letter-spacing:-.03em;margin:20px 0 40px}
+.cover h1 b{font-weight:800}
+.cover p{font-size:34px;font-weight:600;color:var(--ink)}
+.cover .date{position:absolute;right:110px;bottom:70px;font-size:30px;font-weight:600}
+.wave path{fill:none;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1}
+.slide.active .wave path{animation:draw 2.6s cubic-bezier(.6,0,.2,1) .2s both}
+
+/* ---------- contents ---------- */
+.toc{padding:0;display:grid;grid-template-columns:760px 1fr;background:#fff}
+.toc .l{background:var(--blue);position:relative;overflow:hidden;padding:150px 110px;color:#fff}
+.toc .l h2{font-size:92px;font-weight:800;letter-spacing:-.02em}
+.toc .l p{font-size:25px;line-height:1.7;margin-top:40px;opacity:.92;max-width:500px}
+.toc .l svg{position:absolute;inset:0;width:100%;height:100%}
+.toc .r{padding:150px 130px 0 120px}
+.toc li{list-style:none;display:flex;align-items:center;gap:30px;padding:28px 6px;border-bottom:2px solid var(--line);font-size:34px;font-weight:700;cursor:pointer;transition:padding .3s var(--ease),color .3s}
+.toc li:hover{padding-left:24px;color:var(--blue-d)}
+.toc li span{font-size:22px;font-weight:800;color:var(--blue);width:52px}
+.toc li em{margin-left:auto;font-style:normal;font-size:21px;font-weight:500;color:var(--ink3)}
+
+/* ---------- stats ---------- */
+.lead{font-size:30px;line-height:1.6;font-weight:500;color:var(--ink2);max-width:1500px;margin-bottom:50px}
+.lead b{color:var(--ink);font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.stat{padding:54px 40px 54px;position:relative;overflow:hidden}
+.stat::after{content:"";position:absolute;left:0;right:0;bottom:0;height:8px;background:var(--blue);transform-origin:left;transform:scaleX(0)}
+.slide.active .stat::after{animation:grow 1.2s var(--ease) .7s both}
+.stat .n{font-size:104px;font-weight:800;letter-spacing:-.04em;color:var(--blue-d);line-height:1;font-variant-numeric:tabular-nums}
+.stat .n u{font-size:40px;text-decoration:none;margin-left:6px;font-weight:700}
+.stat h3{font-size:27px;font-weight:800;margin:26px 0 10px}
+.stat p{font-size:22px;line-height:1.55;color:var(--ink2)}
+.tags{display:flex;gap:14px;flex-wrap:wrap;margin-top:44px;align-items:center}
+.tags strong{font-size:20px;color:var(--ink3);margin-right:8px}
+
+/* ---------- timeline ---------- */
+.tl{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:28px;position:relative;margin-top:70px}
+.tl::before{content:"";position:absolute;left:0;right:0;top:-36px;height:4px;background:var(--blue-l);border-radius:4px}
+.tl::after{content:"";position:absolute;left:0;right:0;top:-36px;height:4px;background:var(--blue);border-radius:4px;transform-origin:left;transform:scaleX(0)}
+.slide.active .tl::after{animation:grow 1.8s var(--ease) .4s both}
+.tl .card{padding:44px 40px 44px;position:relative}
+.tl .card::before{content:"";position:absolute;left:38px;top:-48px;width:28px;height:28px;border-radius:50%;background:#fff;border:7px solid var(--blue);z-index:2}
+.tl .yr{font-size:22px;font-weight:800;color:var(--blue-d)}
+.tl h3{font-size:34px;font-weight:800;margin:10px 0 6px}
+.tl h4{font-size:21px;font-weight:600;color:var(--ink3);margin-bottom:22px}
+.tl li{list-style:none;position:relative;padding-left:22px;font-size:23px;line-height:1.6;color:var(--ink2);margin-bottom:14px}
+.tl li::before{content:"";position:absolute;left:0;top:15px;width:8px;height:8px;border-radius:50%;background:var(--blue)}
+.tl li b{color:var(--ink)}
+.tl .now{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tl .now .yr,.tl .now h4{color:#DCE9FD}.tl .now li{color:#EEF4FE}.tl .now li::before{background:#fff}
+
+/* ---------- skills ---------- */
+.sk{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.sk .card{padding:44px 40px}
+.sk h3{font-size:27px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:14px}
+.sk h3 i{width:46px;height:46px;border-radius:14px;background:var(--blue-ll);display:grid;place-items:center;color:var(--blue-d)}
+.sk h3 i svg{width:24px;height:24px}
+.sk p{font-size:19px;color:var(--ink3);margin-bottom:24px}
+.sk .chips{display:flex;flex-wrap:wrap;gap:10px}
+.edu{display:grid;grid-template-columns:1.6fr 1fr;gap:28px;margin-top:28px}
+.edu .card{padding:34px 38px}
+.edu h3{font-size:22px;font-weight:800;color:var(--blue-d);margin-bottom:18px}
+.edu table{width:100%;border-collapse:collapse;font-size:21px}
+.edu td{padding:11px 0;border-top:1px solid var(--line)}
+.edu tr:first-child td{border-top:0}
+.edu td:first-child{color:var(--ink3);width:250px;font-variant-numeric:tabular-nums}
+.edu td b{font-weight:800}
+
+/* ---------- project map ---------- */
+.map{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.mc{padding:0;overflow:hidden;cursor:pointer;transition:transform .35s var(--ease),box-shadow .35s;display:flex;flex-direction:column;height:232px}
+.mc:hover{transform:translateY(-8px);box-shadow:0 22px 40px rgba(31,60,120,.16)}
+.mc .th{height:128px;background:var(--blue-ll) center top/cover no-repeat;border-bottom:1px solid var(--line);position:relative}
+.mc .th span{position:absolute;left:14px;top:14px;height:30px;padding:0 12px;border-radius:999px;background:var(--blue);color:#fff;font-size:15px;font-weight:800;display:grid;place-items:center}
+.mc h3{font-size:22px;font-weight:800;padding:16px 20px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc p{font-size:16.5px;color:var(--ink3);padding:0 20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc.sum{background:var(--blue);color:#fff;border-color:var(--blue);padding:30px;justify-content:center;cursor:default}
+.mc.sum:hover{transform:none}
+.mc.sum b{font-size:60px;font-weight:800;line-height:1}
+.mc.sum span{font-size:19px;line-height:1.5;margin-top:12px;opacity:.95}
+
+/* ---------- project slide ---------- */
+.pj{display:grid;grid-template-columns:730px 1fr;gap:70px;height:740px}
+.pj .sub{font-size:28px;line-height:1.5;font-weight:600;color:var(--ink2);margin-bottom:30px}
+.pt{display:flex;gap:20px;padding:22px 26px;margin-bottom:14px;align-items:flex-start}
+.pt i{flex:none;width:44px;height:44px;border-radius:13px;background:var(--blue);color:#fff;font-style:normal;font-weight:800;font-size:19px;display:grid;place-items:center}
+.pt h4{font-size:23px;font-weight:800;margin-bottom:5px}
+.pt p{font-size:19.5px;line-height:1.55;color:var(--ink2)}
+.pj .chips{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 26px}
+.pj .links{display:flex;gap:14px}
+.vis{position:relative}
+.frame{position:absolute;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 30px 70px rgba(31,60,120,.22);border:1px solid #D9E2F1}
+.frame .bar{height:42px;background:#EEF2F9;display:flex;align-items:center;gap:8px;padding:0 16px;border-bottom:1px solid #DDE5F2}
+.frame .bar b{width:12px;height:12px;border-radius:50%;background:#F26B64}
+.frame .bar b:nth-child(2){background:#F5BD4F}.frame .bar b:nth-child(3){background:#5CC55B}
+.frame .bar span{margin-left:14px;font-size:14px;color:var(--ink3);background:#fff;border-radius:8px;padding:4px 14px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frame img{display:block;width:100%;height:calc(100% - 42px);object-fit:cover;object-position:top}
+.frame.plain{height:auto!important}.frame.plain img{height:auto}
+.frame.f1{left:0;top:10px;width:900px;height:605px}
+.frame.f2{right:0;bottom:0;width:560px;height:392px}
+.frame.solo{left:0;top:40px;width:980px;height:655px}
+.frame.solo.plain{top:90px}
+.slide.active .frame.f2{animation:fromR .9s var(--ease) .75s both,float 6s ease-in-out 1.8s infinite}
+.phone{position:absolute;left:50%;top:-20px;margin-left:-190px;width:380px;height:790px;border-radius:54px;background:#111827;padding:14px;box-shadow:0 40px 80px rgba(31,60,120,.3)}
+.phone img{width:100%;height:100%;object-fit:cover;object-position:top;border-radius:42px;display:block}
+.blob{position:absolute;right:-60px;top:-30px;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,var(--blue-l),transparent 70%);z-index:-1}
+
+/* ---------- principles ---------- */
+.pr{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
+.pr .card{padding:56px 48px;display:grid;grid-template-columns:96px 1fr;gap:10px 30px}
+.pr .big{font-size:76px;font-weight:800;color:var(--blue-l);line-height:1;grid-row:span 2;-webkit-text-stroke:2px var(--blue)}
+.pr h3{font-size:33px;font-weight:800}
+.pr p{font-size:23px;line-height:1.6;color:var(--ink2)}
+.pr p b{color:var(--blue-d)}
+
+/* ---------- closing ---------- */
+.end{padding:0;background:var(--blue);color:#fff}
+.end svg{position:absolute;inset:0;width:100%;height:100%}
+.end .in{position:absolute;left:110px;top:150px;width:1100px}
+.end h2{font-size:112px;font-weight:800;letter-spacing:-.03em;line-height:1.15}
+.end p{font-size:31px;line-height:1.6;margin:36px 0 60px;opacity:.95}
+.ct{display:grid;grid-template-columns:repeat(3,auto);gap:18px;justify-content:start}
+.ct a,.ct div{background:#fff;color:var(--ink);border-radius:22px;padding:26px 34px;min-width:300px;transition:transform .3s var(--ease)}
+.ct a:hover{transform:translateY(-6px)}
+.ct small{display:block;font-size:17px;font-weight:800;color:var(--blue-d);letter-spacing:.08em;margin-bottom:8px}
+.ct b{font-size:25px;font-weight:800}
+.end .fine{position:absolute;left:110px;bottom:60px;font-size:17px;opacity:.8;max-width:1300px;line-height:1.6}
+
+/* ---------- chrome ---------- */
+#bar{position:fixed;left:0;top:0;height:5px;background:var(--blue);width:0;transition:width .6s var(--ease);z-index:20}
+#nav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:rgba(24,32,47,.86);color:#fff;border-radius:999px;padding:6px 8px;z-index:20;backdrop-filter:blur(10px);opacity:.25;transition:opacity .3s}
+#nav:hover,#nav.show{opacity:1}
+#nav button{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:17px}
+#nav button:hover{background:rgba(255,255,255,.16)}
+#nav span{font-size:14px;font-weight:600;min-width:64px;text-align:center;font-variant-numeric:tabular-nums}
+#ov{position:fixed;inset:0;background:rgba(15,22,38,.94);z-index:30;display:none;overflow:auto;padding:60px}
+#ov.on{display:block}
+#ov .g{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;max-width:1500px;margin:0 auto}
+#ov button{aspect-ratio:16/9;border-radius:12px;background:#fff;color:var(--ink);text-align:left;padding:18px;font-size:16px;font-weight:700;line-height:1.4;display:flex;flex-direction:column;justify-content:space-between;border:3px solid transparent;transition:transform .2s}
+#ov button:hover{transform:scale(1.04)}
+#ov button.cur{border-color:var(--blue)}
+#ov button i{font-style:normal;color:var(--blue);font-size:13px;font-weight:800}
+
+@media (prefers-reduced-motion:reduce){
+  .slide,.slide.active{transition:opacity .2s;transform:none}
+  .slide.active [data-a],.slide.active .frame.f2{animation:fade .2s both}
+  .slide.active .wave path{animation:none;stroke-dashoffset:0}
+}
+@media print{
+  @page{size:1920px 1080px;margin:0}
+  html,body{overflow:visible;height:auto;background:#fff}
+  #viewport{position:static;display:block}
+  #stage{position:static;transform:none!important;width:auto;height:auto;border-radius:0;box-shadow:none;overflow:visible}
+  .slide{position:relative;width:1920px;height:1080px;opacity:1;visibility:visible;transform:none;page-break-after:always;overflow:hidden}
+  [data-a]{opacity:1!important;animation:none!important}
+  .wave path{stroke-dashoffset:0!important;animation:none!important}
+  .stat::after,.tl::after{transform:none!important;animation:none!important}
+  #nav,#bar,#ov{display:none!important}
+}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div id="viewport"><div id="stage"></div></div>
+<div id="nav">
+  <button id="bp" aria-label="이전">←</button><span id="cnt"></span><button id="bn" aria-label="다음">→</button>
+  <button id="bo" aria-label="전체 보기" title="전체 보기 (O)">▦</button><button id="bf" aria-label="전체화면" title="전체화면 (F)">⛶</button>
+</div>
+<div id="ov"><div class="g"></div></div>
+
+<script>
+const PAGES = 'https://jihosw.github.io/jiho-agent/';
+const REPO = 'https://github.com/JIHOSW/jiho-agent/tree/main/';
+const gh = p => REPO + encodeURI(p);
+const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>';
+
+/* ---- 프로젝트 데이터 ---- */
+const projects = [
+ {cat:'AI 에이전트', title:'기술지원 티켓 에이전트', short:'문의 분류 → KB 검색 → 답변 초안 → 승인',
+  sub:'고객 문의를 분류하고 근거를 찾아 답변 초안을 쓰는 기술지원 1차 대응 에이전트',
+  pts:[['분류와 SLA','문의를 유형 7가지와 긴급도 P1~P4로 나누고 첫 응답 기한을 계산합니다.'],
+       ['근거가 있을 때만 답변','KB 문서 일치도 50% 이상, 일치 표현 2개 이상일 때만 답변 근거로 씁니다. 없으면 개발 이슈로 2차 전달합니다.'],
+       ['해결 내용의 환류','해결된 티켓은 새 KB 문서가 되어, 같은 문의는 다음부터 1차에서 해결됩니다.']],
+  chips:['단일 HTML','규칙 기반','사람 승인 후 발송','브라우저 저장'],
+  links:[['시연 보기',PAGES+'support-agent/'],['코드',gh('기술지원 티켓 에이전트')]],
+  vis:{type:'solo',img:'support',url:'jihosw.github.io/jiho-agent/support-agent'}},
+ {cat:'AI 에이전트', title:'고객 온보딩 에이전트', short:'LLM이 도구를 골라 실행, 사람이 승인',
+  sub:'새 고객사를 맡기면 LLM이 도구를 골라 실행하며 첫 활용까지 이끄는 온보딩 에이전트',
+  pts:[['스스로 판단하는 에이전트 루프','Gemini가 도구 13개 가운데 다음 행동을 정합니다. 진단, 로그 조회, 재검증, 교육 계획까지 이어 갑니다.'],
+       ['사람 승인 지점','설정 변경, 고객 메일, 개발 이슈 등록은 담당 매니저가 승인해야 실행됩니다.'],
+       ['돌려 보고 보완','고객 시나리오 3개를 실제로 실행해 드러난 문제 6가지를 온보딩 원칙으로 고쳤습니다.']],
+  chips:['Next.js','TypeScript','Google Gemini','스트리밍 UI','녹화본 재생'],
+  links:[['프로그램 보기',PAGES+'onboarding-agent/'],['코드',gh('고객 온보딩 에이전트 포트폴리오')]],
+  vis:{type:'duo',img:'onboarding',img2:'onboarding2',url:'jihosw.github.io/jiho-agent/onboarding-agent'}},
+ {cat:'웹 서비스', title:'jihodev 고객 온보딩 지원 서비스', short:'담당자용 온보딩 업무 도구',
+  sub:'문서관리 SaaS를 도입한 고객이 첫 업무를 끝낼 때까지 돕는 담당자용 업무 도구',
+  pts:[['목표와 진행 상황','고객별 단계 진행률과 첫 활용 목표를 따로 보여 줍니다.'],
+       ['기록과 문서의 대조','고객의 말, 시스템 기록, 제품 가이드를 대조합니다. 기록이 부족하거나 충돌하면 추가 확인을 요청합니다.'],
+       ['안내문에서 작업까지','안내문을 검토·수정한 뒤 담당자와 기한이 있는 작업으로 등록합니다.']],
+  chips:['Next.js','TypeScript','규칙 기반 + AI 분석 API','도메인 테스트'],
+  links:[['웹 체험','https://firstmile-onboarding-1104.day1companyk-6083.chatgpt.site/'],['코드',gh('기업용 클라우드 문서관리 온보딩 서비스 개발')]],
+  vis:{type:'duo',img:'saas-cover',img2:'saas',w2:430,url:'jihodev · customer onboarding'}},
+ {cat:'AI 에이전트', title:'AI 블로그 자동화 에이전트', short:'자료는 에이전트가, 결정은 사람이',
+  sub:'공개 자료 수집, 출처 확인, 초안 작성, 검수를 잇는 Claude Code 기반 글쓰기 에이전트',
+  pts:[['두 가지 트랙','주간 동향 요약(/blog-trend)과 분석 글(/blog-analysis)을 스킬로 나눠 운영합니다.'],
+       ['원문 확인과 미확인 표시','원문을 직접 연 출처 32건에만 번호를 붙이고, 확인하지 못한 18건은 [확인 필요]로 남깁니다.'],
+       ['결과물','분석 글 2편과 동향 요약 1편. 글마다 초안 v1~v3과 검수 기록을 남겼습니다.']],
+  chips:['Claude Code','Skills','Hooks','2단계 검수','발행은 사람이 결정'],
+  links:[['코드와 결과물',gh('ai 블로그 자동화 에이전트')]],
+  vis:{type:'solo',img:'blog',plain:1}},
+ {cat:'AI 에이전트', title:'에이전트 팀 관제 대시보드', short:'에이전트 업무 흐름과 시간·토큰',
+  sub:'블로그 에이전트가 어떤 순서로 얼마나 일했는지 한 화면에서 보여 주는 대시보드',
+  pts:[['4개 화면','업무 흐름(Workflows), 단계별 시간(Traces), 시간·토큰(Usage), 역할 목록(Agents).'],
+       ['실제 실행 기록 연결','블로그 에이전트의 훅이 남긴 기록 파일을 열면 시연용 예시가 실제 측정값으로 바뀝니다.'],
+       ['단일 HTML','설치 없이 열리고, 로컬 서버에 연결하면 실시간으로 볼 수 있습니다.']],
+  chips:['단일 HTML','SVG 애니메이션','Claude Code Hooks','Node.js'],
+  links:[['바로 보기',PAGES+'agent-switchboard/'],['코드',gh('에이전트 팀 관제 대시보드')]],
+  vis:{type:'solo',img:'switchboard',url:'jihosw.github.io/jiho-agent/agent-switchboard'}},
+ {cat:'발표자료', title:'B2B 영업제안서 모션 PPT', short:'고객의 말에서 출발한 10장 제안서',
+  sub:'고객 미팅에서 들은 말을 요구표로 정리하고, 목차를 거쳐 만든 10장 제안서',
+  pts:[['요구표에서 출발','고객의 말, 속사정, 관심 대상으로 정리한 뒤 목차 8장과 핵심 장 내용을 잡았습니다.'],
+       ['모션 HTML과 PPT 초안','발표 메모, 전체 보기, 전체화면을 지원하는 HTML과 같은 내용의 PPT를 함께 만들었습니다.'],
+       ['숫자는 지어내지 않기','확인되지 않은 숫자는 빨간 빈칸으로 남겼습니다. 가상 고객사로 만든 시연입니다.']],
+  chips:['HTML · CSS · JS','PPTX 생성 스크립트','벤토 카드 레이아웃'],
+  links:[['바로 보기',PAGES+'b2b-proposal/'],['코드',gh('B2B 영업제안서 html 모션 ppt')]],
+  vis:{type:'duo',img:'b2b',img2:'b2b2',url:'jihosw.github.io/jiho-agent/b2b-proposal'}},
+ {cat:'발표자료', title:'HTML 모션 PPT · 구매 혁신 제안', short:'계산 기능이 있는 10장 발표자료',
+  sub:'발표 노트와 화면 전환, 가정 기반 계산 기능을 넣은 10장 인터랙티브 발표자료',
+  pts:[['발표 도구','목차, 전체화면, 발표 노트, 인쇄(PDF 저장), 모바일 스와이프를 지원합니다.'],
+       ['가정 기반 효과 계산','슬라이더로 조건을 바꾸면 절감 효과와 차트가 바로 바뀝니다.'],
+       ['오프라인 단일 파일과 출처','이미지와 글꼴을 담은 단일 HTML을 제공하고, 수치와 가정의 근거를 출처 버튼에 모았습니다.']],
+  chips:['HTML · CSS · JS','Chart.js','GitHub Actions 배포','실습용 비공식 자료'],
+  links:[['바로 보기',PAGES],['코드',gh('html 모션 ppt')]],
+  vis:{type:'duo',img:'motion',img2:'motion2',url:'jihosw.github.io/jiho-agent'}},
+ {cat:'웹 앱', title:'AI 직군 적성검사', short:'42개 직군 중 TOP 5 추천',
+  sub:'상황과 관심 영역에 따라 질문 갈래가 나뉘는 대화형 AI 직군 적성검사',
+  pts:[['2단계 분기','현재 상황과 관심 AI 영역으로 문항이 달라집니다. 짧은 버전(17~20문항)과 긴 버전(34~40문항)을 고릅니다.'],
+       ['공정한 채점','역량 50%, 가치관 25%, 업무 스타일 25%. 갈래가 달라도 비교되도록 최대치 대비 비율로 정규화합니다.'],
+       ['결과','AI 직군 42개 중 TOP 5와 준비 로드맵을 추천하고, 링크 공유와 이미지·PDF 저장을 지원합니다.']],
+  chips:['Vanilla JS','규칙 기반','서버 없음','라이트·다크'],
+  links:[['검사해 보기',PAGES+'career-agent/'],['코드',gh('ai 직무적성검사')]],
+  vis:{type:'solo',img:'career',url:'jihosw.github.io/jiho-agent/career-agent'}},
+ {cat:'웹 앱', title:'잠들기 전, 투운사', short:'자기 전 30분 모바일 학습 앱',
+  sub:'자기 전 30분, 투자자산운용사 개념을 떠올리고 다시 풀어 보는 모바일 학습 앱',
+  pts:[['떠올리고, 풀고, 다시','보기 전에 개념을 떠올리고 답을 고릅니다. 틀리거나 찍은 문제는 간격을 두고 다시 나옵니다.'],
+       ['직접 만든 72문항','공식 교육자료의 개념을 참고해 연습문제를 만들고 문항마다 참고 링크를 달았습니다.'],
+       ['검증','복습 순서, 타이머 복원, 계산 문제 등 자동 검사 35개를 통과했습니다.']],
+  chips:['Vanilla JS 모듈','모바일 웹앱','브라우저 저장','Node 테스트'],
+  links:[['앱 열기','https://touun-night-jiho-1105.day1companyk-6083.chatgpt.site'],['코드',gh('학습어플리케이션')]],
+  vis:{type:'phone',img:'study'}},
+ {cat:'개발 · 팀 프로젝트', title:'대학교 학사관리 시스템', short:'Java · Spring 팀 프로젝트',
+  sub:'학생, 교수, 교직원이 쓰는 학사관리(LMS) 웹 서비스. 대덕인재개발원 팀 프로젝트(2024)',
+  pts:[['계정 찾기','메일 API와 reCAPTCHA를 붙인 아이디·비밀번호 찾기를 구현했습니다.'],
+       ['엑셀 일괄 등록','Apache POI로 엑셀 파일을 읽어 교수·학생 계정을 한 번에 생성합니다.'],
+       ['익명 게시판과 TA 역할','페이징, 검색, 댓글이 있는 게시판을 만들었고, TA로서 필요한 API를 정리해 예제와 함께 팀에 공유했습니다.']],
+  chips:['Java','Spring','MyBatis','Oracle','JSP','jQuery'],
+  links:[['포트폴리오 PDF',gh('portfolio')]],
+  vis:{type:'duo',img:'lms-05',img2:'lms-13',plain:1}},
+ {cat:'실무 산출물', title:'시스템 사용자 교육자료', short:'교육자료 44장 · 약 300명 교육',
+  sub:'국립문화유산연구원 연구자원 통합관리시스템 이용자 교육자료와 발표 대본',
+  pts:[['44장과 발표 대본','교육자료 44장과 장별 발표 대본을 직접 작성했습니다.'],
+       ['약 300명 대상 교육','각 지방소 이용자를 대상으로 교육과 기능 시연을 진행했습니다.'],
+       ['사용자 눈높이','문서중앙화(ECM) 설치, 문서 이관, 저장 방식, 장애 시 대처를 화면 캡처와 순서로 설명합니다.']],
+  chips:['PowerPoint','발표 대본','기능 시연','사용자 교육'],
+  links:[['교육자료 폴더',gh('portfolio/training')]],
+  vis:{type:'duo',img:'training-01',img2:'training-14',plain:1}},
+];
+
+/* ---- 장식 물결선 ---- */
+let wid = 0;
+function wave(d, color='#1F56C8', n=5, gap=13){
+  const id='w'+(++wid); let m='';
+  for(let k=n;k>0;k--){
+    m+=`<path d="${d}" pathLength="1" stroke="#fff" stroke-width="${k*gap*2-gap+5}"/>`;
+    m+=`<path d="${d}" pathLength="1" stroke="#000" stroke-width="${k*gap*2-gap-5}"/>`;
+  }
+  return `<svg class="wave" viewBox="0 0 1920 1080" preserveAspectRatio="none" aria-hidden="true"><defs><mask id="${id}" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080">${m}</mask></defs><rect width="1920" height="1080" fill="${color}" mask="url(#${id})"/></svg>`;
+}
+
+const ICON = {
+  ops:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/><path d="M7 7h.01M7 17h.01"/></svg>',
+  dev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>',
+  ai:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3.5"/></svg>'
+};
+const chips = (a, cls='') => a.map(c=>`<span class="chip ${cls}">${c}</span>`).join('');
+
+const S = [];  // {title, html, cls}
+
+S.push({title:'표지', cls:'cover', html:`
+  <div class="band"></div>
+  ${wave('M -60 250 H 960 C 1100 250 1170 330 1170 470 V 650 C 1170 800 1260 890 1390 890 C 1520 890 1610 800 1610 650 V 330 C 1610 200 1690 130 1810 130 H 2000')}
+  <div class="logo" data-a="fade"><i>J</i>JIHO KIM</div>
+  <div class="txt">
+    <div class="kicker" data-a>PORTFOLIO 2026</div>
+    <h1 data-a><b>김지호</b><br>입사지원 포트폴리오</h1>
+    <p data-a>제품을 직접 배우고, 사용자가 활용할 수 있도록 설명합니다.</p>
+  </div>
+  <div class="date" data-a="fade">2026.11</div>`});
+
+S.push({title:'목차', cls:'toc', html:`
+  <div class="l">
+    ${wave('M -60 760 H 300 C 420 760 480 700 480 590 C 480 480 560 420 660 420 H 1000','#2A66D6',4,12)}
+    <h2 data-a="left">Contents.</h2>
+    <p data-a="left">기술지원과 IT 사업관리, 사용자 교육 경험을 바탕으로 만든 AI 에이전트와 업무용 발표자료, 웹 앱을 차례로 소개합니다.</p>
+  </div>
+  <div class="r"><ul>
+    <li data-a data-go="3"><span>01</span>소개<em>한눈에 보기</em></li>
+    <li data-a data-go="4"><span>02</span>경력과 역량<em>경력 · 기술 · 교육</em></li>
+    <li data-a data-go="6"><span>03</span>프로젝트<em>작업물 ${projects.length}개</em></li>
+    <li data-a data-go="${7+projects.length}"><span>04</span>일하는 방식<em>작업물에 공통으로 넣은 원칙</em></li>
+    <li data-a data-go="${8+projects.length}"><span>05</span>마무리<em>연락처</em></li>
+  </ul></div>`});
+
+S.push({title:'한눈에 보기', sec:'01', label:'소개', h:'배운 것을 사용자의 언어로 옮기는 사람입니다', html:`
+  <p class="lead" data-a>서버·솔루션 지원과 공공기관 IT 사업관리, 사용자 교육을 경험했습니다. 지금은 그 경험을 바탕으로 <b>AI 에이전트</b>와 <b>업무용 발표자료</b>를 직접 만들며 학습하고 있습니다.</p>
+  <div class="stats">
+    <div class="card stat" data-a><div class="n"><span data-count="300">300</span><u>명</u></div><h3>사용자 교육</h3><p>각 지방소 이용자 약 300명에게 시스템 교육과 기능 시연을 진행했습니다.</p></div>
+    <div class="card stat" data-a><div class="n"><span data-count="44">44</span><u>장</u></div><h3>교육자료</h3><p>교육자료 44장과 발표 대본을 직접 작성했습니다.</p></div>
+    <div class="card stat" data-a><div class="n"><span data-count="${projects.length}">${projects.length}</span><u>개</u></div><h3>작업물</h3><p>AI 에이전트, 발표자료, 웹 앱, 팀 프로젝트, 실무 산출물을 담았습니다.</p></div>
+    <div class="card stat" data-a><div class="n"><span data-count="2">2</span><u>개사</u></div><h3>IT 실무 경력</h3><p>솔루션 기술지원과 공공 IT 사업관리(PL·PMO 실무)를 경험했습니다.</p></div>
+  </div>
+  <div class="tags" data-a><strong>관심 분야</strong>${chips(['AI·SaaS 제품의 도입과 활용 지원','고객 온보딩과 사용자 교육','AI를 활용한 자료 제작','AX 교육 · IT 사업운영'])}</div>`});
+
+S.push({title:'경력', sec:'02', label:'경력과 역량', h:'고객 문의 대응에서 사업관리, 사용자 교육까지', html:`
+  <div class="tl">
+    <div class="card" data-a><div class="yr">2024</div><h3>엔엔소프트</h3><h4>솔루션지원팀</h4><ul>
+      <li>Linux 서버 관리·구축·고도화</li><li>Oracle DB 설치·운영</li><li>고객 기술 문의 대응과 시스템 사용 안내</li></ul></div>
+    <div class="card" data-a><div class="yr">2025 – 2026</div><h3>아이리스닷넷</h3><h4>IT 사업관리 및 사용자 교육</h4><ul>
+      <li>국립문화유산연구원 사업의 일정관리, 고객 요청 정리, 개발자 협의, 테스트·검수와 보고 등 <b>PL·PMO 실무</b></li>
+      <li>RFP 분석, 제안서 작업과 산출물 정리, 고객 미팅 참여</li>
+      <li>교육자료 <b>44장과 발표 대본</b> 작성, 이용자 <b>약 300명</b> 대상 교육과 시연</li>
+      <li>테스트 이슈를 엑셀과 오류 화면 캡처로 정리해 PM·개발자와 공유</li></ul></div>
+    <div class="card now" data-a><div class="yr">2026.10 – 2027.01</div><h3>L.L.M Academy</h3><h4>CJ올리브네트웍스 · AX 과정</h4><ul>
+      <li>수강 중 (수료 예정)</li><li>AI 에이전트와 업무 자동화 실습</li><li>이 포트폴리오의 AI 작업물을 이 시기에 제작</li></ul></div>
+  </div>`});
+
+S.push({title:'역량', sec:'02', label:'경력과 역량', h:'실무, 개발, AI 활용을 함께 다룹니다', html:`
+  <div class="sk">
+    <div class="card" data-a><h3><i>${ICON.ops}</i>실무</h3><p>현장에서 맡아 온 일</p><div class="chips">${chips(['Linux','Oracle DB','고객 기술지원','사용자 교육','테스트·검수','IT 사업관리'],'dark')}</div></div>
+    <div class="card" data-a><h3><i>${ICON.dev}</i>개발</h3><p>교육 과정과 프로젝트에서 사용</p><div class="chips">${chips(['Java','JSP','Spring','Oracle','MySQL','전자정부 표준프레임워크'])}</div></div>
+    <div class="card" data-a><h3><i>${ICON.ai}</i>AI 활용</h3><p>작업물 제작에 사용</p><div class="chips">${chips(['Claude','ChatGPT','Gemini','AI 에이전트 제작','HTML 모션 발표자료'],'red')}</div></div>
+  </div>
+  <div class="edu">
+    <div class="card" data-a><h3>교육</h3><table>
+      <tr><td>2026.10 – 2027.01</td><td><b>CJ올리브네트웍스 L.L.M Academy</b> · AX 과정 (수강 중)</td></tr>
+      <tr><td>2023.07 – 2024.02</td><td><b>대덕인재개발원</b> · 전자정부 표준프레임워크 기반 풀스택 개발자 과정</td></tr>
+      <tr><td>전문학사</td><td>컴퓨터네트워크 전공 졸업</td></tr></table></div>
+    <div class="card" data-a><h3>자격증</h3><table>
+      <tr><td><b>SQLD</b></td><td>SQL 개발자</td></tr>
+      <tr><td><b>ADsP</b></td><td>데이터분석 준전문가</td></tr>
+      <tr><td><b>네트워크관리사 2급</b></td><td></td></tr></table></div>
+  </div>`});
+
+S.push({title:'프로젝트 한눈에', sec:'03', label:'프로젝트', h:`작업물 ${projects.length}개를 한눈에`, html:`
+  <div class="map">
+    ${projects.map((p,i)=>`<div class="card mc" data-a="pop" data-go="${7+i}"><div class="th" style="background-image:url(assets/${p.vis.img}.jpg)"><span>${String(i+1).padStart(2,'0')} · ${p.cat}</span></div><h3>${p.title}</h3><p>${p.short}</p></div>`).join('')}
+    <div class="card mc sum" data-a="pop"><b>${projects.length}</b><span>카드를 누르면<br>해당 장으로 이동합니다.</span></div>
+  </div>`,
+  note:'AI·HTML 프로젝트는 개인 학습·실습 작업물이며, 등장하는 고객사와 데이터는 가상입니다.'});
+
+projects.forEach((p,i)=>{
+  const v=p.vis, bar=u=>`<div class="bar"><b></b><b></b><b></b><span>${u}</span></div>`;
+  let vis='';
+  if(v.type==='phone') vis=`<div class="blob"></div><div class="phone" data-a="right"><img src="assets/${v.img}.jpg" alt="${p.title} 화면"></div>`;
+  else if(v.type==='solo') vis=`<div class="blob"></div><div class="frame solo ${v.plain?'plain':''}" data-a="right">${v.plain?'':bar(v.url)}<img src="assets/${v.img}.jpg" alt="${p.title} 화면"></div>`;
+  else vis=`<div class="blob"></div><div class="frame f1 ${v.plain?'plain':''}" data-a="right">${v.plain?'':bar(v.url)}<img src="assets/${v.img}.jpg" alt="${p.title} 화면"></div><div class="frame f2 plain" style="${v.w2?`width:${v.w2}px`:''}"><img src="assets/${v.img2}.jpg" alt="${p.title} 화면 2"></div>`;
+  S.push({title:p.title, sec:String(i+1).padStart(2,'0'), label:`프로젝트 · ${p.cat}`, h:p.title, html:`
+  <div class="pj">
+    <div>
+      <p class="sub" data-a>${p.sub}</p>
+      ${p.pts.map((t,k)=>`<div class="card pt" data-a><i>${k+1}</i><div><h4>${t[0]}</h4><p>${t[1]}</p></div></div>`).join('')}
+      <div class="chips" data-a>${chips(p.chips)}</div>
+      <div class="links" data-a>${p.links.map((l,k)=>`<a class="btn ${k?'ghost':''}" href="${l[1]}" target="_blank" rel="noopener">${l[0]} ${ARROW}</a>`).join('')}</div>
+    </div>
+    <div class="vis">${vis}</div>
+  </div>`});
+});
+
+S.push({title:'일하는 방식', sec:'04', label:'일하는 방식', h:'작업물마다 공통으로 넣은 네 가지 원칙', html:`
+  <div class="pr">
+    <div class="card" data-a><div class="big">1</div><h3>근거가 없으면 추측하지 않습니다</h3><p>티켓 에이전트는 <b>KB 일치도 50% 이상</b>일 때만 답하고, 블로그 에이전트는 <b>[확인 필요]</b>를 남기며, 제안서의 모르는 숫자는 <b>빨간 빈칸</b>으로 둡니다.</p></div>
+    <div class="card" data-a><div class="big">2</div><h3>밖으로 나가는 일은 사람이 승인합니다</h3><p>고객에게 보내는 답변과 메일, 설정 변경, 개발 이슈 등록, 글 발행은 모두 <b>사람이 확인한 뒤</b> 실행되도록 설계했습니다.</p></div>
+    <div class="card" data-a><div class="big">3</div><h3>직접 돌려 보고 고칩니다</h3><p>온보딩 에이전트는 실제 실행에서 드러난 <b>문제 6가지</b>를 원칙으로 보완했고, 학습 앱은 <b>자동 검사 35개</b>로 동작을 확인했습니다.</p></div>
+    <div class="card" data-a><div class="big">4</div><h3>범위와 한계를 먼저 밝힙니다</h3><p>가상 데이터, 규칙 기반 동작, 실습용 비공식 자료라는 점을 화면과 문서에 적었습니다. <b>만든 것과 만들지 않은 것</b>을 구분해 설명합니다.</p></div>
+  </div>`});
+
+S.push({title:'마무리', cls:'end', html:`
+  ${wave('M 2000 280 H 1600 C 1450 280 1370 370 1370 500 V 680 C 1370 820 1460 900 1600 900 H 2000','#2A66D6',5,13)}
+  <div class="in">
+    <h2 data-a>감사합니다.</h2>
+    <p data-a>제품을 먼저 배우고, 고객과 사용자가 실제로 쓸 수 있을 때까지<br>설명하고 지원하는 일을 하고 싶습니다.</p>
+    <div class="ct">
+      <div data-a><small>NAME</small><b>김지호</b></div>
+      <a data-a href="tel:010-8713-3332"><small>PHONE</small><b>010-8713-3332</b></a>
+      <a data-a href="mailto:ghdignsdl5@gmail.com"><small>EMAIL</small><b>ghdignsdl5@gmail.com</b></a>
+      <a data-a href="https://github.com/JIHOSW/jiho-agent" target="_blank" rel="noopener" style="grid-column:span 2"><small>GITHUB</small><b>github.com/JIHOSW/jiho-agent</b></a>
+    </div>
+  </div>
+  <div class="fine" data-a="fade">AI·HTML 프로젝트는 개인 학습과 실습을 위한 작업물이며, 관련 기업의 공식 서비스나 공식 제안서가 아닙니다. 학습과 경력 정보는 2026년 11월 기준입니다.</div>`});
+
+/* ---- render ---- */
+const stage = document.getElementById('stage');
+const pad = n => String(n).padStart(2,'0');
+stage.innerHTML = S.map((s,i)=>`<section class="slide ${s.cls||''}" data-i="${i}">${
+  s.cls ? s.html : `<div class="brand">KIM JIHO · PORTFOLIO</div>
+  <div class="hd" data-a><div class="no">${s.sec}</div><div><small>${s.label}</small><h2>${s.h}</h2></div></div>
+  <div class="body">${s.html}</div>${s.note?`<div class="note">${s.note}</div>`:''}<div class="pg">${pad(i+1)} / ${pad(S.length)}</div>`
+}</section>`).join('');
+const slides = [...stage.children];
+slides.forEach(s => s.querySelectorAll('[data-a]').forEach((el,k)=>el.style.setProperty('--i',k)));
+
+/* ---- navigation ---- */
+let cur = -1;
+const bar = document.getElementById('bar'), cnt = document.getElementById('cnt'), ov = document.getElementById('ov');
+function countUp(sl){
+  sl.querySelectorAll('[data-count]').forEach(el=>{
+    const to=+el.dataset.count, t0=performance.now(), dur=1300;
+    if(matchMedia('(prefers-reduced-motion:reduce)').matches){el.textContent=to;return}
+    (function tick(t){const p=Math.min(1,(t-t0)/dur);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(tick)})(t0);
+  });
+}
+function go(n){
+  n = Math.max(0, Math.min(S.length-1, n));
+  if(n===cur) return;
+  slides.forEach((s,i)=>{ s.classList.toggle('active', i===n); s.classList.toggle('prev', i<n); });
+  cur = n; countUp(slides[n]);
+  bar.style.width = ((n+1)/S.length*100)+'%';
+  cnt.textContent = `${n+1} / ${S.length}`;
+  history.replaceState(null,'','#'+(n+1));
+  document.title = `김지호 입사지원 포트폴리오 · ${S[n].title}`;
+}
+function fit(){
+  const k = Math.min(innerWidth/1920, innerHeight/1080) * (innerWidth<900 ? 1 : .96);
+  stage.style.transform = `scale(${k}) translate(-50%,-50%)`;
+}
+function overview(on){
+  ov.classList.toggle('on', on ?? !ov.classList.contains('on'));
+  ov.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('cur', i===cur));
+}
+ov.querySelector('.g').innerHTML = S.map((s,i)=>`<button data-go="${i+1}"><i>${pad(i+1)}</i>${s.title}</button>`).join('');
+document.addEventListener('click', e=>{
+  const g = e.target.closest('[data-go]');
+  if(g){ go(+g.dataset.go-1); overview(false); return; }
+  if(e.target===ov) overview(false);
+});
+document.getElementById('bp').onclick = ()=>go(cur-1);
+document.getElementById('bn').onclick = ()=>go(cur+1);
+document.getElementById('bo').onclick = ()=>overview();
+const fs = ()=> document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.();
+document.getElementById('bf').onclick = fs;
+addEventListener('keydown', e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  const k=e.key;
+  if(['ArrowRight','PageDown',' ','Enter'].includes(k)){e.preventDefault();go(cur+1)}
+  else if(['ArrowLeft','PageUp','Backspace'].includes(k)){e.preventDefault();go(cur-1)}
+  else if(k==='Home')go(0); else if(k==='End')go(S.length-1);
+  else if(k==='o'||k==='O')overview(); else if(k==='f'||k==='F')fs();
+  else if(k==='Escape')overview(false);
+});
+let tx=null;
+addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)go(cur+(d<0?1:-1));tx=null},{passive:true});
+addEventListener('resize', fit);
+const nav=document.getElementById('nav');let nt;
+addEventListener('mousemove',()=>{nav.classList.add('show');clearTimeout(nt);nt=setTimeout(()=>nav.classList.remove('show'),2000)});
+fit(); go((parseInt(location.hash.slice(1))||1)-1);
+</script>
+</body>
+</html>
