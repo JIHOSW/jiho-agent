@@ -105,7 +105,7 @@
 
 </details>
 
-**그 밖의 자료** &nbsp; 📄 [개발 포트폴리오 PDF](portfolio/%EA%B0%9C%EB%B0%9C%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pdf) &nbsp;·&nbsp; 🎓 [시스템 사용자 교육자료](portfolio/training/) <sub>(국립문화유산연구원 연구자원 통합관리시스템 교육자료, ECM 교육 대본)</sub>
+**그 밖의 자료** &nbsp; 🎞 [포트폴리오 모션 PPT](https://jihosw.github.io/jiho-agent/portfolio/) &nbsp;·&nbsp; 📄 [개발 포트폴리오 PDF](portfolio/%EA%B0%9C%EB%B0%9C%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pdf) &nbsp;·&nbsp; 🎓 [시스템 사용자 교육자료](portfolio/training/) <sub>(국립문화유산연구원 연구자원 통합관리시스템 교육자료, ECM 교육 대본)</sub>
 
 <sub>AI·HTML 프로젝트는 개인 학습과 실습을 위한 작업물이며, 관련 기업의 공식 서비스나 공식 제안서가 아닙니다.</sub>
 
