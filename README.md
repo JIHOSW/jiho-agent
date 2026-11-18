@@ -4,7 +4,7 @@
 
 <br>
 
-<a href="https://jihosw.github.io/jiho-agent/onboarding-agent/"><img src="https://img.shields.io/badge/%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8-%EC%8B%9C%EC%97%B0%20%EB%B3%B4%EA%B8%B0-E1323F?style=for-the-badge&labelColor=0F1422" alt="온보딩 에이전트 시연 보기"></a> <a href="https://jihosw.github.io/jiho-agent/"><img src="https://img.shields.io/badge/HTML%20%EB%AA%A8%EC%85%98%20PPT-%EB%B0%94%EB%A1%9C%20%EB%B3%B4%EA%B8%B0-3B82F6?style=for-the-badge&labelColor=0F1422" alt="HTML 모션 PPT 바로 보기"></a> <a href="portfolio/%EA%B0%9C%EB%B0%9C%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pdf"><img src="https://img.shields.io/badge/%EA%B0%9C%EB%B0%9C%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4-PDF-334155?style=for-the-badge&labelColor=0F1422" alt="개발 포트폴리오 PDF"></a>
+<a href="https://jihosw.github.io/jiho-agent/onboarding-agent/"><img src="https://img.shields.io/badge/%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8-%EC%8B%9C%EC%97%B0%20%EB%B3%B4%EA%B8%B0-E1323F?style=for-the-badge&labelColor=0F1422" alt="온보딩 에이전트 시연 보기"></a> <a href="https://jihosw.github.io/jiho-agent/"><img src="https://img.shields.io/badge/HTML%20%EB%AA%A8%EC%85%98%20PPT-%EB%B0%94%EB%A1%9C%20%EB%B3%B4%EA%B8%B0-3B82F6?style=for-the-badge&labelColor=0F1422" alt="HTML 모션 PPT 바로 보기"></a> <a href="%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4%20html%20%EB%AA%A8%EC%85%98%20ppt/%EA%B9%80%EC%A7%80%ED%98%B8_%EC%9E%85%EC%82%AC%EC%A7%80%EC%9B%90_%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pptx?raw=true"><img src="https://img.shields.io/badge/%EC%9E%85%EC%82%AC%EC%A7%80%EC%9B%90%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4-PPT%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-1F56C8?style=for-the-badge&labelColor=0F1422" alt="입사지원 포트폴리오 PPT 다운로드"></a> <a href="portfolio/%EA%B0%9C%EB%B0%9C%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pdf"><img src="https://img.shields.io/badge/%EA%B0%9C%EB%B0%9C%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4-PDF-334155?style=for-the-badge&labelColor=0F1422" alt="개발 포트폴리오 PDF"></a>
 
 </div>
 
@@ -105,7 +105,7 @@
 
 </details>
 
-**그 밖의 자료** &nbsp; 🎞 [포트폴리오 모션 PPT](https://jihosw.github.io/jiho-agent/portfolio/) &nbsp;·&nbsp; 📄 [개발 포트폴리오 PDF](portfolio/%EA%B0%9C%EB%B0%9C%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pdf) &nbsp;·&nbsp; 🎓 [시스템 사용자 교육자료](portfolio/training/) <sub>(국립문화유산연구원 연구자원 통합관리시스템 교육자료, ECM 교육 대본)</sub>
+**그 밖의 자료** &nbsp; 🎞 [포트폴리오 모션 PPT](https://jihosw.github.io/jiho-agent/portfolio/) &nbsp;·&nbsp; 📊 [입사지원 포트폴리오 PPT 파일](%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4%20html%20%EB%AA%A8%EC%85%98%20ppt/%EA%B9%80%EC%A7%80%ED%98%B8_%EC%9E%85%EC%82%AC%EC%A7%80%EC%9B%90_%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pptx?raw=true) <sub>(20장, PowerPoint에서 편집 가능)</sub> &nbsp;·&nbsp; 📄 [개발 포트폴리오 PDF](portfolio/%EA%B0%9C%EB%B0%9C%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pdf) &nbsp;·&nbsp; 🎓 [시스템 사용자 교육자료](portfolio/training/) <sub>(국립문화유산연구원 연구자원 통합관리시스템 교육자료, ECM 교육 대본)</sub>
 
 <sub>AI·HTML 프로젝트는 개인 학습과 실습을 위한 작업물이며, 관련 기업의 공식 서비스나 공식 제안서가 아닙니다.</sub>
 
