@@ -124,10 +124,18 @@ footer{color:var(--muted);font-size:12.5px;margin-top:18px;text-align:center}
 @media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}h1{font-size:19px}.stat{min-width:70px;flex:1}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
+<script>
+/* Microsoft Clarity: 이용 흐름 측정. 직접 입력한 문의 내용은 data-clarity-mask로 가려 기록하지 않는다. */
+(function(c,l,a,r,i,t,y){
+  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "zewnf9zcdz");
+</script>
 </head>
 <body>
 <div class="wrap">
-  <header class="top">
+  <header class="top" data-clarity-unmask="true">
     <div>
       <div class="brand">
         <div class="logo">WB</div>
@@ -139,13 +147,13 @@ footer{color:var(--muted);font-size:12.5px;margin-top:18px;text-align:center}
     </div>
     <div class="stats" id="stats"></div>
   </header>
-  <p class="notice">가상의 문서관리 SaaS <b>워크브릿지</b>의 기술지원팀을 가정한 시연입니다. 고객사·기록·지식베이스(KB)는 모두 가상 데이터이고, 분류와 검색은 규칙 기반으로 이 브라우저 안에서만 동작합니다(LLM 호출 없음). 고객에게 보내는 답변은 지원 엔지니어가 승인해야 발송됩니다.</p>
+  <p class="notice" data-clarity-unmask="true">가상의 문서관리 SaaS <b>워크브릿지</b>의 기술지원팀을 가정한 시연입니다. 고객사·기록·지식베이스(KB)는 모두 가상 데이터이고, 분류와 검색은 규칙 기반으로 이 브라우저 안에서만 동작합니다(LLM 호출 없음). 고객에게 보내는 답변은 지원 엔지니어가 승인해야 발송됩니다. 화면 이용 흐름은 개선을 위해 Microsoft Clarity로 기록되며, 직접 입력한 문의 내용은 가려집니다.</p>
 
   <div class="grid">
     <section class="col">
       <h2>티켓함 <button class="btn ghost sm" id="reset">처음으로</button></h2>
-      <div class="pad" id="inbox"></div>
-      <div class="newbox">
+      <div class="pad" id="inbox" data-clarity-unmask="true"></div>
+      <div class="newbox" data-clarity-mask="true">
         <h3>티켓 직접 추가</h3>
         <div class="chips" id="chips"></div>
         <div class="two"><input id="fCo" placeholder="고객사 (선택)" maxlength="30"><input id="fPerson" placeholder="담당자 (선택)" maxlength="20"></div>
@@ -158,14 +166,14 @@ footer{color:var(--muted);font-size:12.5px;margin-top:18px;text-align:center}
 
     <section class="col" id="main">
       <h2>처리 과정</h2>
-      <div id="stage">
-        <div class="empty"><b>왼쪽에서 티켓을 고르세요</b>1번부터 순서대로 보면, 3번에서 새로 만든 KB 문서가 4번 티켓을 1차에서 해결하는 흐름을 볼 수 있습니다.</div>
+      <div id="stage" data-clarity-unmask="true">
+        <div class="empty"><b>왼쪽에서 티켓을 고르세요</b>1번부터 순서대로 보면, 3번에서 새로 만든 KB 문서가 4번 티켓을 1차에서 해결하는 흐름을 볼 수 있습니다.<br><button class="btn" id="startBtn" style="margin-top:16px">1번 티켓부터 시작</button></div>
       </div>
     </section>
 
     <section class="col kbcol">
       <h2>지식베이스 <span class="badge" id="kbCount"></span></h2>
-      <div id="kb"></div>
+      <div id="kb" data-clarity-unmask="true"></div>
       <div class="newbox">
         <h3>긴급도와 SLA 기준</h3>
         <table class="sla">
@@ -354,6 +362,16 @@ function replyBilling(t){
   return hello(t) + `\n문의하신 내용은 계약·요금 관련 사항이어서 담당 부서인 고객성공팀에 전달했습니다. 담당자가 1영업일 안에 연락드리겠습니다.\n\n제품 사용 중 불편한 점이 있으면 언제든지 기술지원팀으로 알려 주세요.\n` + bye;
 }
 
+/* ───────── 측정 (Clarity 사용자 지정 이벤트) ─────────
+   어떤 단계까지 가고 어디서 멈추는지 보기 위한 이벤트. 입력한 글자는 보내지 않고 분류 결과만 보낸다. */
+function track(name, tags){
+  try {
+    if (!window.clarity) return;
+    if (tags) Object.entries(tags).forEach(([k,v]) => clarity('set', k, String(v)));
+    clarity('event', name);
+  } catch (e) {}
+}
+
 /* ───────── 3. 상태와 화면 ───────── */
 let kb, tickets, stats, runId = 0, activeId = null, seq, devSeq, kbSeq;
 const $ = id => document.getElementById(id);
@@ -374,14 +392,14 @@ function init(reset){
     stats = {done:0, first:0, esc:0, fed:0}; seq = 2500; devSeq = 318; kbSeq = 110;
   }
   activeId = null; runId++;
-  $('stage').innerHTML = '<div class="empty"><b>왼쪽에서 티켓을 고르세요</b>1번부터 순서대로 보면, 3번에서 새로 만든 KB 문서가 4번 티켓을 1차에서 해결하는 흐름을 볼 수 있습니다.</div>';
+  $('stage').innerHTML = '<div class="empty"><b>왼쪽에서 티켓을 고르세요</b>1번부터 순서대로 보면, 3번에서 새로 만든 KB 문서가 4번 티켓을 1차에서 해결하는 흐름을 볼 수 있습니다.<br><button class="btn" id="startBtn" style="margin-top:16px">1번 티켓부터 시작</button></div>';
   renderInbox(); renderKB(); renderStats();
 }
 const STATUS_CLS = {'대기':'','처리 중':'b-blue','승인 대기':'b-amber','2차 확인 중':'b-violet','종결':'b-teal','고객 회신 대기':'b-teal','타 부서 전달':'b-teal','엔지니어 직접 처리':''};
 function renderInbox(){
   $('inbox').innerHTML = tickets.map((t,i) => `<button class="ticket ${t.id===activeId?'on':''}" data-id="${t.id}">
     <div class="row"><span class="who mono">${t.id} · ${esc(t.at)}</span><span class="badge ${STATUS_CLS[t.status]||''}">${t.status}</span></div>
-    <div class="sub">${t.free ? '' : (i+1)+'. '}${esc(t.subject)}</div>
+    <div class="sub" ${t.free ? 'data-clarity-mask="true"' : ''}>${t.free ? '' : (i+1)+'. '}${esc(t.subject)}</div>
     <div class="who">${esc(t.co)}${t.person ? ' · '+esc(t.person) : ''}</div>
     ${t.hint ? `<div class="hint">${esc(t.hint)}</div>` : ''}</button>`).join('');
 }
@@ -406,9 +424,10 @@ async function run(t){
   const my = ++runId, alive = () => my === runId;
   tickets.forEach(x => { if (x.id !== t.id && !x.final) x.status = '대기'; });
   activeId = t.id; setStatus(t, '처리 중');
+  track(t.free ? 'ticket_open_custom' : 'ticket_open_' + t.id, {ticket: t.free ? 'custom' : t.id});
   const stage = $('stage');
   stage.innerHTML = `<div class="thead"><div class="meta"><span class="mono">${t.id}</span><span class="badge">${esc(t.co)}${t.person ? ' · '+esc(t.person) : ''}</span><span class="badge">${esc(t.at)} 접수</span><span id="hBadges"></span></div>
-    <h3>${esc(t.subject)}</h3><div class="quote">${esc(t.body)}</div></div><div class="log" id="log"></div>`;
+    <h3 ${t.free ? 'data-clarity-mask="true"' : ''}>${esc(t.subject)}</h3><div class="quote" ${t.free ? 'data-clarity-mask="true"' : ''}>${esc(t.body)}</div></div><div class="log" id="log"></div>`;
   const log = $('log'); let n = 0;
   const step = async (o, ms = 800) => {
     const th = document.createElement('div'); th.className = 'think'; th.innerHTML = '<i></i><i></i><i></i>'; log.appendChild(th);
@@ -433,10 +452,11 @@ async function run(t){
     ta.readOnly = true; el.querySelector('.actions').innerHTML = res === 'ok'
       ? `<span class="badge b-teal">${edited ? '엔지니어가 수정한 뒤 승인 · 발송됨(시연)' : '승인 · 발송됨(시연)'}</span>`
       : '<span class="badge b-red">반려 · 엔지니어가 직접 처리</span>';
+    track(res !== 'ok' ? 'draft_rejected' : edited ? 'draft_approved_edited' : 'draft_approved');
     if (res !== 'ok') { finish('엔지니어 직접 처리'); return null; }
     setStatus(t, '처리 중'); return true;
   };
-  const finish = (status) => { t.final = true; stats.done++; setStatus(t, status); renderStats(); t.saved = stage.innerHTML; save(); };
+  const finish = (status) => { track('ticket_closed', {outcome: status}); if (!t.free && tickets.filter(x => !x.free && x.final).length === 3 && !t.final) track('all_scenarios_done'); t.final = true; stats.done++; setStatus(t, status); renderStats(); t.saved = stage.innerHTML; save(); };
 
   // ① 분류
   const text = t.subject + ' ' + t.body, cs = extractConcepts(text), cls = classify(text, cs), sla = SLA[cls.pri];
@@ -446,6 +466,7 @@ async function run(t){
       <dt>긴급도</dt><dd><span class="badge ${sla.cls}">${cls.pri}</span> ${esc(cls.why)}</dd>
       <dt>SLA</dt><dd>첫 응답 기한 <b>${addMinutes(t.at, sla.first)}</b> (접수 후 ${sla.firstL}) · 해결 목표 ${sla.goal}</dd></dl>`})) return;
   $('hBadges').innerHTML = `<span class="badge ${sla.cls}">${cls.pri}</span> <span class="badge">${cls.cat}</span>`;
+  track('classified', {category: cls.cat, priority: cls.pri});
 
   // 기술지원 범위 밖
   if (cls.cat === '계약·요금') {
@@ -471,6 +492,7 @@ async function run(t){
   // ④ 판단
   if (cs.length < 2 && !hit) {
     if (!await step({title:'판단: 정보가 부족해 먼저 확인 질문', tool:'decide', html:'문의에서 읽어 낸 내용이 적어 원인을 좁힐 수 없습니다. 추측으로 답하지 않고, 확인에 필요한 질문을 먼저 보냅니다.'})) return;
+    track('asked_question');
     if (!await approve('확인 질문 초안', replyAsk(t, cls.cat))) return;
     await step({title:'고객 회신 대기', html:'고객이 답하면 그 내용을 붙여 다시 분류부터 진행합니다. KB는 바꾸지 않습니다.'}, 500);
     return finish('고객 회신 대기');
@@ -481,7 +503,7 @@ async function run(t){
     if (!await step({title:`판단: ${a.id}로 1차 해결 가능`, tool:'decide', html:`${t.records ? esc(t.evidence || '기록이 KB 문서의 증상과 같습니다.') : 'KB 문서의 증상과 문의 내용이 같습니다. 다만 고객 기록으로 확인한 것은 아니어서 답변에 그 점을 밝힙니다.'}${cls.pri === 'P1' ? '<br><b>P1 건이어서 조치 방법과 함께 임시 우회 방법을 안내하고, 30분 간격 공유를 약속합니다.</b>' : ''}`})) return;
     if (!await approve('답변 초안', replySolve(t, a, cls.pri))) return;
     if (!await step({title:'고객 확인: 해결됨', badge:'<span class="badge">시연용 회신</span>', html:`${esc(t.co)} 담당자가 안내대로 조치해 해결됐다고 회신했습니다. 티켓을 종결합니다.`}, 1100)) return;
-    a.cases++; stats.first++; stats.fed++; renderKB(a.id);
+    track('first_line_solved', {kb: a.id}); a.cases++; stats.first++; stats.fed++; renderKB(a.id);
     await step({kind:'kb', title:'KB 환류: 해결 사례 추가', tool:'update_kb', html:`<span class="mono">${a.id}</span>의 해결 건수를 ${a.cases}건으로 올리고 이 티켓을 사례로 연결했습니다. 새 문서는 만들지 않습니다.`}, 600);
     return finish('종결');
   }
@@ -496,7 +518,7 @@ async function run(t){
       <dt>관련 기록</dt><dd>${t.records ? `<ul>${t.records.map(r => `<li>${esc(r)}</li>`).join('')}</ul>` : '없음'}</dd>
       <dt>영향 범위</dt><dd>${esc(t.impact || '확인되지 않음')}</dd>
       <dt>KB 검색</dt><dd>${hits.length ? '비슷한 문서는 있으나 기준 미달 (' + hits.map(r => r.a.id).join(', ') + ')' : '일치하는 문서 없음'}</dd></dl></div>`})) return;
-  stats.esc++; renderStats();
+  track('escalated'); stats.esc++; renderStats();
   if (!await approve('접수 안내 초안', replyHold(t, cls.pri, issueId))) return;
 
   setStatus(t, '2차 확인 중');
@@ -521,7 +543,7 @@ async function run(t){
   if (!await approve('해결 안내 초안', replySolve(t, art, cls.pri, true))) return;
   if (!await step({title:'고객 확인: 해결됨', badge:'<span class="badge">시연용 회신</span>', html:`${esc(t.co)} 담당자가 안내대로 조치해 해결됐다고 회신했습니다. 티켓을 종결합니다.`}, 1100)) return;
   if (art.c.length) {
-    kb.push(art); stats.fed++; renderKB(art.id);
+    track('kb_created'); kb.push(art); stats.fed++; renderKB(art.id);
     await step({kind:'kb', title:`KB 환류: 새 문서 ${art.id} 생성`, tool:'create_kb_article', html:`<div class="box"><b>${esc(art.title)}</b><br>
       <span style="font-size:13px;color:var(--muted)">검색 표현</span> ${art.c.map(k => `<span class="badge">${CONCEPTS[k].l}</span>`).join(' ')}<br>
       <span style="font-size:13px;color:var(--muted)">원인</span> ${esc(art.cause)}</div>
@@ -549,6 +571,7 @@ function addTicket(){
   const t = {id:'T-' + (++seq), co: $('fCo').value.trim() || '직접 추가 고객', person: $('fPerson').value.trim(), free:true, status:'대기', hint:'직접 추가한 티켓',
     at: String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0'),
     subject: first.length > 34 ? first.slice(0,34) + '…' : first, body};
+  track('ticket_added');
   tickets.push(t); ['fBody','fSub'].forEach(id => $(id).value = ''); renderInbox(); save(); return t;
 }
 $('fAdd').onclick = () => { if (addTicket()) $('inbox').lastElementChild.scrollIntoView({block:'nearest', behavior:'smooth'}); };
@@ -556,9 +579,11 @@ $('fGo').onclick = () => {
   const t = addTicket(); if (!t) return; run(t);
   if (innerWidth <= 760) $('main').scrollIntoView({behavior:'smooth'});
 };
-$('reset').onclick = () => init(true);
+$('reset').onclick = () => { track('reset'); init(true); };
+$('stage').addEventListener('click', e => { if (e.target.id === 'startBtn') { track('start_button'); run(tickets[0]); } });
 init();
 const play = new URLSearchParams(location.search).get('play');
+track('page_view', {entry: play ? 'play_' + play : 'direct', returning: tickets.some(x => x.final) ? 'yes' : 'no'});
 if (play && tickets[play-1]) run(tickets[play-1]);
 </script>
 </body>

@@ -254,7 +254,16 @@ const projects = [
        ['해결 내용의 환류','해결된 티켓은 새 KB 문서가 되어, 같은 문의는 다음부터 1차에서 해결됩니다.']],
   chips:['단일 HTML','규칙 기반','사람 승인 후 발송','브라우저 저장'],
   links:[['시연 보기',PAGES+'support-agent/'],['코드',gh('기술지원 티켓 에이전트')]],
-  vis:{type:'solo',img:'support',url:'jihosw.github.io/jiho-agent/support-agent'}},
+  vis:{type:'solo',img:'support',url:'jihosw.github.io/jiho-agent/support-agent'},
+  extra:{h:'배포하고, 녹화를 보고, 고쳤습니다', label:'프로젝트 · 배포 후 사용 분석',
+   sub:'Netlify에 배포하고 Microsoft Clarity로 실제 방문을 녹화해, 사용 흐름에서 고칠 점을 찾았습니다.',
+   pts:[['녹화에서 찾은 문제','가상 데이터까지 점(•)으로 가려져 에이전트의 판단 과정을 읽을 수 없었고, 한 녹화는 1분 넘게 시작 화면에 머물렀습니다.'],
+        ['보이게 할 것과 가릴 것을 나누고, 시작점을 분명하게','가상 데이터 영역은 보이게, 방문자가 직접 쓴 문의는 가리게 나눴습니다. [1번 티켓부터 시작] 버튼을 넣고 녹화 사실을 안내했습니다.'],
+        ['클릭이 아니라 단계로 측정','사용자 지정 이벤트 13종으로 시작 → 분류 → 승인·수정·반려 → 종결 → 4건 완주를 깔때기로 봅니다. 입력한 글자는 보내지 않습니다.']],
+   chips:['Microsoft Clarity','Netlify','사용자 지정 이벤트','입력 내용 마스킹'],
+   links:[['분석 기록',gh('기술지원 티켓 에이전트/docs/CLARITY.md')],['시연 보기',PAGES+'support-agent/']],
+   vis:{type:'solo',img:'clarity',url:'clarity.microsoft.com · 녹화'},
+   note:'초기 녹화 4건(자동 방문 1건 포함)을 직접 본 결과입니다. 비율과 같은 숫자는 방문이 쌓인 뒤 집계합니다.'}},
  {cat:'AI 에이전트', title:'고객 온보딩 에이전트', short:'LLM이 도구를 골라 실행, 사람이 승인',
   sub:'새 고객사를 맡기면 LLM이 도구를 골라 실행하며 첫 활용까지 이끄는 온보딩 에이전트',
   pts:[['스스로 판단하는 에이전트 루프','Gemini가 도구 13개 가운데 다음 행동을 정합니다. 진단, 로그 조회, 재검증, 교육 계획까지 이어 갑니다.'],
@@ -337,6 +346,10 @@ const projects = [
   vis:{type:'duo',img:'training-01',img2:'training-14',plain:1}},
 ];
 
+/* 프로젝트 장 번호: extra가 있는 프로젝트는 뒤에 장이 하나 더 붙는다 */
+const slideNo = i => 7 + i + projects.slice(0,i).filter(p=>p.extra).length;
+const AFTER = slideNo(projects.length);
+
 /* ---- 장식 물결선 ---- */
 let wid = 0;
 function wave(d, color='#1F56C8', n=5, gap=13){
@@ -378,8 +391,8 @@ S.push({title:'목차', cls:'toc', html:`
     <li data-a data-go="3"><span>01</span>소개<em>한눈에 보기</em></li>
     <li data-a data-go="4"><span>02</span>경력과 역량<em>경력 · 기술 · 교육</em></li>
     <li data-a data-go="6"><span>03</span>프로젝트<em>작업물 ${projects.length}개</em></li>
-    <li data-a data-go="${7+projects.length}"><span>04</span>일하는 방식<em>작업물에 공통으로 넣은 원칙</em></li>
-    <li data-a data-go="${8+projects.length}"><span>05</span>마무리<em>연락처</em></li>
+    <li data-a data-go="${AFTER}"><span>04</span>일하는 방식<em>작업물에 공통으로 넣은 원칙</em></li>
+    <li data-a data-go="${AFTER+1}"><span>05</span>마무리<em>연락처</em></li>
   </ul></div>`});
 
 S.push({title:'한눈에 보기', sec:'01', label:'소개', h:'배운 것을 사용자의 언어로 옮기는 사람입니다', html:`
@@ -424,18 +437,18 @@ S.push({title:'역량', sec:'02', label:'경력과 역량', h:'실무, 개발, A
 
 S.push({title:'프로젝트 한눈에', sec:'03', label:'프로젝트', h:`작업물 ${projects.length}개를 한눈에`, html:`
   <div class="map">
-    ${projects.map((p,i)=>`<div class="card mc" data-a="pop" data-go="${7+i}"><div class="th" style="background-image:url(assets/${p.vis.img}.jpg)"><span>${String(i+1).padStart(2,'0')} · ${p.cat}</span></div><h3>${p.title}</h3><p>${p.short}</p></div>`).join('')}
+    ${projects.map((p,i)=>`<div class="card mc" data-a="pop" data-go="${slideNo(i)}"><div class="th" style="background-image:url(assets/${p.vis.img}.jpg)"><span>${String(i+1).padStart(2,'0')} · ${p.cat}</span></div><h3>${p.title}</h3><p>${p.short}</p></div>`).join('')}
     <div class="card mc sum" data-a="pop"><b>${projects.length}</b><span>카드를 누르면<br>해당 장으로 이동합니다.</span></div>
   </div>`,
   note:'AI·HTML 프로젝트는 개인 학습·실습 작업물이며, 등장하는 고객사와 데이터는 가상입니다.'});
 
-projects.forEach((p,i)=>{
+function projectSlide(p, sec, label, h, title){
   const v=p.vis, bar=u=>`<div class="bar"><b></b><b></b><b></b><span>${u}</span></div>`;
   let vis='';
   if(v.type==='phone') vis=`<div class="blob"></div><div class="phone" data-a="right"><img src="assets/${v.img}.jpg" alt="${p.title} 화면"></div>`;
   else if(v.type==='solo') vis=`<div class="blob"></div><div class="frame solo ${v.plain?'plain':''}" data-a="right">${v.plain?'':bar(v.url)}<img src="assets/${v.img}.jpg" alt="${p.title} 화면"></div>`;
   else vis=`<div class="blob"></div><div class="frame f1 ${v.plain?'plain':''}" data-a="right">${v.plain?'':bar(v.url)}<img src="assets/${v.img}.jpg" alt="${p.title} 화면"></div><div class="frame f2 plain" style="${v.w2?`width:${v.w2}px`:''}"><img src="assets/${v.img2}.jpg" alt="${p.title} 화면 2"></div>`;
-  S.push({title:p.title, back:1, sec:String(i+1).padStart(2,'0'), label:`프로젝트 · ${p.cat}`, h:p.title, html:`
+  S.push({title, back:1, sec, label, h, note:p.note, html:`
   <div class="pj">
     <div>
       <p class="sub" data-a>${p.sub}</p>
@@ -445,13 +458,18 @@ projects.forEach((p,i)=>{
     </div>
     <div class="vis">${vis}</div>
   </div>`});
+}
+projects.forEach((p,i)=>{
+  const sec=String(i+1).padStart(2,'0');
+  projectSlide(p, sec, `프로젝트 · ${p.cat}`, p.title, p.title);
+  if(p.extra) projectSlide(p.extra, sec, p.extra.label, p.extra.h, `${p.title} · 사용 분석`);
 });
 
 S.push({title:'일하는 방식', sec:'04', label:'일하는 방식', h:'작업물마다 공통으로 넣은 네 가지 원칙', html:`
   <div class="pr">
     <div class="card" data-a><div class="big">1</div><h3>근거가 없으면 추측하지 않습니다</h3><p>티켓 에이전트는 <b>KB 일치도 50% 이상</b>일 때만 답하고, 블로그 에이전트는 <b>[확인 필요]</b>를 남기며, 제안서의 모르는 숫자는 <b>빨간 빈칸</b>으로 둡니다.</p></div>
     <div class="card" data-a><div class="big">2</div><h3>밖으로 나가는 일은 사람이 승인합니다</h3><p>고객에게 보내는 답변과 메일, 설정 변경, 개발 이슈 등록, 글 발행은 모두 <b>사람이 확인한 뒤</b> 실행되도록 설계했습니다.</p></div>
-    <div class="card" data-a><div class="big">3</div><h3>직접 돌려 보고 고칩니다</h3><p>온보딩 에이전트는 실제 실행에서 드러난 <b>문제 6가지</b>를 원칙으로 보완했고, 학습 앱은 <b>자동 검사 35개</b>로 동작을 확인했습니다.</p></div>
+    <div class="card" data-a><div class="big">3</div><h3>직접 돌려 보고 고칩니다</h3><p>온보딩 에이전트는 실제 실행에서 드러난 <b>문제 6가지</b>를 원칙으로 보완했고, 티켓 에이전트는 배포 후 <b>Clarity 녹화</b>를 보고 시작 버튼과 측정 이벤트를 넣었습니다.</p></div>
     <div class="card" data-a><div class="big">4</div><h3>범위와 한계를 먼저 밝힙니다</h3><p>가상 데이터, 규칙 기반 동작, 실습용 비공식 자료라는 점을 화면과 문서에 적었습니다. <b>만든 것과 만들지 않은 것</b>을 구분해 설명합니다.</p></div>
   </div>`});
 
