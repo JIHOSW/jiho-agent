@@ -40,6 +40,7 @@ body {
   max-width: 440px;
   margin: 0 auto;
   overflow: hidden;
+  overflow: clip;          /* never let the glow or focus scroll the stage */
   isolation: isolate;
 }
 /* ambient glow, like a lamp left on */
@@ -97,6 +98,13 @@ body {
 #s-ring { justify-content: space-between; }
 #s-ring .top { flex: 1; display: grid; place-items: center; }
 .ring-dots { display: flex; gap: 8px; margin-top: 44px; justify-content: center; }
+.urgent {
+  margin-top: 16px; text-align: center;
+  font-size: 1.05rem; font-weight: 600; letter-spacing: .18em;
+  color: var(--glow);
+  animation: blink 1.6s ease-in-out infinite;
+}
+@keyframes blink { 50% { opacity: .45; } }
 .ring-dots i {
   width: 7px; height: 7px; border-radius: 50%; background: var(--ink-dim);
   animation: dot 1.2s ease-in-out infinite;
@@ -247,7 +255,7 @@ body {
 .note p {
   margin: 0;
   font-family: var(--font-hand);
-  font-size: 1.6rem; line-height: 1.45;
+  font-size: clamp(1.2rem, 5.4vw, 1.6rem); line-height: 1.5;
   word-break: keep-all;
 }
 .note .from { margin-top: 16px; font-size: 1.2rem; text-align: right; opacity: .75; }
@@ -281,6 +289,7 @@ body {
           <svg viewBox="0 0 24 24" fill="#c9c3d6"><circle cx="12" cy="8.2" r="4.2"/><path d="M3.6 21c.6-4.6 4-7.4 8.4-7.4s7.8 2.8 8.4 7.4z"/></svg>
         </div>
         <div class="ring-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="urgent">긴급전화</div>
       </div>
     </div>
     <div class="answer-row">
@@ -302,8 +311,8 @@ body {
         <svg viewBox="0 0 24 24" fill="#c9c3d6"><circle cx="12" cy="8.2" r="4.2"/><path d="M3.6 21c.6-4.6 4-7.4 8.4-7.4s7.8 2.8 8.4 7.4z"/></svg>
       </div>
       <h1>대전 사는 오혜지라고<br>우기는 남자</h1>
-      <div class="meta"><span class="timer">00:00</span> · 발신지 김포시</div>
-      <div class="tag">사칭 의심 번호</div>
+      <div class="meta"><span class="timer">00:00</span></div>
+      <div class="tag">사랑에 빠지는 전화</div>
     </div>
     <div class="voice">
       <div class="player">
@@ -327,8 +336,8 @@ body {
         <svg viewBox="0 0 24 24" fill="#c9c3d6"><circle cx="12" cy="8.2" r="4.2"/><path d="M3.6 21c.6-4.6 4-7.4 8.4-7.4s7.8 2.8 8.4 7.4z"/></svg>
       </div>
       <h1>대전 사는 오혜지라고<br>우기는 남자</h1>
-      <div class="meta"><span class="timer">00:00</span> · 발신지 김포시</div>
-      <div class="tag">사칭 의심 번호</div>
+      <div class="meta"><span class="timer">00:00</span></div>
+      <div class="tag">사랑에 빠지는 전화</div>
     </div>
     <div class="voice">
       <div class="player">
@@ -351,13 +360,13 @@ body {
       <span id="total">00:00</span>
     </div>
     <div class="note">
-      <p>ㅋㅋ 아기, 오늘 진짜 고생했어.<br>웃는 목소리 듣고 싶어서 만들었어.<br>이제 푹 쉬어 🤍</p>
+      <p>아가야 오늘도 고생 너무 많았지<br>웃는 목소리 듣고 싶어서 만들었어.<br>사랑해 ~~~♥</p>
       <div class="player voice-final" id="final-player" hidden>
         <button class="play" aria-label="음성 듣기"></button>
         <div class="wave" aria-hidden="true"></div>
         <span class="dur">0:00</span>
       </div>
-      <div class="from">— 김포 사는 김지호가</div>
+      <div class="from">— 혜지를 너무 많이 사랑하는 지호가</div>
     </div>
     <button class="ghost" id="btn-again">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
@@ -389,6 +398,88 @@ const audios = VOICES.map(base => {
   document.body.appendChild(a);
   return a;
 });
+
+/* 잔잔한 배경음악: 오르골 같은 아르페지오를 브라우저에서 직접 연주해요 (파일 필요 없음).
+   음성이 나올 땐 더 작아지고, 음성이 멈추면 살짝 돌아와요. */
+const Music = (() => {
+  const QUIET = 0.035, SOFT = 0.06;          // 음성 재생 중 / 음성 없을 때 볼륨
+  const BPM = 66, E = 60 / BPM / 2;          // 8분음표 길이
+  const CHORDS = [[53, 57, 60], [50, 53, 57], [46, 50, 53], [48, 52, 55]]; // F  Dm  Bb  C
+  const ARP = [[0, 12], [2, 12], [1, 24], [0, 24], [2, 24], [1, 24], [2, 12], [1, 12]];
+  const hz = m => 440 * 2 ** ((m - 69) / 12);
+  let ctx, master, bus, timer = null, nextT = 0, step = 0;
+
+  function build() {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    master = ctx.createGain(); master.gain.value = 0;
+    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2600;
+    const len = ctx.sampleRate * 2.6, ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let c = 0; c < 2; c++) {
+      const d = ir.getChannelData(c);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 3;
+    }
+    const verb = ctx.createConvolver(); verb.buffer = ir;
+    const wet = ctx.createGain(); wet.gain.value = 0.45;
+    bus = ctx.createGain();
+    bus.connect(lp); lp.connect(master); lp.connect(verb); verb.connect(wet); wet.connect(master);
+    master.connect(ctx.destination);
+  }
+  function bell(t, m, v) {
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(v, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
+    [[1, 1], [2, 0.18], [3, 0.05]].forEach(([mul, amp]) => {
+      const o = ctx.createOscillator(), og = ctx.createGain();
+      o.frequency.value = hz(m) * mul; og.gain.value = amp;
+      o.connect(og); og.connect(g); o.start(t); o.stop(t + 1.9);
+    });
+    g.connect(bus);
+  }
+  function pad(t, notes, dur) {
+    notes.forEach(m => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "triangle"; o.frequency.value = hz(m - 12);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.09, t + 0.9);
+      g.gain.setValueAtTime(0.09, t + dur - 0.6);
+      g.gain.linearRampToValueAtTime(0, t + dur + 0.4);
+      o.connect(g); g.connect(bus); o.start(t); o.stop(t + dur + 0.5);
+    });
+  }
+  function schedule() {
+    while (nextT < ctx.currentTime + 0.4) {
+      const bar = Math.floor(step / 8) % 4, i = step % 8, c = CHORDS[bar];
+      if (i === 0) pad(nextT, c, E * 8);
+      const [idx, up] = ARP[i];
+      bell(nextT, c[idx] + up, i === 0 ? 0.5 : 0.3);
+      nextT += E; step++;
+    }
+  }
+  function level(v, sec = 0.8) {
+    if (!ctx) return;
+    const now = ctx.currentTime, g = master.gain;
+    g.cancelScheduledValues(now); g.setValueAtTime(g.value, now);
+    g.linearRampToValueAtTime(v, now + sec);
+  }
+  return {
+    start() {                                  // call inside a tap
+      try {
+        if (!ctx) build();
+        ctx.resume();
+        if (!timer) { nextT = ctx.currentTime + 0.1; step = 0; timer = setInterval(schedule, 120); }
+        level(SOFT, 2.5);
+      } catch (e) { /* no Web Audio: just skip the music */ }
+    },
+    voice(on) { level(on ? QUIET : SOFT, on ? 0.4 : 1.2); },
+    stop() {
+      if (!ctx) return;
+      level(0, 1.2);
+      const t = timer; timer = null;
+      setTimeout(() => clearInterval(t), 1300);
+    },
+  };
+})();
 
 const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 const pad = s => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
@@ -455,6 +546,7 @@ function runVoice(section) {
   };
 
   const setPlaying = on => {
+    Music.voice(on);
     box.classList.toggle("playing", on);
     btn.innerHTML = on ? PAUSE_ICON : PLAY_ICON;
   };
@@ -509,6 +601,7 @@ function goVoice(id) {
 // screen 1
 document.getElementById("btn-accept").onclick = () => {
   startTimer();
+  Music.start();
   goVoice("s-v1");
 };
 // declining is not really an option
@@ -571,7 +664,7 @@ function setupFinal() {
   wrap.hidden = false;
   const btn = wrap.querySelector(".play"), dur = wrap.querySelector(".dur");
   dur.textContent = fmt(a.duration || 0);
-  const set = on => { wrap.classList.toggle("playing", on); btn.innerHTML = on ? PAUSE_ICON : PLAY_ICON; };
+  const set = on => { Music.voice(on); wrap.classList.toggle("playing", on); btn.innerHTML = on ? PAUSE_ICON : PLAY_ICON; };
   a.onplay = () => set(true); a.onpause = () => set(false); a.onended = () => set(false);
   a.ontimeupdate = () => { dur.textContent = fmt(Math.max(0, a.duration - a.currentTime) || 0); };
   btn.onclick = () => { a.paused ? a.play().catch(() => {}) : a.pause(); };
@@ -581,6 +674,7 @@ function setupFinal() {
 
 document.getElementById("btn-again").onclick = () => {
   audios.forEach(a => a.pause());
+  Music.stop();
   dodge = 0;
   document.getElementById("btn-decline").style.transform = "";
   document.querySelector(".accept-wrap").style.transform = "";
