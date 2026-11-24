@@ -123,6 +123,27 @@ class RenderTest(unittest.TestCase):
             self.assertIn(href, ids)
 
 
+class AllProjectsTest(unittest.TestCase):
+    def test_all_repo_projects_included_and_no_letter(self):
+        b = example()
+        profile = cp.load_profile()
+        out = cp.render_portfolio(b, profile)
+        for pid in profile["projects"]:
+            self.assertIn(f'id="{pid}"', out) if False else self.assertIn(cp.esc(profile["projects"][pid]["title"]), out)
+        self.assertNotIn(cp.esc(b["cover_letter"][0]["body"][:40]), out)
+        self.assertNotIn(cp.esc(b["resume_title"]), out)
+
+    def test_featured_projects_come_first(self):
+        ids = [x["id"] for x in cp.all_projects(example(), cp.load_profile())]
+        self.assertEqual(ids[:5], [x["id"] for x in example()["portfolio"]["projects"]])
+        self.assertEqual(len(ids), len(set(ids)))
+
+    def test_include_all_false(self):
+        b = example()
+        b["portfolio"]["include_all_projects"] = False
+        self.assertEqual(len(cp.all_projects(b, cp.load_profile())), len(b["portfolio"]["projects"]))
+
+
 class CompanyTest(unittest.TestCase):
     def test_company_points_need_sources(self):
         b = example()

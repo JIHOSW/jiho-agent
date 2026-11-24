@@ -158,6 +158,9 @@ html[data-motion="on"] .slide.active .tl::after{animation:grow 1.8s var(--ease) 
 .mc .th span{position:absolute;left:14px;top:14px;height:32px;padding:0 12px;border-radius:8px;background:var(--blue);color:#fff;font-size:16px;font-weight:800;display:grid;place-items:center}
 .mc h3{font-size:24px;font-weight:800;padding:18px 22px 4px}
 .mc p{font-size:18px;color:var(--ink3);padding:0 22px}
+.map.many{gap:20px}.map.many .mc{height:236px}.map.many .mc .th{height:128px}
+.map.many .mc h3{font-size:21px;padding:14px 18px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.map.many .mc p{font-size:16px;padding:0 18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ---------- 프로젝트 장 ---------- */
 .pj{display:grid;grid-template-columns:780px 1fr;gap:60px;height:760px}
@@ -185,12 +188,7 @@ html[data-motion="on"] .slide.active .tl::after{animation:grow 1.8s var(--ease) 
 .frame.f2{right:0;bottom:0;width:520px;height:370px}
 .frame.f2.ph{width:300px;height:620px;border-radius:40px;border:12px solid #111827}
 .frame.solo{left:0;top:50px;width:920px;height:640px}
-
-/* ---------- 자기소개서 ---------- */
-.letter .rt{font-size:26px;font-weight:800;padding:18px 26px;background:#fff;border-radius:16px;border:1px solid var(--line);margin-bottom:26px}
-.letter .cols{columns:2;column-gap:64px;column-fill:auto;height:700px}
-.letter h3{font-size:24px;font-weight:800;color:var(--blue-d);margin:0 0 10px;break-after:avoid}
-.letter p{font-size:19.5px;line-height:1.72;color:var(--ink);margin-bottom:22px}
+.frame.solo-ph{left:50%;top:0;right:auto;bottom:auto;margin-left:-180px;width:360px!important;height:740px!important}
 
 /* ---------- 마무리 ---------- */
 .end{background:var(--blue);color:#fff}
@@ -260,9 +258,9 @@ html[data-motion="on"] .slide.active .tl::after{animation:grow 1.8s var(--ease) 
   .btn{height:44px;font-size:15px;padding:0 18px}
   .pflow li{font-size:13px;padding:6px 10px}
   .vis{margin-top:20px}.vis .frame{position:relative;inset:auto;width:100%!important;height:auto!important;margin-top:12px}
-  .frame.f2.ph{width:60%!important;margin:12px auto 0;border-width:8px;border-radius:24px}
+  .frame.f2.ph{width:60%!important;margin:12px auto 0!important;border-width:8px;border-radius:24px}
+  .map.many .mc h3,.map.many .mc p{white-space:normal}.map.many .mc{height:auto}.map.many .mc .th{height:150px}
   .frame img,.frame.plain img{height:auto}
-  .letter .rt{font-size:17px;padding:14px}.letter .cols{columns:1;height:auto}.letter h3{font-size:17px}.letter p{font-size:15.5px}
   .end{padding:48px 16px 120px!important}.end .in{position:static;width:auto}.end h2{font-size:44px}.end p{font-size:17px;margin:16px 0 24px}
   .ct a,.ct div{min-width:0;width:100%;padding:16px 18px}.ct b{font-size:17px}
   .end .fine{position:static;margin-top:20px;font-size:13px}.home-link{font-size:16px;min-height:44px}

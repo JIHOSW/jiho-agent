@@ -27,8 +27,9 @@ brief는 한 지원 건의 전체 입력이다. Claude가 직접 쓰고, `script
 | `flow` | 첫 화면 업무 흐름 모션: `title`, `caption`, `steps`[{`label`, `desc`, `say`}] (4~6단계). 단계는 차례로 강조될 뿐 클릭 대상이 아니다 |
 | `why` | `title`, `paragraphs`[] |
 | `fit` | [{`duty`, `experience`, `evidence`[]}] 공고 업무와 이어지는 경험 (gap은 넣지 않음) |
-| `highlights` | 숫자 카드 ID 최대 4개 (profile.highlights: edu-300, slides-44, tools-13, skills-2, tests-172). 숫자는 카운트업 없이 맥락과 함께 표시 |
-| `projects` | [{`id`(profile.projects 키), `headline`, `summary`, `verify`[]}] — 종류·역할·기술·구현 범위·링크·프로젝트 흐름·화면 이미지는 profile에서 자동. 사용 가능한 ID: project-blog, project-onboarding, project-ticket, project-hankkeut, project-training |
+| `highlights` | 숫자 카드 ID 최대 4개 (profile.highlights: edu-300, slides-44, tools-13, skills-2, tests-172, projects-n=실린 작업물 수). 숫자는 카운트업 없이 맥락과 함께 표시 |
+| `projects` | [{`id`(profile.projects 키), `headline`, `summary`, `verify`[]}] — 종류·역할·기술·구현 범위·링크·프로젝트 흐름·화면 이미지는 profile에서 자동. 사용 가능한 ID: project-hankkeut, project-ticket, project-onboarding, project-saas, project-blog, project-switchboard, project-b2b, project-motion, project-career, project-study, project-lms, project-training. 여기 적은 것이 앞에 오고 나머지는 기본 문구로 자동 추가 |
+| `include_all_projects` | 기본 true: 저장소 모든 프로젝트를 싣는다. false면 `projects`에 적은 것만 |
 | `closing` | 맺음말 한두 문장 |
 
 경력·교육 타임라인은 `profile.json`의 `experience`, `education`에서 자동으로 들어간다.

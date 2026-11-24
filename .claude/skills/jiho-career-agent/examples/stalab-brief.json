@@ -505,8 +505,9 @@
       "edu-300",
       "slides-44",
       "skills-2",
-      "tools-13"
-    ]
+      "projects-n"
+    ],
+    "include_all_projects": true
   },
   "company": {
     "title": "스타랩에 대해 확인한 것",

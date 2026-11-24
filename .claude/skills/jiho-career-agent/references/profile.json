@@ -171,6 +171,63 @@
         "hackathon"
       ],
       "limit": "팀 결과물 시험이며 본인이 172건을 모두 작성했다는 뜻이 아니다. AI 추출 실제 API 시험은 재실행하지 않았다. 가상 8건 일치는 일반 정확도 100%가 아니다."
+    },
+    "project-ticket-clarity": {
+      "text": "기술지원 티켓 에이전트를 Netlify에 배포하고 Microsoft Clarity 녹화를 보고 시작 버튼을 넣고, 진행 단계를 사용자 지정 이벤트 13종으로 기록하도록 고침. 입력 글자는 보내지 않고 직접 입력한 티켓 내용은 녹화에서 가림.",
+      "sources": [
+        "personal"
+      ],
+      "limit": "초기 녹화 몇 건을 본 결과이며 비율 같은 사용 지표는 집계하지 않았다."
+    },
+    "project-saas": {
+      "text": "jihodev 고객 온보딩 지원 서비스 개인 프로젝트. 가상의 문서관리 SaaS 고객의 첫 활용을 돕는 담당자용 업무 도구. 고객 현황, 근거 확인, 안내문 작성, 작업 관리. Next.js·TypeScript.",
+      "sources": [
+        "personal"
+      ],
+      "limit": "공개 버전은 가상 데이터와 규칙 기반 분석이며 실제 고객 시스템·DB·로그에 연결되지 않았다. 실제 AI 분석은 서버 API 키 설정 시에만 동작한다."
+    },
+    "project-switchboard": {
+      "text": "에이전트 팀 관제 대시보드 개인 프로젝트. 블로그 에이전트의 업무 흐름·단계별 시간·시간과 토큰·역할 목록 4개 화면을 보여 주는 단일 HTML. 훅이 남긴 기록 파일이나 로컬 서버(serve.mjs)에 연결하면 실제 측정값으로 바뀜.",
+      "sources": [
+        "personal"
+      ],
+      "limit": "기본 화면의 시간·토큰은 시연용 예시다."
+    },
+    "project-b2b": {
+      "text": "B2B 영업제안서 모션 PPT 개인 실습. 고객 미팅에서 들은 말을 요구표로 정리하고 목차 8장과 핵심 장 내용을 거쳐 10장 제안서를 만들고, 같은 내용의 PPT 초안을 생성. 확인되지 않은 숫자는 빨간 빈칸으로 남김.",
+      "sources": [
+        "personal"
+      ],
+      "limit": "가상 고객사 자료로 만든 교육용 시연이며 실제 영업 성과가 아니다."
+    },
+    "project-motion": {
+      "text": "HTML 모션 PPT 개인 실습. 발표 노트·목차·전체화면·인쇄를 지원하는 10장 인터랙티브 발표자료와 가정 기반 효과 계산 슬라이더, 오프라인 단일 HTML, 출처 버튼.",
+      "sources": [
+        "personal"
+      ],
+      "limit": "AI 실습용 비공식 자료이며 해당 기업의 공식 제안서·견적이 아니다. 계산값은 가정이다."
+    },
+    "project-career": {
+      "text": "AI 직군 적성검사 개인 프로젝트. 현재 상황과 관심 AI 영역에 따라 문항이 나뉘는 대화형 검사. 짧은 버전 17~20문항, 긴 버전 34~40문항. 역량 50%·가치관 25%·업무 스타일 25%로 AI 직군 42개 중 TOP 5 추천. 서버 없는 규칙 기반.",
+      "sources": [
+        "personal"
+      ],
+      "limit": "검증된 심리검사가 아니며 추천은 규칙 기반 참고용이다."
+    },
+    "project-study": {
+      "text": "잠들기 전, 투운사 개인 프로젝트. 투자자산운용사 개념을 떠올리고 다시 푸는 모바일 학습 앱. 공식 교육자료 개념을 참고해 만든 72문항, 틀리거나 찍은 문제 간격 복습, 30분 타이머. 자동 검사 35개.",
+      "sources": [
+        "personal"
+      ],
+      "limit": "2026-11-24 이 세션에서 node --test로 35개 통과를 확인했다. 실제 이용자 수·학습 효과는 측정하지 않았다."
+    },
+    "project-lms": {
+      "text": "대덕인재개발원 팀 프로젝트(2024) 대학교 학사관리 시스템. 엑셀 일괄 등록(Excel API), 메일 API와 reCAPTCHA를 쓴 계정 찾기, 익명 게시판 CRUD(페이징·검색·댓글). 팀에서 TA 역할로 필요한 API를 정리해 공유. Java·Spring·MyBatis·Oracle·JSP.",
+      "sources": [
+        "personal",
+        "resume"
+      ],
+      "limit": "교육 과정 팀 프로젝트이며 상용 서비스 개발 경력이 아니다. 근거는 portfolio/개발 포트폴리오.pdf(이미지형)를 직접 본 것."
     }
   },
   "experience": [
@@ -214,152 +271,6 @@
     "SQLD(2024.12) · ADsP(2025.03) · 네트워크관리사 2급(2025.05)"
   ],
   "projects": {
-    "project-onboarding": {
-      "title": "고객 온보딩 AI 에이전트",
-      "kind": "개인 프로젝트",
-      "role": "기획·설계·AI를 활용한 구현·실행 검증을 혼자 진행",
-      "stack": "Next.js · TypeScript · Gemini API",
-      "scope_note": "가상 고객·제품·데이터로 만든 포트폴리오입니다. 외부 CRM·메일·업무 시스템과 연결하지 않았고, 공개 데모는 실제 실행을 저장한 기록을 재생합니다(실시간 AI 호출 아님).",
-      "flow": [
-        "고객 정보 조회",
-        "설정 진단·로그 확인",
-        "승인 후 조치·안내",
-        "교육 계획",
-        "첫 활용 목표",
-        "보고서 제출 검사"
-      ],
-      "links": [
-        {
-          "label": "시연(저장 기록 재생)",
-          "url": "https://jihosw.github.io/jiho-agent/onboarding-agent/"
-        },
-        {
-          "label": "소스",
-          "url": "https://github.com/JIHOSW/jiho-agent/tree/main/%EA%B3%A0%EA%B0%9D%20%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4"
-        }
-      ],
-      "evidence": [
-        "project-onboarding",
-        "project-onboarding-check"
-      ],
-      "source_files": [
-        "고객 온보딩 에이전트 포트폴리오/README.md",
-        "고객 온보딩 에이전트 포트폴리오/src/lib/agent.ts",
-        "고객 온보딩 에이전트 포트폴리오/src/lib/tools.ts",
-        "고객 온보딩 에이전트 포트폴리오/public/replays/"
-      ],
-      "cat": "AI 에이전트",
-      "short": "LLM이 도구를 골라 실행, 사람이 승인",
-      "chips": [
-        "Next.js",
-        "TypeScript",
-        "Gemini API",
-        "사람 승인",
-        "실행 기록 재생"
-      ],
-      "visual": {
-        "type": "duo",
-        "img": "onboarding.jpg",
-        "img2": "onboarding2.jpg",
-        "url": "jihosw.github.io/jiho-agent/onboarding-agent"
-      }
-    },
-    "project-ticket": {
-      "title": "기술지원 티켓 에이전트",
-      "kind": "개인 프로젝트",
-      "role": "기획·설계·AI를 활용한 구현·검증을 혼자 진행",
-      "stack": "HTML · JavaScript (브라우저 규칙 기반)",
-      "scope_note": "가상 데이터로 브라우저 안에서 동작하는 규칙 기반 시연입니다. LLM, 실제 메일, 티켓 시스템과 연결하지 않았습니다.",
-      "flow": [
-        "문의 분류·우선순위",
-        "고객 기록·KB 조회",
-        "답변 초안",
-        "사람 승인",
-        "개발 이슈 전달",
-        "해결 내용 KB 환류"
-      ],
-      "links": [
-        {
-          "label": "시연",
-          "url": "https://jihosw.github.io/jiho-agent/support-agent/"
-        },
-        {
-          "label": "소스",
-          "url": "https://github.com/JIHOSW/jiho-agent/tree/main/%EA%B8%B0%EC%88%A0%EC%A7%80%EC%9B%90%20%ED%8B%B0%EC%BC%93%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8"
-        }
-      ],
-      "evidence": [
-        "project-ticket"
-      ],
-      "source_files": [
-        "기술지원 티켓 에이전트/README.md"
-      ],
-      "cat": "AI 에이전트 시연",
-      "short": "문의 분류 → KB 검색 → 답변 초안 → 승인",
-      "chips": [
-        "단일 HTML",
-        "규칙 기반",
-        "사람 승인 후 발송",
-        "KB 환류"
-      ],
-      "visual": {
-        "type": "solo",
-        "img": "support.jpg",
-        "url": "jihosw.github.io/jiho-agent/support-agent"
-      }
-    },
-    "project-blog": {
-      "title": "Claude Code 블로그 자동화 스킬과 실행 기록 훅",
-      "kind": "개인 프로젝트",
-      "role": "스킬·검수 기준·훅 구성을 AI를 활용해 혼자 진행",
-      "stack": "Claude Code Skills · Hooks(UserPromptSubmit·PreToolUse·Stop) · Node.js",
-      "scope_note": "사람이 직접 실행하는 업무 스킬입니다. 예약 수집이나 블로그 자동 게시는 하지 않고, 발행 결정은 사람이 합니다. 대시보드의 기본 시간·토큰 값은 예시이며 기록 파일을 연결해야 실제 값이 나옵니다.",
-      "flow": [
-        "자료 수집",
-        "출처 정리",
-        "초안",
-        "단계별 검수",
-        "실행 기록(JSONL)",
-        "대시보드 확인"
-      ],
-      "links": [
-        {
-          "label": "소스",
-          "url": "https://github.com/JIHOSW/jiho-agent/tree/main/ai%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8"
-        },
-        {
-          "label": "관제 대시보드",
-          "url": "https://jihosw.github.io/jiho-agent/agent-switchboard/"
-        }
-      ],
-      "evidence": [
-        "project-blog",
-        "project-hooks"
-      ],
-      "source_files": [
-        "ai 블로그 자동화 에이전트/.claude/skills/blog-trend/SKILL.md",
-        "ai 블로그 자동화 에이전트/.claude/skills/blog-analysis/SKILL.md",
-        "ai 블로그 자동화 에이전트/.claude/settings.json",
-        "ai 블로그 자동화 에이전트/.claude/hooks/trace.mjs",
-        "에이전트 팀 관제 대시보드/serve.mjs"
-      ],
-      "cat": "Claude Code",
-      "short": "업무 스킬 2개와 실행 기록 훅",
-      "chips": [
-        "Claude Code",
-        "Skills",
-        "Hooks",
-        "JSONL 기록",
-        "발행은 사람이 결정"
-      ],
-      "visual": {
-        "type": "duo",
-        "img": "blog.jpg",
-        "img2": "switchboard.jpg",
-        "plain": true,
-        "url": "github.com/JIHOSW/jiho-agent"
-      }
-    },
     "project-hankkeut": {
       "title": "한끗 · 해커톤 팀 프로젝트",
       "kind": "팀 프로젝트 (4명, 팀장)",
@@ -410,7 +321,517 @@
         "img2": "hankkeut-m.jpg",
         "url": "jihosw.github.io/Hackathon",
         "phone2": true
-      }
+      },
+      "headline": "AI는 조건을 읽고, 판정과 계산은 규칙표와 코드가 맡도록 나눴습니다",
+      "summary": "청년이 일자리 제안을 받았을 때 근무 조건과 지원 변화를 비교하는 해커톤 팀 프로젝트입니다. 팀장으로 PRD·기능명세서·와이어프레임을 정리하고 구조설계와 백엔드 지원을 맡았습니다.",
+      "verify": [
+        "Microsoft Clarity로 뒤로가기 반복과 미스클릭을 보고 홈 버튼을 추가하고, 기능으로 오해받던 장식 모션그래픽을 삭제한 뒤 다시 테스트",
+        "팀이 작성한 계산 엔진 기대값 시험 172건이 제출 시점 코드에서 통과"
+      ]
+    },
+    "project-ticket": {
+      "title": "기술지원 티켓 에이전트",
+      "kind": "개인 프로젝트",
+      "role": "기획·설계·AI를 활용한 구현·검증을 혼자 진행",
+      "stack": "HTML · JavaScript (브라우저 규칙 기반)",
+      "scope_note": "가상 데이터로 브라우저 안에서 동작하는 규칙 기반 시연입니다. LLM, 실제 메일, 티켓 시스템과 연결하지 않았습니다.",
+      "flow": [
+        "문의 분류·우선순위",
+        "고객 기록·KB 조회",
+        "답변 초안",
+        "사람 승인",
+        "개발 이슈 전달",
+        "해결 내용 KB 환류"
+      ],
+      "links": [
+        {
+          "label": "시연",
+          "url": "https://jihosw.github.io/jiho-agent/support-agent/"
+        },
+        {
+          "label": "소스",
+          "url": "https://github.com/JIHOSW/jiho-agent/tree/main/%EA%B8%B0%EC%88%A0%EC%A7%80%EC%9B%90%20%ED%8B%B0%EC%BC%93%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8"
+        }
+      ],
+      "evidence": [
+        "project-ticket",
+        "project-ticket-clarity"
+      ],
+      "source_files": [
+        "기술지원 티켓 에이전트/README.md"
+      ],
+      "cat": "AI 에이전트 시연",
+      "short": "문의 분류 → KB 검색 → 답변 초안 → 승인",
+      "chips": [
+        "단일 HTML",
+        "규칙 기반",
+        "사람 승인 후 발송",
+        "KB 환류"
+      ],
+      "visual": {
+        "type": "solo",
+        "img": "support.jpg",
+        "url": "jihosw.github.io/jiho-agent/support-agent"
+      },
+      "headline": "문의 분류부터 해결 지식 정리까지 기술지원 1차 대응을 규칙으로 옮겼습니다",
+      "summary": "문의 유형·우선순위 분류, 고객 기록과 KB 조회, 답변 초안과 사람 승인, 개발 이슈 전달, 해결 내용의 KB 환류까지 브라우저에서 동작하는 흐름입니다.",
+      "verify": [
+        "KB에 근거가 없는 문의는 추측해 답하지 않고 개발 이슈로 넘김",
+        "배포 후 Microsoft Clarity 녹화를 보고 시작 버튼을 넣고, 진행 단계를 사용자 지정 이벤트로 기록"
+      ]
+    },
+    "project-onboarding": {
+      "title": "고객 온보딩 AI 에이전트",
+      "kind": "개인 프로젝트",
+      "role": "기획·설계·AI를 활용한 구현·실행 검증을 혼자 진행",
+      "stack": "Next.js · TypeScript · Gemini API",
+      "scope_note": "가상 고객·제품·데이터로 만든 포트폴리오입니다. 외부 CRM·메일·업무 시스템과 연결하지 않았고, 공개 데모는 실제 실행을 저장한 기록을 재생합니다(실시간 AI 호출 아님).",
+      "flow": [
+        "고객 정보 조회",
+        "설정 진단·로그 확인",
+        "승인 후 조치·안내",
+        "교육 계획",
+        "첫 활용 목표",
+        "보고서 제출 검사"
+      ],
+      "links": [
+        {
+          "label": "시연(저장 기록 재생)",
+          "url": "https://jihosw.github.io/jiho-agent/onboarding-agent/"
+        },
+        {
+          "label": "소스",
+          "url": "https://github.com/JIHOSW/jiho-agent/tree/main/%EA%B3%A0%EA%B0%9D%20%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4"
+        }
+      ],
+      "evidence": [
+        "project-onboarding",
+        "project-onboarding-check"
+      ],
+      "source_files": [
+        "고객 온보딩 에이전트 포트폴리오/README.md",
+        "고객 온보딩 에이전트 포트폴리오/src/lib/agent.ts",
+        "고객 온보딩 에이전트 포트폴리오/src/lib/tools.ts",
+        "고객 온보딩 에이전트 포트폴리오/public/replays/"
+      ],
+      "cat": "AI 에이전트",
+      "short": "LLM이 도구를 골라 실행, 사람이 승인",
+      "chips": [
+        "Next.js",
+        "TypeScript",
+        "Gemini API",
+        "사람 승인",
+        "실행 기록 재생"
+      ],
+      "visual": {
+        "type": "duo",
+        "img": "onboarding.jpg",
+        "img2": "onboarding2.jpg",
+        "url": "jihosw.github.io/jiho-agent/onboarding-agent"
+      },
+      "headline": "AI가 13개 도구 중 필요한 것을 고르고, 위험한 행동은 사람이 승인합니다",
+      "summary": "가상 고객 세 곳의 상황에서 진단, 원인 확인, 안내, 교육 계획, 첫 활용 목표까지 이어지는 에이전트를 만들었습니다. 설정 변경·고객 메시지·개발 이슈 등록은 담당자 승인 후 실행됩니다.",
+      "verify": [
+        "교육 계획·첫 활용 목표 없이 보고서를 먼저 쓰는 경우를 발견해 첫 보고서 제출을 반려하도록 보완",
+        "조치 뒤 재확인과 고객 회신 확인 흐름을 세 시나리오에서 점검"
+      ]
+    },
+    "project-saas": {
+      "title": "jihodev 고객 온보딩 지원 서비스",
+      "kind": "개인 프로젝트",
+      "cat": "웹 서비스",
+      "short": "담당자용 온보딩 업무 도구",
+      "role": "기획·설계·AI를 활용한 구현·검증을 혼자 진행",
+      "stack": "Next.js · TypeScript · 규칙 기반 분석",
+      "scope_note": "공개 버전은 가상 데이터와 규칙 기반 분석으로 동작합니다. 실제 고객 시스템·DB·로그와 연결하지 않았고, AI 분석은 서버 API 키를 설정할 때만 동작합니다.",
+      "flow": [
+        "고객 현황",
+        "근거 확인",
+        "안내문 작성",
+        "작업 등록"
+      ],
+      "chips": [
+        "Next.js",
+        "TypeScript",
+        "규칙 기반 분석",
+        "브라우저 저장"
+      ],
+      "links": [
+        {
+          "label": "웹 체험",
+          "url": "https://firstmile-onboarding-1104.day1companyk-6083.chatgpt.site/"
+        },
+        {
+          "label": "소스",
+          "url": "https://github.com/JIHOSW/jiho-agent/tree/main/%EA%B8%B0%EC%97%85%EC%9A%A9%20%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C%20%EB%AC%B8%EC%84%9C%EA%B4%80%EB%A6%AC%20%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B0%9C%EB%B0%9C"
+        }
+      ],
+      "visual": {
+        "type": "duo",
+        "img": "saas-cover.jpg",
+        "img2": "saas.jpg",
+        "url": "jihodev · customer onboarding"
+      },
+      "evidence": [
+        "project-saas"
+      ],
+      "source_files": [
+        "기업용 클라우드 문서관리 온보딩 서비스 개발/README.md"
+      ],
+      "headline": "고객이 첫 업무를 끝낼 때까지 돕는 담당자용 업무 도구",
+      "summary": "문서관리 SaaS를 도입한 가상 고객의 현황을 보고, 근거를 확인해 안내문을 쓰고, 담당자와 기한이 있는 작업으로 등록하는 흐름을 만들었습니다.",
+      "verify": [
+        "고객의 말·시스템 기록·제품 가이드를 대조하고, 기록이 부족하거나 충돌하면 추가 확인을 요청",
+        "안내문을 검토·수정한 뒤 작업으로 등록"
+      ]
+    },
+    "project-blog": {
+      "title": "AI 블로그 자동화 에이전트",
+      "kind": "개인 프로젝트",
+      "role": "스킬·검수 기준·훅 구성을 AI를 활용해 혼자 진행",
+      "stack": "Claude Code Skills · Hooks(UserPromptSubmit·PreToolUse·Stop) · Node.js",
+      "scope_note": "사람이 직접 실행하는 업무 스킬입니다. 예약 수집이나 블로그 자동 게시는 하지 않고, 발행 결정은 사람이 합니다. 대시보드의 기본 시간·토큰 값은 예시이며 기록 파일을 연결해야 실제 값이 나옵니다.",
+      "flow": [
+        "자료 수집",
+        "출처 정리",
+        "초안",
+        "단계별 검수",
+        "실행 기록(JSONL)",
+        "대시보드 확인"
+      ],
+      "links": [
+        {
+          "label": "소스",
+          "url": "https://github.com/JIHOSW/jiho-agent/tree/main/ai%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8"
+        }
+      ],
+      "evidence": [
+        "project-blog",
+        "project-hooks"
+      ],
+      "source_files": [
+        "ai 블로그 자동화 에이전트/.claude/skills/blog-trend/SKILL.md",
+        "ai 블로그 자동화 에이전트/.claude/skills/blog-analysis/SKILL.md",
+        "ai 블로그 자동화 에이전트/.claude/settings.json",
+        "ai 블로그 자동화 에이전트/.claude/hooks/trace.mjs",
+        "에이전트 팀 관제 대시보드/serve.mjs"
+      ],
+      "cat": "Claude Code",
+      "short": "업무 스킬 2개와 실행 기록 훅",
+      "chips": [
+        "Claude Code",
+        "Skills",
+        "Hooks",
+        "JSONL 기록",
+        "발행은 사람이 결정"
+      ],
+      "visual": {
+        "type": "solo",
+        "img": "blog.jpg",
+        "plain": true,
+        "url": ""
+      },
+      "headline": "업무를 단계별 스킬로 나누고, 훅으로 실행 기록을 남겼습니다",
+      "summary": "동향 요약과 분석 글 작성을 Claude Code 스킬 2개로 나누고, 단계마다 검수 기록을 버전별로 남겼습니다. 훅 3종으로 세션·도구 사용·시간·토큰을 JSONL에 기록했습니다.",
+      "verify": [
+        "출처 번호와 원문이 맞지 않는 경우를 발견해 출처 대조 단계를 추가",
+        "결과물: 분석 글 2편, 동향 요약 1편, 버전별 검수 기록"
+      ]
+    },
+    "project-switchboard": {
+      "title": "에이전트 팀 관제 대시보드",
+      "kind": "개인 프로젝트",
+      "cat": "AI 에이전트 관제",
+      "short": "에이전트 업무 흐름과 시간·토큰",
+      "role": "기획·설계·AI를 활용한 구현을 혼자 진행",
+      "stack": "단일 HTML · SVG 애니메이션 · Node.js",
+      "scope_note": "기본 화면의 시간·토큰은 시연용 예시입니다. 블로그 에이전트 훅이 남긴 기록 파일을 열거나 로컬 서버에 연결해야 실제 측정값이 나옵니다.",
+      "flow": [
+        "업무 흐름",
+        "단계별 시간",
+        "시간·토큰",
+        "역할 목록"
+      ],
+      "chips": [
+        "단일 HTML",
+        "SVG 애니메이션",
+        "Claude Code Hooks",
+        "Node.js"
+      ],
+      "links": [
+        {
+          "label": "바로 보기",
+          "url": "https://jihosw.github.io/jiho-agent/agent-switchboard/"
+        },
+        {
+          "label": "소스",
+          "url": "https://github.com/JIHOSW/jiho-agent/tree/main/%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8C%80%20%EA%B4%80%EC%A0%9C%20%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C"
+        }
+      ],
+      "visual": {
+        "type": "solo",
+        "img": "switchboard.jpg",
+        "url": "jihosw.github.io/jiho-agent/agent-switchboard"
+      },
+      "evidence": [
+        "project-switchboard",
+        "project-hooks"
+      ],
+      "source_files": [
+        "에이전트 팀 관제 대시보드/serve.mjs"
+      ],
+      "headline": "에이전트가 어떤 순서로 얼마나 일했는지 한 화면에서 봅니다",
+      "summary": "블로그 에이전트의 업무 흐름, 단계별 시간, 시간·토큰, 역할 목록을 4개 화면으로 보여 주는 단일 HTML 대시보드입니다.",
+      "verify": [
+        "훅이 남긴 JSONL 기록을 열면 예시 값이 실제 측정값으로 바뀜",
+        "로컬 서버(serve.mjs)에 연결하면 최신 기록을 주기적으로 읽어 표시"
+      ]
+    },
+    "project-b2b": {
+      "title": "B2B 영업제안서 모션 PPT",
+      "kind": "개인 실습",
+      "cat": "발표자료",
+      "short": "고객의 말에서 출발한 10장 제안서",
+      "role": "요구 정리·구성·AI를 활용한 제작을 혼자 진행",
+      "stack": "HTML · CSS · JS · PPTX 생성 스크립트",
+      "scope_note": "가상 고객사 자료로 만든 교육용 시연입니다. 확인되지 않은 숫자는 지어내지 않고 빨간 빈칸으로 남겼습니다.",
+      "flow": [
+        "고객의 말",
+        "요구표",
+        "목차 8장",
+        "10장 제안서",
+        "PPT 초안"
+      ],
+      "chips": [
+        "HTML · CSS · JS",
+        "PPTX 생성 스크립트",
+        "발표 메모"
+      ],
+      "links": [
+        {
+          "label": "바로 보기",
+          "url": "https://jihosw.github.io/jiho-agent/b2b-proposal/"
+        },
+        {
+          "label": "소스",
+          "url": "https://github.com/JIHOSW/jiho-agent/tree/main/B2B%20%EC%98%81%EC%97%85%EC%A0%9C%EC%95%88%EC%84%9C%20html%20%EB%AA%A8%EC%85%98%20ppt"
+        }
+      ],
+      "visual": {
+        "type": "duo",
+        "img": "b2b.jpg",
+        "img2": "b2b2.jpg",
+        "url": "jihosw.github.io/jiho-agent/b2b-proposal"
+      },
+      "evidence": [
+        "project-b2b"
+      ],
+      "source_files": [
+        "README.md (프로젝트 설명 표)",
+        "B2B 영업제안서 html 모션 ppt/"
+      ],
+      "headline": "고객 미팅에서 들은 말을 요구표로 정리하고 제안서로 만들었습니다",
+      "summary": "고객의 말·속사정·관심 대상으로 요구를 정리한 뒤 목차와 핵심 장 내용을 잡아 10장 모션 HTML 제안서와 같은 내용의 PPT 초안을 만들었습니다.",
+      "verify": [
+        "발표 메모·전체 보기·전체화면을 지원",
+        "확인되지 않은 숫자는 빨간 빈칸으로 남김"
+      ]
+    },
+    "project-motion": {
+      "title": "HTML 모션 PPT · 구매 혁신 제안",
+      "kind": "개인 실습",
+      "cat": "발표자료",
+      "short": "계산 기능이 있는 10장 발표자료",
+      "role": "구성·AI를 활용한 제작·검수를 혼자 진행",
+      "stack": "HTML · CSS · JS · Chart.js",
+      "scope_note": "AI 실습용 비공식 자료이며 해당 기업의 공식 제안서나 견적이 아닙니다. 효과 계산은 가정에 따른 값입니다.",
+      "flow": [
+        "목차",
+        "구매 흐름",
+        "가정 기반 계산",
+        "출처 확인",
+        "인쇄·PDF"
+      ],
+      "chips": [
+        "HTML · CSS · JS",
+        "Chart.js",
+        "오프라인 단일 파일",
+        "실습용 비공식 자료"
+      ],
+      "links": [
+        {
+          "label": "바로 보기",
+          "url": "https://jihosw.github.io/jiho-agent/"
+        },
+        {
+          "label": "소스",
+          "url": "https://github.com/JIHOSW/jiho-agent/tree/main/html%20%EB%AA%A8%EC%85%98%20ppt"
+        }
+      ],
+      "visual": {
+        "type": "duo",
+        "img": "motion.jpg",
+        "img2": "motion2.jpg",
+        "url": "jihosw.github.io/jiho-agent"
+      },
+      "evidence": [
+        "project-motion"
+      ],
+      "source_files": [
+        "html 모션 ppt/README.md"
+      ],
+      "headline": "발표 도구와 가정 기반 계산을 넣은 10장 인터랙티브 발표자료",
+      "summary": "목차·전체화면·발표 노트·인쇄를 지원하고, 슬라이더로 조건을 바꾸면 효과 계산과 차트가 바뀌는 발표자료입니다.",
+      "verify": [
+        "수치와 가정의 근거를 출처 버튼에 모음",
+        "장식용 클릭·반동 효과를 제거하고 OS 동작 줄이기 설정을 지원"
+      ]
+    },
+    "project-career": {
+      "title": "AI 직군 적성검사",
+      "kind": "개인 프로젝트",
+      "cat": "웹 앱",
+      "short": "AI 직군 42개 중 TOP 5 추천",
+      "role": "설계·AI를 활용한 구현을 혼자 진행",
+      "stack": "Vanilla JS · 규칙 기반 · 서버 없음",
+      "scope_note": "검증된 심리검사가 아니라 규칙 기반 참고용 추천입니다. 답변은 브라우저에만 저장합니다.",
+      "flow": [
+        "현재 상황",
+        "관심 AI 영역",
+        "문항",
+        "점수 정규화",
+        "TOP 5 추천"
+      ],
+      "chips": [
+        "Vanilla JS",
+        "규칙 기반",
+        "서버 없음",
+        "결과 공유·PDF"
+      ],
+      "links": [
+        {
+          "label": "검사해 보기",
+          "url": "https://jihosw.github.io/jiho-agent/career-agent/"
+        },
+        {
+          "label": "소스",
+          "url": "https://github.com/JIHOSW/jiho-agent/tree/main/ai%20%EC%A7%81%EB%AC%B4%EC%A0%81%EC%84%B1%EA%B2%80%EC%82%AC"
+        }
+      ],
+      "visual": {
+        "type": "solo",
+        "img": "career.jpg",
+        "url": "jihosw.github.io/jiho-agent/career-agent"
+      },
+      "evidence": [
+        "project-career"
+      ],
+      "source_files": [
+        "ai 직무적성검사/README.md"
+      ],
+      "headline": "상황과 관심 영역에 따라 질문이 나뉘는 대화형 적성검사",
+      "summary": "짧은 버전(17~20문항)과 긴 버전(34~40문항) 중 골라 역량·가치관·업무 스타일을 보고 AI 직군 42개 중 TOP 5와 준비 방법을 추천합니다.",
+      "verify": [
+        "갈래가 달라도 비교되도록 항목을 최대치 대비 비율로 정규화",
+        "역량 50%·가치관 25%·업무 스타일 25%로 적합도 계산"
+      ]
+    },
+    "project-study": {
+      "title": "잠들기 전, 투운사",
+      "kind": "개인 프로젝트",
+      "cat": "웹 앱",
+      "short": "자기 전 30분 모바일 학습 앱",
+      "role": "기획·문항 작성·AI를 활용한 구현·검증을 혼자 진행",
+      "stack": "Vanilla JS 모듈 · 모바일 웹앱 · Node 테스트",
+      "scope_note": "공식 교육자료의 개념을 참고해 직접 만든 연습문제이며 기출 복제가 아닙니다. 학습 기록은 브라우저에만 저장되고, 이용자 수나 학습 효과는 측정하지 않았습니다.",
+      "flow": [
+        "개념 떠올리기",
+        "답 고르기",
+        "해설 확인",
+        "간격 복습"
+      ],
+      "chips": [
+        "Vanilla JS 모듈",
+        "모바일 웹앱",
+        "브라우저 저장",
+        "Node 테스트"
+      ],
+      "links": [
+        {
+          "label": "앱 열기",
+          "url": "https://touun-night-jiho-1105.day1companyk-6083.chatgpt.site"
+        },
+        {
+          "label": "소스",
+          "url": "https://github.com/JIHOSW/jiho-agent/tree/main/%ED%95%99%EC%8A%B5%EC%96%B4%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98"
+        }
+      ],
+      "visual": {
+        "type": "phone",
+        "img": "study.jpg"
+      },
+      "evidence": [
+        "project-study"
+      ],
+      "source_files": [
+        "학습어플리케이션/README.md",
+        "학습어플리케이션/tests/"
+      ],
+      "headline": "보기 전에 떠올리고, 틀린 문제는 간격을 두고 다시 풉니다",
+      "summary": "투자자산운용사 개념을 자기 전 30분 동안 복습하는 모바일 학습 앱입니다. 틀리거나 찍어서 맞힌 문제는 다른 문제를 사이에 두고 다시 나옵니다.",
+      "verify": [
+        "공식 교육자료 개념을 참고해 72문항을 만들고 문항마다 참고 링크를 달아 둠",
+        "복습 순서·타이머 복원·계산 문제 등 자동 검사 35개 통과"
+      ]
+    },
+    "project-lms": {
+      "title": "대학교 학사관리 시스템",
+      "kind": "팀 프로젝트 (대덕인재개발원, 2024)",
+      "cat": "개발 · 팀 프로젝트",
+      "short": "Java · Spring 팀 프로젝트",
+      "role": "팀원·TA. 계정 찾기, 엑셀 일괄 등록, 익명 게시판 담당, 필요한 API를 정리해 팀에 공유",
+      "stack": "Java · Spring · MyBatis · Oracle · JSP · jQuery",
+      "scope_note": "교육 과정에서 진행한 팀 프로젝트이며 상용 서비스 개발 경력이 아닙니다.",
+      "flow": [
+        "요구 기능 정리",
+        "API 정리·공유",
+        "기능 구현",
+        "팀 통합"
+      ],
+      "chips": [
+        "Java",
+        "Spring",
+        "MyBatis",
+        "Oracle",
+        "JSP"
+      ],
+      "links": [
+        {
+          "label": "포트폴리오 PDF",
+          "url": "https://github.com/JIHOSW/jiho-agent/blob/main/portfolio/%EA%B0%9C%EB%B0%9C%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.pdf"
+        }
+      ],
+      "visual": {
+        "type": "duo",
+        "img": "lms-05.jpg",
+        "img2": "lms-13.jpg",
+        "plain": true,
+        "url": ""
+      },
+      "evidence": [
+        "project-lms",
+        "education"
+      ],
+      "source_files": [
+        "portfolio/개발 포트폴리오.pdf"
+      ],
+      "headline": "학생·교수·교직원이 쓰는 학사관리 웹 서비스를 팀으로 만들었습니다",
+      "summary": "대덕인재개발원 과정에서 팀으로 만든 LMS입니다. 계정 찾기, 엑셀 일괄 등록, 익명 게시판을 맡았습니다.",
+      "verify": [
+        "메일 API와 reCAPTCHA를 붙인 아이디·비밀번호 찾기",
+        "Excel API로 교수·학생 계정을 한 번에 생성",
+        "페이징·검색·댓글이 있는 익명 게시판, TA로서 필요한 API를 예제와 함께 팀에 공유"
+      ]
     },
     "project-training": {
       "title": "시스템 사용자 교육자료",
@@ -453,6 +874,12 @@
       ],
       "source_files": [
         "portfolio/training/"
+      ],
+      "headline": "쓰는 사람의 업무 순서대로 새 시스템을 설명했습니다",
+      "summary": "새 클라우드 문서 시스템을 처음 쓰는 기관 이용자를 위해 교육자료와 발표 대본을 만들고, 전국 지방연구소를 방문해 대면 교육과 기능 시연을 했습니다.",
+      "verify": [
+        "드라이브 설치부터 문서 이관·영구보존까지 실제 업무 순서로 구성",
+        "교육 후 받은 질문을 기록해 개발자들과 사용 편의성 논의"
       ]
     }
   },
@@ -510,6 +937,15 @@
       "p": "한끗 팀 결과물, 제출 시점 코드에서 통과",
       "evidence": [
         "hackathon-tests"
+      ]
+    },
+    "projects-n": {
+      "n": "{N}",
+      "u": "개",
+      "h": "작업물",
+      "p": "AI 에이전트, 웹 앱, 발표자료, 팀 프로젝트, 실무 산출물을 이 포트폴리오에 담았습니다",
+      "evidence": [
+        "project-onboarding"
       ]
     }
   },

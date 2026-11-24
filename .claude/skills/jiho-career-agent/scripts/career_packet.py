@@ -364,18 +364,16 @@ def img_uri(name: str, cache: dict) -> str:
     return cache[name]
 
 
-def split_letter(sections: list, budget: int = 1500) -> list:
-    pages, page, size = [], [], 0
-    for s in sections:
-        n = len(s["heading"]) + len(s["body"])
-        if page and size + n > budget:
-            pages.append(page)
-            page, size = [], 0
-        page.append(s)
-        size += n
-    if page:
-        pages.append(page)
-    return pages
+def all_projects(brief: dict, profile: dict) -> list:
+    """brief에서 고른 강조 프로젝트를 앞에 두고, include_all_projects가 거짓이 아니면 나머지 프로젝트를 profile 순서대로 붙인다."""
+    p = brief["portfolio"]
+    chosen = [dict(x) for x in p.get("projects", [])]
+    seen = {x["id"] for x in chosen}
+    if p.get("include_all_projects", True):
+        for pid, base in profile["projects"].items():
+            if pid not in seen:
+                chosen.append({"id": pid, "headline": base.get("headline", ""), "summary": base.get("summary", ""), "verify": base.get("verify", [])})
+    return chosen
 
 
 def render_portfolio(brief: dict, profile: dict) -> str:
@@ -417,7 +415,8 @@ def render_portfolio(brief: dict, profile: dict) -> str:
         S.append({"title": "공고 업무와 이어지는 경험", "sec": "01", "label": "지원 이유", "h": "공고 업무와 이어지는 경험", "html":
                   '<div class="fit">' + "".join(f'<div class="card" data-a><h4>{esc(r.get("duty"))}</h4><p>{esc(r.get("experience"))}</p></div>' for r in p["fit"][:6]) + "</div>"})
     # 한눈에 보기
-    hl = [profile["highlights"][h] for h in p.get("highlights", [])][:4]
+    n_proj = len(all_projects(brief, profile))
+    hl = [{k: str(v).replace("{N}", str(n_proj)) for k, v in profile["highlights"][h].items()} for h in p.get("highlights", [])][:4]
     if hl:
         sections["glance"] = len(S)
         S.append({"title": "한눈에 보기", "sec": "02", "label": "한눈에 보기", "h": p.get("glance_title") or "숫자는 무엇의 수인지 함께 적었습니다", "html":
@@ -442,8 +441,8 @@ def render_portfolio(brief: dict, profile: dict) -> str:
     sections["flow"] = len(S)
     S.append({"title": "일하는 순서", "sec": "04", "label": "일하는 순서", "h": flow.get("title", "일하는 순서"), "html":
               f'<div data-a>{flow_html(flow.get("steps", []), flow.get("caption", ""))}</div>'})
-    # 프로젝트 한눈에 + 프로젝트 장
-    projs = p["projects"]
+    # 프로젝트 한눈에 + 프로젝트 장 (brief의 강조 프로젝트 먼저, 나머지 저장소 프로젝트는 profile 기본 문구로 전부)
+    projs = all_projects(brief, profile)
     map_i = len(S)
     sections["projects"] = map_i
     S.append(None)
@@ -453,7 +452,9 @@ def render_portfolio(brief: dict, profile: dict) -> str:
         v = base.get("visual", {})
         bar = lambda u: f'<div class="bar"><b></b><b></b><b></b><span>{esc(u)}</span></div>' if u else ""
         alt = esc(base["title"] + " 화면")
-        if v.get("type") == "solo":
+        if v.get("type") == "phone":
+            vis = f'<div class="frame f2 plain ph solo-ph" data-a="right"><img src="{img_uri(v["img"], cache)}" alt="{alt}"></div>'
+        elif v.get("type") == "solo":
             vis = f'<div class="frame solo" data-a="right">{bar(v.get("url"))}<img src="{img_uri(v["img"], cache)}" alt="{alt}"></div>'
         else:
             plain = " plain" if v.get("plain") else ""
@@ -471,15 +472,6 @@ def render_portfolio(brief: dict, profile: dict) -> str:
                   f'<div data-a>{flow_html(base.get("flow", []), small=True)}</div>'
                   '<div class="chips" data-a>' + "".join('<span class="chip">' + esc(c) + '</span>' for c in base.get("chips", [])) + '</div>'
                   f'<div class="links" data-a>{links}</div></div><div class="vis">{vis}</div></div>'})
-    # 자기소개서
-    pages = split_letter(brief["cover_letter"])
-    sections["letter"] = len(S)
-    for k, pg in enumerate(pages):
-        rt = f'<p class="rt" data-a>{esc(brief["resume_title"])}</p>' if k == 0 else ""
-        body = "".join(f"<h3>{esc(s['heading'])}</h3>" + "".join(f"<p>{esc(x)}</p>" for x in s["body"].split("\n") if x.strip()) for s in pg)
-        S.append({"title": f"자기소개서 {k + 1}/{len(pages)}" if len(pages) > 1 else "자기소개서", "sec": "06", "label": f"자기소개서{f' ({k + 1}/{len(pages)})' if len(pages) > 1 else ''}",
-                  "h": f"{company} {role} 지원 자기소개서", "html":
-                  '<div class="letter">' + rt + f'<div class="cols" data-a>{body}</div></div>'})
     # 마무리
     sections["end"] = len(S)
     S.append({"title": "마무리", "cls": "end", "html":
@@ -492,16 +484,17 @@ def render_portfolio(brief: dict, profile: dict) -> str:
 
     # 목차·지도 채우기 (장 번호 = 인덱스+1)
     toc_rows = [("why", "지원 이유", "회사와 공고 업무"), ("glance", "한눈에 보기", "숫자와 맥락"), ("career", "경력", "실무 경력·교육"),
-                ("flow", "일하는 순서", "업무 자동화를 만드는 순서"), ("projects", "프로젝트", f"선별한 작업 {len(projs)}개"), ("letter", "자기소개서", "전문")]
+                ("flow", "일하는 순서", "업무 자동화를 만드는 순서"), ("projects", "프로젝트", f"작업물 {len(projs)}개")]
     toc_rows = [r for r in toc_rows if r[0] in sections]
     S[toc_i] = {"title": "목차", "cls": "toc", "html":
                 '<div class="l">' + wave("M -60 760 H 300 C 420 760 480 700 480 590 C 480 480 560 420 660 420 H 1000", mix(accent, "#000000", .15), 4, 12, uid="w-toc")
                 + f'<h2 data-a="left">Contents.</h2><p data-a="left">{esc(company)} {esc(role)} 지원을 위해, 공고 업무와 이어지는 경험과 작업물을 골라 담았습니다.</p></div>'
                 + '<div class="r"><ol>' + "".join(f'<li data-a><a href="#s-{sections[key] + 1}"><span>{k:02d}</span>{esc(name)}<em>{esc(sub)}</em></a></li>' for k, (key, name, sub) in enumerate(toc_rows, 1)) + "</ol></div>"}
-    cols = 3 if len(projs) in (3, 5, 6) else 2 if len(projs) <= 4 else 4
-    S[map_i] = {"title": "프로젝트 한눈에", "sec": "05", "label": "프로젝트", "h": f"직접 만들고 확인한 작업 {len(projs)}개", "note":
+    cols = 2 if len(projs) <= 4 else 3 if len(projs) <= 6 else 4
+    many = " many" if len(projs) > 6 else ""
+    S[map_i] = {"title": "프로젝트 한눈에", "sec": "05", "label": "프로젝트", "h": f"작업물 {len(projs)}개를 한눈에", "note":
                 "AI 프로젝트는 개인 학습·실습 작업물이며 고객사와 데이터는 가상입니다. 팀 프로젝트는 역할을 따로 적었습니다.", "html":
-                f'<div class="map" style="--cols:{cols}">' + "".join(
+                f'<div class="map{many}" style="--cols:{cols}">' + "".join(
                     f'<a class="card mc" data-a="pop" href="#s-{proj_idx[k] + 1}"><div class="th" style="background-image:url({img_uri(profile["projects"][pr["id"]]["visual"]["img"], cache)})"><span>{k + 1:02d} · {esc(profile["projects"][pr["id"]].get("cat", ""))}</span></div>'
                     f'<h3>{esc(profile["projects"][pr["id"]]["title"])}</h3><p>{esc(profile["projects"][pr["id"]].get("short", ""))}</p></a>'
                     for k, pr in enumerate(projs)) + "</div>"}
