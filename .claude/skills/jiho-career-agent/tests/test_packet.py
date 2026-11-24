@@ -110,10 +110,34 @@ class RenderTest(unittest.TestCase):
 
     def test_portfolio_has_controls_and_no_external_scripts(self):
         out = cp.render_portfolio(example(), cp.load_profile())
-        for needle in ('id="motion-toggle"', 'id="print-btn"', 'href="#top"', "prefers-reduced-motion", "@media print", 'class="skip"'):
+        for needle in ('id="motion-toggle"', 'id="print-btn"', 'id="bh"', 'href="#s-1"', "prefers-reduced-motion", "@media print", 'class="skip"', "max-width:899px"):
             self.assertIn(needle, out)
         self.assertIsNone(re.search(r"<script[^>]+src=", out))
         self.assertIsNone(re.search(r"<link[^>]+stylesheet", out))
+        self.assertNotIn("data-count", out)  # 카운트업 성과 연출 금지
+
+    def test_slide_links_point_to_existing_slides(self):
+        out = cp.render_portfolio(example(), cp.load_profile())
+        ids = set(re.findall(r'id="(s-\d+)"', out))
+        for href in re.findall(r'href="#(s-\d+)"', out):
+            self.assertIn(href, ids)
+
+
+class CompanyTest(unittest.TestCase):
+    def test_company_points_need_sources(self):
+        b = example()
+        b["company"]["sources"] = []
+        self.assertTrue(any("company.sources" in e for e in errors_of(b)))
+
+    def test_company_points_checked_for_claims(self):
+        b = example()
+        b["company"]["points"].append("업계 최고의 기술력을 가진 회사")
+        self.assertTrue(any("과장" in e for e in errors_of(b)))
+
+    def test_unknown_highlight(self):
+        b = example()
+        b["portfolio"]["highlights"].append("growth-300pct")
+        self.assertTrue(any("숫자 카드" in e for e in errors_of(b)))
 
 
 class BuildTest(unittest.TestCase):

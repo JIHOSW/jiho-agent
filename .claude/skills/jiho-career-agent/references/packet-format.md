@@ -8,6 +8,7 @@ brief는 한 지원 건의 전체 입력이다. Claude가 직접 쓰고, `script
 |---|---|
 | `meta` | `company`(폴더명용 짧은 이름), `company_display`, `role`, `track`(`ax`/`onboarding`), `track_reason`, `date`(YYYY-MM-DD), `posting_source`{`type`,`detail`,`status_note`}, `limits`{`cover_letter_chars`(없으면 null), `count_spaces`} |
 | `posting` | `summary`, `duties`[], `required`[], `preferred`[], `conditions`[], `period` |
+| `company` | 기업 조사: `title`, `points`[] (출처로 확인한 사실만, 포트폴리오 '지원 이유' 장에 표시), `public_basis`(화면에 보일 출처 한 줄), `sources`[{`title`,`url`,`read_on`,`how`}] (points가 있으면 필수), `note`(쓰지 않은 정보·확인 한계, 비공개), `use_in_letter` |
 | `resume_title` | 겸손한 이력서 제목 |
 | `cover_letter` | [{`heading`, `body`, `evidence`[fact ID]}] — 문항형 공고는 문항마다 한 항목. 문단을 나누려면 body 안에 줄바꿈 |
 | `mapping` | [{`kind`: duty/required/preferred/condition, `item`, `status`: match/partial/gap/unknown, `evidence`[], `note`}] |
@@ -26,7 +27,8 @@ brief는 한 지원 건의 전체 입력이다. Claude가 직접 쓰고, `script
 | `flow` | 첫 화면 업무 흐름 모션: `title`, `caption`, `steps`[{`label`, `desc`, `say`}] (4~6단계). 단계는 차례로 강조될 뿐 클릭 대상이 아니다 |
 | `why` | `title`, `paragraphs`[] |
 | `fit` | [{`duty`, `experience`, `evidence`[]}] 공고 업무와 이어지는 경험 (gap은 넣지 않음) |
-| `projects` | [{`id`(profile.projects 키), `headline`, `summary`, `verify`[]}] — 종류·역할·기술·구현 범위·링크·프로젝트 흐름은 profile에서 자동 |
+| `highlights` | 숫자 카드 ID 최대 4개 (profile.highlights: edu-300, slides-44, tools-13, skills-2, tests-172). 숫자는 카운트업 없이 맥락과 함께 표시 |
+| `projects` | [{`id`(profile.projects 키), `headline`, `summary`, `verify`[]}] — 종류·역할·기술·구현 범위·링크·프로젝트 흐름·화면 이미지는 profile에서 자동. 사용 가능한 ID: project-blog, project-onboarding, project-ticket, project-hankkeut, project-training |
 | `closing` | 맺음말 한두 문장 |
 
 경력·교육 타임라인은 `profile.json`의 `experience`, `education`에서 자동으로 들어간다.

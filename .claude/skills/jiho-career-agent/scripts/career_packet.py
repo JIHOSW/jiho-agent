@@ -14,6 +14,7 @@ brief JSON에 직접 쓰고, 이 도구는 그 내용을
 from __future__ import annotations
 
 import argparse
+import base64
 import datetime as dt
 import html
 import json
@@ -178,6 +179,11 @@ def portfolio_texts(brief: dict) -> list[tuple[str, str]]:
     for i, pr in enumerate(p.get("projects", [])):
         out.append((f"portfolio.projects[{i}]", " ".join([pr.get("headline", ""), pr.get("summary", "")] + pr.get("verify", []))))
     out.append(("portfolio.closing", p.get("closing", "")))
+    co = brief.get("company") or {}
+    for i, x in enumerate(co.get("points", [])):
+        out.append((f"company.points[{i}]", x))
+    out.append(("company.title", co.get("title", "")))
+    out.append(("company.public_basis", co.get("public_basis", "")))
     return out
 
 
@@ -259,6 +265,15 @@ def validate(brief: dict, profile: dict | None = None) -> Report:
     if not brief.get("sources_read"):
         rep.warn("sources_read(이번에 실제로 읽은 저장소·파일)가 비어 있습니다")
 
+    co = brief.get("company") or {}
+    if co.get("points") and not co.get("sources"):
+        rep.err("company.points(기업 정보)를 쓰려면 company.sources(출처·확인일)가 필요합니다")
+    for i, src in enumerate(co.get("sources", [])):
+        if not src.get("url") or not src.get("read_on"):
+            rep.err(f"company.sources[{i}]: url과 read_on(확인일)이 필요합니다")
+    if not co:
+        rep.warn("company(기업 조사)가 비어 있습니다. 공고 외 기업 정보를 찾지 못했다면 company.note에 이유를 적으세요")
+
     p = brief.get("portfolio")
     if not p:
         rep.err("portfolio가 비어 있습니다")
@@ -273,6 +288,11 @@ def validate(brief: dict, profile: dict | None = None) -> Report:
             for e in row.get("evidence", []):
                 if e not in facts:
                     rep.err(f"portfolio.fit[{i}]: 알 수 없는 근거 ID '{e}'")
+        for h in p.get("highlights", []):
+            if h not in profile.get("highlights", {}):
+                rep.err(f"portfolio.highlights: 알 수 없는 숫자 카드 ID '{h}' (profile.highlights에 있는 것만 사용)")
+        if len(p.get("highlights", [])) > 4:
+            rep.warn("portfolio.highlights는 4개까지만 화면에 나옵니다")
         accent = p.get("accent", "#2457d6")
         if not re.fullmatch(r"#[0-9a-fA-F]{6}", accent):
             rep.err("portfolio.accent는 #RRGGBB 형식이어야 합니다")
@@ -296,87 +316,216 @@ def safe_url(url: str) -> str:
     return "#"
 
 
-def flow_html(title: str, steps: list[dict], caption: str = "", compact: bool = False) -> str:
+def flow_html(steps: list, caption: str = "", small: bool = False) -> str:
+    """차례로 강조되는 단계 목록. 클릭 대상이 아니다(커서 기본, 탭 이동 없음)."""
     items = []
-    for s in steps:
+    for k, s in enumerate(steps, 1):
         if isinstance(s, str):
             s = {"label": s}
         say = s.get("say") or s.get("desc") or s.get("label")
-        desc = f"<small>{esc(s['desc'])}</small>" if s.get("desc") else ""
-        items.append(f'<li data-say="{esc(say)}"><b>{esc(s.get("label"))}</b>{desc}</li>')
-    cls = "flow compact" if compact else "flow"
-    head = f'<p class="flow-title">{esc(title)}</p>' if title else ""
-    cap = f'<p class="muted">{esc(caption)}</p>' if caption else ""
-    return (f'<div class="{cls}" aria-label="{esc(title or "업무 흐름")}">{head}{cap}'
-            f'<ol>{"".join(items)}</ol><p class="status" aria-hidden="true"></p></div>')
+        if small:
+            items.append(f'<li data-say="{esc(say)}">{esc(s.get("label"))}</li>')
+        else:
+            desc = f"<small>{esc(s['desc'])}</small>" if s.get("desc") else ""
+            items.append(f'<li data-say="{esc(say)}"><span class="k">{k:02d}</span><b>{esc(s.get("label"))}</b>{desc}</li>')
+    cls = "pflow" if small else "flow"
+    cap = f'<p class="cap">{esc(caption)}</p>' if caption else ""
+    return (f'<div class="{cls}" style="--n:{len(steps)}">{cap}<ol>{"".join(items)}</ol>'
+            f'<p class="status" aria-hidden="true"></p></div>')
+
+
+def mix(hex_color: str, other: str, t: float) -> str:
+    a = [int(hex_color[i:i + 2], 16) for i in (1, 3, 5)]
+    b = [int(other[i:i + 2], 16) for i in (1, 3, 5)]
+    return "#" + "".join(f"{round(x + (y - x) * t):02x}" for x, y in zip(a, b))
+
+
+def wave(d: str, color: str, n: int = 5, gap: int = 13, uid: str = "w") -> str:
+    """장식용 물결선(aria-hidden, 클릭 불가). 저장소 포트폴리오 PPT의 표지 표현을 그대로 따른다."""
+    m = ""
+    for k in range(n, 0, -1):
+        m += f'<path d="{d}" pathLength="1" stroke="#fff" stroke-width="{k * gap * 2 - gap + 5}"/>'
+        m += f'<path d="{d}" pathLength="1" stroke="#000" stroke-width="{k * gap * 2 - gap - 5}"/>'
+    return (f'<svg class="wave" viewBox="0 0 1920 1080" preserveAspectRatio="none" aria-hidden="true" focusable="false">'
+            f'<defs><mask id="{uid}" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080">{m}</mask></defs>'
+            f'<rect width="1920" height="1080" fill="{color}" mask="url(#{uid})"/></svg>')
+
+
+IMG_DIR = SKILL_DIR / "assets" / "img"
+
+
+def img_uri(name: str, cache: dict) -> str:
+    if name not in cache:
+        p = IMG_DIR / name
+        if not p.exists():
+            raise FileNotFoundError(f"프로젝트 이미지가 없습니다: {p}")
+        mime = "image/png" if p.suffix.lower() == ".png" else "image/jpeg"
+        cache[name] = f"data:{mime};base64," + base64.b64encode(p.read_bytes()).decode()
+    return cache[name]
+
+
+def split_letter(sections: list, budget: int = 1500) -> list:
+    pages, page, size = [], [], 0
+    for s in sections:
+        n = len(s["heading"]) + len(s["body"])
+        if page and size + n > budget:
+            pages.append(page)
+            page, size = [], 0
+        page.append(s)
+        size += n
+    if page:
+        pages.append(page)
+    return pages
 
 
 def render_portfolio(brief: dict, profile: dict) -> str:
     tpl = TEMPLATE_PATH.read_text(encoding="utf-8")
     meta, p = brief["meta"], brief["portfolio"]
     company = meta.get("company_display") or meta["company"]
-    hero, why, flow = p["hero"], p["why"], p["flow"]
+    role = meta["role"]
+    accent = p.get("accent", "#2457d6")
+    cache: dict = {}
+    year_month = meta["date"][:7].replace("-", ".")
 
-    fit_rows = "".join(
-        f'<div class="fit-row"><dt>{esc(r.get("duty"))}</dt><dd>{esc(r.get("experience"))}</dd></div>'
-        for r in p.get("fit", []))
-    exp = []
-    for e in profile["experience"]:
-        pts = "".join(f"<li>{esc(x)}</li>" for x in e["points"])
-        exp.append(f'<li><div class="period">{esc(e["period"])}</div><div><h3>{esc(e["org"])}</h3>'
-                   f'<div class="muted">{esc(e["title"])}</div><ul>{pts}</ul></div></li>')
-    edu = "".join(f"<li>{esc(x)}</li>" for x in profile["education"])
+    S = []  # 장 목록: {title, cls, html} 또는 {title, sec, label, h, html, back, note}
 
+    hero = p["hero"]
+    S.append({"title": "표지", "cls": "cover", "html": (
+        '<div class="band"></div>'
+        + wave("M -60 250 H 960 C 1100 250 1170 330 1170 470 V 650 C 1170 800 1260 890 1390 890 C 1520 890 1610 800 1610 650 V 330 C 1610 200 1690 130 1810 130 H 2000", mix(accent, "#000000", .25), uid="w-cover")
+        + '<div class="logo" data-a="fade"><i>J</i>JIHO KIM</div>'
+        + f'<div class="txt"><div class="kicker" data-a>{esc(hero.get("eyebrow"))}</div>'
+        + f'<h1 data-a><b>김지호</b><br>입사지원 포트폴리오</h1><p data-a>{esc(hero.get("title"))}</p></div>'
+        + f'<div class="date" data-a="fade">{esc(year_month)}</div>')})
+
+    toc_i = len(S)
+    S.append(None)  # 목차는 장 번호가 정해진 뒤 채운다
+
+    sections = {}
+    # 지원 이유
+    why = p["why"]
+    co = brief.get("company") or {}
+    co_html = ""
+    if co.get("points"):
+        co_html = (f'<div class="card co" data-a="right"><h3>{esc(co.get("title") or company + "에 대해 확인한 것")}</h3><ul>'
+                   + "".join(f"<li>{esc(x)}</li>" for x in co["points"]) + "</ul>"
+                   + (f'<small>{esc(co.get("public_basis"))}</small>' if co.get("public_basis") else "") + "</div>")
+    sections["why"] = len(S)
+    S.append({"title": "지원 이유", "sec": "01", "label": "지원 이유", "h": why.get("title", ""), "html":
+              f'<div class="why"><div class="lead" data-a>{"".join(f"<p>{esc(x)}</p>" for x in why.get("paragraphs", []))}</div>{co_html}</div>'})
+    if p.get("fit"):
+        S.append({"title": "공고 업무와 이어지는 경험", "sec": "01", "label": "지원 이유", "h": "공고 업무와 이어지는 경험", "html":
+                  '<div class="fit">' + "".join(f'<div class="card" data-a><h4>{esc(r.get("duty"))}</h4><p>{esc(r.get("experience"))}</p></div>' for r in p["fit"][:6]) + "</div>"})
+    # 한눈에 보기
+    hl = [profile["highlights"][h] for h in p.get("highlights", [])][:4]
+    if hl:
+        sections["glance"] = len(S)
+        S.append({"title": "한눈에 보기", "sec": "02", "label": "한눈에 보기", "h": p.get("glance_title") or "숫자는 무엇의 수인지 함께 적었습니다", "html":
+                  (f'<p class="lead2" data-a>{esc(hero.get("lead"))}</p>' if hero.get("lead") else "")
+                  + f'<div class="stats" style="grid-template-columns:repeat({len(hl)},1fr)">'
+                  + "".join(f'<div class="card stat" data-a><div class="n">{esc(h["n"])}<u>{esc(h["u"])}</u></div><h3>{esc(h["h"])}</h3><p>{esc(h["p"])}</p></div>' for h in hl)
+                  + "</div>"})
+    # 경력
     cards = []
-    for pr in p["projects"]:
+    for e in reversed(profile["experience"]):
+        cards.append(f'<div class="card" data-a><div class="yr">{esc(e["period"])}</div><h3>{esc(e["org"])}</h3><h4>{esc(e["title"])}</h4><ul>'
+                     + "".join(f"<li>{esc(x)}</li>" for x in e["points"]) + "</ul></div>")
+    now = profile.get("now")
+    if now:
+        cards.append(f'<div class="card now" data-a><div class="yr">{esc(now["period"])}</div><h3>{esc(now["org"])}</h3><h4>{esc(now["title"])}</h4><ul>'
+                     + "".join(f"<li>{esc(x)}</li>" for x in now["points"]) + "</ul></div>")
+    sections["career"] = len(S)
+    S.append({"title": "경력", "sec": "03", "label": "경력", "h": "운영하고, 설명하고, 개발자에게 전달하는 일을 해 왔습니다", "html":
+              f'<div class="tl">{"".join(cards)}</div><div class="card edu" data-a><b>교육·자격</b>{esc(" · ".join(profile["education"][1:]))}</div>'})
+    # 일하는 순서
+    flow = p["flow"]
+    sections["flow"] = len(S)
+    S.append({"title": "일하는 순서", "sec": "04", "label": "일하는 순서", "h": flow.get("title", "일하는 순서"), "html":
+              f'<div data-a>{flow_html(flow.get("steps", []), flow.get("caption", ""))}</div>'})
+    # 프로젝트 한눈에 + 프로젝트 장
+    projs = p["projects"]
+    map_i = len(S)
+    sections["projects"] = map_i
+    S.append(None)
+    proj_idx = []
+    for pr in projs:
         base = profile["projects"][pr["id"]]
-        links = "".join(f'<a href="{safe_url(l["url"])}" data-print="{esc(urllib.parse.unquote(l["url"]))}" target="_blank" rel="noopener">{esc(l["label"])} ↗</a>'
-                        for l in base.get("links", []))
-        verify = "".join(f"<li>{esc(v)}</li>" for v in pr.get("verify", []))
-        verify_html = f'<h4>과정과 검증</h4><ul class="verify">{verify}</ul>' if verify else ""
-        cards.append(
-            f'<article class="project reveal" id="{esc(pr["id"])}">'
-            f'<h3>{esc(base["title"])}</h3>'
-            f'<p class="meta"><strong>{esc(base["kind"])}</strong> · {esc(base["stack"])}</p>'
-            f'<p><b>{esc(pr.get("headline", ""))}</b></p>'
-            f'<p>{esc(pr.get("summary", ""))}</p>'
-            f'<p class="muted"><b>본인 역할</b> · {esc(base["role"])}</p>'
-            f'{flow_html("업무 흐름", base.get("flow", []), compact=True)}'
-            f'{verify_html}'
-            f'<div class="scope"><b>구현 범위</b>{esc(base["scope_note"])}</div>'
-            f'<div class="links">{links}</div></article>')
+        v = base.get("visual", {})
+        bar = lambda u: f'<div class="bar"><b></b><b></b><b></b><span>{esc(u)}</span></div>' if u else ""
+        alt = esc(base["title"] + " 화면")
+        if v.get("type") == "solo":
+            vis = f'<div class="frame solo" data-a="right">{bar(v.get("url"))}<img src="{img_uri(v["img"], cache)}" alt="{alt}"></div>'
+        else:
+            plain = " plain" if v.get("plain") else ""
+            vis = (f'<div class="frame f1{plain}" data-a="right">{"" if v.get("plain") else bar(v.get("url"))}<img src="{img_uri(v["img"], cache)}" alt="{alt}"></div>'
+                   + (f'<div class="frame f2 plain{" ph" if v.get("phone2") else ""}" data-a="right"><img src="{img_uri(v["img2"], cache)}" alt="{alt} 2"></div>' if v.get("img2") else ""))
+        links = "".join(
+            f'<a class="btn{" ghost" if k else ""}" href="{safe_url(l["url"])}" data-print="{esc(urllib.parse.unquote(l["url"]))}" target="_blank" rel="noopener">{esc(l["label"])} ↗</a>'
+            for k, l in enumerate(base.get("links", [])))
+        pts = "".join(f'<div class="card pt" data-a><i>{k}</i><p>{esc(t)}</p></div>' for k, t in enumerate(pr.get("verify", []), 1))
+        proj_idx.append(len(S))
+        S.append({"title": base["title"], "sec": f"{len(proj_idx):02d}", "label": f"프로젝트 · {base['kind']}", "h": base["title"], "back": True, "html":
+                  f'<div class="pj"><div><p class="sub" data-a>{esc(pr.get("headline"))}</p><p class="sum" data-a>{esc(pr.get("summary"))}</p>'
+                  f'<p class="role" data-a><b>본인 역할</b> · {esc(base["role"])}</p>{pts}'
+                  f'<div class="scope" data-a><b>구현 범위</b>{esc(base["scope_note"])}</div>'
+                  f'<div data-a>{flow_html(base.get("flow", []), small=True)}</div>'
+                  '<div class="chips" data-a>' + "".join('<span class="chip">' + esc(c) + '</span>' for c in base.get("chips", [])) + '</div>'
+                  f'<div class="links" data-a>{links}</div></div><div class="vis">{vis}</div></div>'})
+    # 자기소개서
+    pages = split_letter(brief["cover_letter"])
+    sections["letter"] = len(S)
+    for k, pg in enumerate(pages):
+        rt = f'<p class="rt" data-a>{esc(brief["resume_title"])}</p>' if k == 0 else ""
+        body = "".join(f"<h3>{esc(s['heading'])}</h3>" + "".join(f"<p>{esc(x)}</p>" for x in s["body"].split("\n") if x.strip()) for s in pg)
+        S.append({"title": f"자기소개서 {k + 1}/{len(pages)}" if len(pages) > 1 else "자기소개서", "sec": "06", "label": f"자기소개서{f' ({k + 1}/{len(pages)})' if len(pages) > 1 else ''}",
+                  "h": f"{company} {role} 지원 자기소개서", "html":
+                  '<div class="letter">' + rt + f'<div class="cols" data-a>{body}</div></div>'})
+    # 마무리
+    sections["end"] = len(S)
+    S.append({"title": "마무리", "cls": "end", "html":
+              wave("M 2000 280 H 1600 C 1450 280 1370 370 1370 500 V 680 C 1370 820 1460 900 1600 900 H 2000", mix(accent, "#ffffff", .15), uid="w-end")
+              + f'<div class="in"><h2 data-a>감사합니다.</h2><p data-a>{esc(p.get("closing", ""))}</p><div class="ct">'
+              + f'<div data-a><small>NAME</small><b>김지호</b></div><div data-a><small>POSITION</small><b>{esc(company)} · {esc(role)}</b></div>'
+              + '<a data-a href="https://github.com/JIHOSW/jiho-agent" target="_blank" rel="noopener"><small>GITHUB</small><b>github.com/JIHOSW/jiho-agent</b></a></div>'
+              + f'<p style="margin:28px 0 0"><a class="home-link" href="#s-1" data-a>처음으로 돌아가기</a></p></div>'
+              + f'<div class="fine" data-a="fade">AI·HTML 프로젝트는 개인 학습과 실습 작업물이며, 등장하는 고객사와 데이터는 가상입니다. 팀 프로젝트는 역할을 따로 적었습니다. {esc(meta["date"])} 작성, 외부 스크립트·추적 코드 없음.</div>'})
 
-    letter = "".join(
-        f"<h3>{esc(s['heading'])}</h3>" + "".join(f"<p>{esc(par)}</p>" for par in s["body"].split("\n") if par.strip())
-        for s in brief["cover_letter"])
+    # 목차·지도 채우기 (장 번호 = 인덱스+1)
+    toc_rows = [("why", "지원 이유", "회사와 공고 업무"), ("glance", "한눈에 보기", "숫자와 맥락"), ("career", "경력", "실무 경력·교육"),
+                ("flow", "일하는 순서", "업무 자동화를 만드는 순서"), ("projects", "프로젝트", f"선별한 작업 {len(projs)}개"), ("letter", "자기소개서", "전문")]
+    toc_rows = [r for r in toc_rows if r[0] in sections]
+    S[toc_i] = {"title": "목차", "cls": "toc", "html":
+                '<div class="l">' + wave("M -60 760 H 300 C 420 760 480 700 480 590 C 480 480 560 420 660 420 H 1000", mix(accent, "#000000", .15), 4, 12, uid="w-toc")
+                + f'<h2 data-a="left">Contents.</h2><p data-a="left">{esc(company)} {esc(role)} 지원을 위해, 공고 업무와 이어지는 경험과 작업물을 골라 담았습니다.</p></div>'
+                + '<div class="r"><ol>' + "".join(f'<li data-a><a href="#s-{sections[key] + 1}"><span>{k:02d}</span>{esc(name)}<em>{esc(sub)}</em></a></li>' for k, (key, name, sub) in enumerate(toc_rows, 1)) + "</ol></div>"}
+    cols = 3 if len(projs) in (3, 5, 6) else 2 if len(projs) <= 4 else 4
+    S[map_i] = {"title": "프로젝트 한눈에", "sec": "05", "label": "프로젝트", "h": f"직접 만들고 확인한 작업 {len(projs)}개", "note":
+                "AI 프로젝트는 개인 학습·실습 작업물이며 고객사와 데이터는 가상입니다. 팀 프로젝트는 역할을 따로 적었습니다.", "html":
+                f'<div class="map" style="--cols:{cols}">' + "".join(
+                    f'<a class="card mc" data-a="pop" href="#s-{proj_idx[k] + 1}"><div class="th" style="background-image:url({img_uri(profile["projects"][pr["id"]]["visual"]["img"], cache)})"><span>{k + 1:02d} · {esc(profile["projects"][pr["id"]].get("cat", ""))}</span></div>'
+                    f'<h3>{esc(profile["projects"][pr["id"]]["title"])}</h3><p>{esc(profile["projects"][pr["id"]].get("short", ""))}</p></a>'
+                    for k, pr in enumerate(projs)) + "</div>"}
 
-    values = {
-        "PAGE_TITLE": f"김지호 · {company} {meta['role']} 지원 포트폴리오",
-        "ACCENT": p.get("accent", "#2457d6"),
-        "COMPANY": company,
-        "ROLE": meta["role"],
-        "HERO_EYEBROW": hero.get("eyebrow", ""),
-        "HERO_TITLE": hero.get("title", ""),
-        "HERO_LEAD": hero.get("lead", ""),
-        "WHY_TITLE": why.get("title", ""),
-        "RESUME_TITLE": brief["resume_title"],
-        "CLOSING": p.get("closing", ""),
-        "FOOTNOTE": f"{meta['date']} 작성 · 이 문서는 지원서 첨부용 단일 HTML이며 외부 스크립트나 추적 코드를 쓰지 않습니다.",
-    }
-    raw = {
-        "HERO_FLOW": flow_html(flow.get("title", ""), flow.get("steps", []), flow.get("caption", "")),
-        "WHY_PARAGRAPHS": "".join(f"<p>{esc(x)}</p>" for x in why.get("paragraphs", [])),
-        "FIT_ROWS": fit_rows,
-        "EXPERIENCE": "".join(exp),
-        "EDUCATION": edu,
-        "PROJECTS": "".join(cards),
-        "LETTER": letter,
-    }
+    total = len(S)
+    out_slides = []
+    for i, s in enumerate(S):
+        if s.get("cls"):
+            inner = s["html"]
+        else:
+            back = f'<a class="back" href="#s-{map_i + 1}">▦ 전체 작업물로</a>' if s.get("back") else ""
+            note = f'<div class="note">{esc(s["note"])}</div>' if s.get("note") else ""
+            inner = (f'<div class="brand">KIM JIHO · {esc(company)}</div>'
+                     f'<div class="hd" data-a><div class="no">{esc(s["sec"])}</div><div><small>{esc(s["label"])}</small><h2>{esc(s["h"])}</h2></div>{back}</div>'
+                     f'<div class="body">{s["html"]}</div>{note}<div class="pg">{i + 1:02d} / {total:02d}</div>')
+        out_slides.append(f'<section class="slide {s.get("cls", "")}" id="s-{i + 1}" tabindex="-1" aria-label="{i + 1}. {esc(s["title"])}">{inner}</section>')
+    overview = "".join(f'<li><a href="#s-{i + 1}"><i>{i + 1:02d}</i>{esc(s["title"])}</a></li>' for i, s in enumerate(S))
+
+    values = {"PAGE_TITLE": f"김지호 · {company} {role} 지원 포트폴리오", "C_MAIN": accent, "C_D": mix(accent, "#000000", .2),
+              "C_DD": mix(accent, "#000000", .4), "C_L": mix(accent, "#ffffff", .8), "C_LL": mix(accent, "#ffffff", .92)}
     out = tpl
     for k, v in values.items():
         out = out.replace("{{" + k + "}}", esc(v))
-    for k, v in raw.items():
-        out = out.replace("{{" + k + "}}", v)
+    out = out.replace("{{SLIDES}}", "\n".join(out_slides)).replace("{{OVERVIEW}}", overview)
     left = re.findall(r"\{\{[A-Z_]+\}\}", out)
     if left:
         raise ValueError(f"템플릿 자리 표시자가 남았습니다: {left}")
@@ -414,6 +563,18 @@ def render_analysis(brief: dict, profile: dict) -> str:
          f"- 상태 메모: {src.get('status_note', '')}", ""]
     if post.get("summary"):
         L += ["## 회사·직무 요약", "", post["summary"], ""]
+    co = brief.get("company") or {}
+    if co:
+        L += ["## 기업 조사", ""]
+        L += [f"- {x}" for x in co.get("points", [])]
+        if co.get("note"):
+            L += ["", f"메모: {co['note']}"]
+        if co.get("sources"):
+            L += ["", "| 출처 | 확인일 | 확인 방법 |", "|---|---|---|"]
+            L += [f"| [{s.get('title', s['url'])}]({s['url']}) | {s.get('read_on', '')} | {s.get('how', '')} |" for s in co["sources"]]
+        if co.get("use_in_letter"):
+            L += ["", f"자기소개서·포트폴리오 반영: {co['use_in_letter']}"]
+        L.append("")
     for key, title in (("duties", "주요 업무"), ("required", "필수 요건"), ("preferred", "우대 사항"), ("conditions", "근무 조건")):
         if post.get(key):
             L += [f"## {title}", ""] + [f"- {x}" for x in post[key]] + [""]
