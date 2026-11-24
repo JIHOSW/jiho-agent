@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>[AXPO] 한끗 프로젝트 소개서</title>
+<!-- 글꼴: Pretendard v1.3.9 (SIL OFL 1.1). 앱과 같은 글꼴을 jsDelivr에서 불러온다. PDF에는 쓴 글자만 들어간다 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+/* 16:9 한 장 = 1280×720px (13.333×7.5in). 헤드리스 Chrome으로 PDF를 뽑는다: node 기획/소개서/render.mjs */
+@page { size: 1280px 720px; margin: 0; }
+:root {
+  --bg: #F2F4F6; --card: #fff; --ink: #1B2430; --ink-2: #39424E; --sub: #4F5968; --line: #E5E8EB; --weak: #E8EBEE;
+  --p: #5B3DF5; --p-deep: #3D22BF; --p-soft: #EFECFE; --p-tint: #F6F4FF; --p-ink: #3C3666; --mark: #DCD6FE; --mark-red: #F6C4BC;
+  --g: #0A6352; --g-soft: #DFF0E9; --r: #B42318; --r-bar: #C8382A; --r-soft: #FBE7E3;
+  --o: #8A4B00; --o-bar: #E29A2B; --o-soft: #FBEBD3; --b: #1F55B8; --b-soft: #E6EEFC; --rule: #C5CCD4;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: 'Pretendard', sans-serif; color: var(--ink); background: #D5DAE0; -webkit-print-color-adjust: exact; print-color-adjust: exact; word-break: keep-all; overflow-wrap: break-word; font-feature-settings: "tnum" 0; }
+p { margin: 0; }
+b, strong { font-weight: 700; }
+.slide { position: relative; width: 1280px; height: 720px; overflow: hidden; background: var(--bg); break-after: page; page-break-after: always; }
+.slide:last-child { break-after: auto; page-break-after: auto; }
+@media screen { .slide { margin: 24px auto; box-shadow: 0 2px 14px rgba(0, 0, 0, .10); } }
+
+/* 머리말·쪽 번호 (양식 머리말과 같은 문구) */
+.chrome { position: absolute; left: 56px; right: 56px; top: 20px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 500; color: var(--sub); }
+.chrome .logo { display: flex; align-items: baseline; gap: 8px; }
+.chrome .logo b { color: var(--p); font-size: 17px; font-weight: 800; letter-spacing: -0.3px; }
+.pno { position: absolute; right: 56px; bottom: 16px; font-size: 12px; font-weight: 600; color: var(--sub); }
+.body { position: absolute; left: 56px; right: 56px; top: 52px; bottom: 40px; display: flex; flex-direction: column; }
+.sec { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; }
+.sec .n { display: inline-flex; align-items: center; justify-content: center; min-width: 34px; height: 26px; padding: 0 9px; border-radius: 8px; background: var(--p); color: #fff; font-size: 14px; font-weight: 800; }
+.sec .of { font-size: 13px; font-weight: 600; color: var(--sub); }
+h2 { margin: 8px 0 16px; font-size: 31px; line-height: 1.3; font-weight: 800; letter-spacing: -0.8px; }
+mark { background: linear-gradient(transparent 56%, var(--mark) 56%); color: inherit; padding: 0 2px; margin: 0 -2px; }
+mark.rd { background: linear-gradient(transparent 56%, var(--mark-red) 56%); }
+
+.card { background: var(--card); border-radius: 18px; padding: 16px 20px; }
+.lbl { margin: 0 0 8px; font-size: 13px; font-weight: 700; color: var(--p); letter-spacing: -0.1px; }
+.lbl.gray { color: var(--sub); }
+.t { font-size: 17px; font-weight: 700; line-height: 1.4; letter-spacing: -0.3px; color: var(--ink); }
+.tx { font-size: 15px; line-height: 1.55; color: var(--ink-2); }
+.sm { font-size: 13px; line-height: 1.5; color: var(--sub); }
+.xs { font-size: 12px; line-height: 1.45; color: var(--sub); }
+ul.dots { margin: 0; padding: 0; list-style: none; }
+ul.dots li { position: relative; padding-left: 14px; font-size: 15px; line-height: 1.5; color: var(--ink-2); }
+ul.dots li + li { margin-top: 5px; }
+ul.dots li::before { content: ""; position: absolute; left: 2px; top: 0.66em; width: 5px; height: 5px; border-radius: 50%; background: var(--p); }
+ul.dots.sm li { font-size: 13.5px; line-height: 1.45; }
+ul.dots.sm li + li { margin-top: 3px; }
+.tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+.tag.p { background: var(--p-soft); color: var(--p-deep); }
+.tag.g { background: var(--g-soft); color: var(--g); }
+.tag.r { background: var(--r-soft); color: var(--r); }
+.tag.o { background: var(--o-soft); color: var(--o); }
+.tag.b { background: var(--b-soft); color: var(--b); }
+.tag.k { background: var(--weak); color: var(--ink-2); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* 화면 캡처 틀 */
+.phone { border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 0 0 1px rgba(27, 36, 48, .14); }
+.phone img { display: block; width: 100%; height: auto; }
+.pc { border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 0 0 1px rgba(27, 36, 48, .14); }
+.pc .bar { height: 22px; display: flex; align-items: center; gap: 5px; padding: 0 10px; background: var(--weak); }
+.pc .bar i { width: 7px; height: 7px; border-radius: 50%; background: var(--rule); }
+.pc .bar span { margin-left: 8px; padding: 0 10px; height: 15px; line-height: 15px; border-radius: 8px; background: #fff; font-size: 10px; font-weight: 600; color: var(--sub); }
+.crop { position: relative; overflow: hidden; }
+.crop img { position: absolute; display: block; max-width: none; }
+
+/* 영수증 카드 (앱 첫 화면과 같은 모양) */
+.rcpt { position: relative; }
+.rcpt .zz { height: 8px; background-repeat: repeat-x; background-size: 14px 8px; }
+.rcpt .zz.top { background-image: radial-gradient(circle at 7px 0, transparent 5.5px, #fff 6px); }
+.rcpt .zz.bot { background-image: radial-gradient(circle at 7px 8px, transparent 5.5px, #fff 6px); }
+.rcpt .in { background: #fff; padding: 20px 24px 18px; }
+.bars3 { display: flex; gap: 4px; height: 14px; margin: 14px 0 10px; }
+.bars3 i { border-radius: 7px; }
+.rc-row { display: flex; align-items: baseline; gap: 8px; padding: 4px 0; line-height: 22px; }
+.rc-row dt { display: flex; align-items: baseline; gap: 8px; flex: 1; min-width: 0; font-size: 14px; color: var(--sub); }
+.rc-row dt::before { content: ""; flex: none; align-self: center; width: 9px; height: 9px; border-radius: 3px; background: transparent; }
+.rc-row dt::after { content: ""; flex: 1; min-width: 14px; border-bottom: 2px dotted var(--rule); transform: translateY(-5px); }
+.rc-row dd { margin: 0; font-size: 16px; font-weight: 700; white-space: nowrap; }
+.rc-row.o dt::before { background: var(--o-bar); }
+.rc-row.r dt::before { background: var(--r-bar); }
+.rc-row.g dt::before { background: var(--p); }
+.rc-row.sum { margin-top: 6px; padding-top: 10px; border-top: 2px dashed var(--rule); }
+.rc-row.sum dt { color: var(--ink); font-weight: 700; font-size: 16px; }
+.rc-row.sum dd { color: var(--p); font-size: 22px; font-weight: 800; letter-spacing: -0.4px; }
+dl { margin: 0; }
+.stamp { display: inline-block; padding: 1px 8px; border: 2px solid var(--o); border-radius: 8px; color: var(--o); font-size: 13px; font-weight: 800; line-height: 20px; letter-spacing: 0.5px; transform: rotate(-6deg); }
+
+/* ───────── 1. 표지 ───────── */
+.cover { background: var(--p); color: #fff; }
+.cover .left { position: absolute; left: 80px; top: 76px; width: 610px; }
+.cover .eyebrow { font-size: 17px; font-weight: 700; letter-spacing: -0.2px; color: #fff; opacity: .92; }
+.cover h1 { margin: 22px 0 0; font-size: 132px; line-height: 1; font-weight: 800; letter-spacing: -4px; }
+.cover .slogan { margin-top: 30px; font-size: 30px; line-height: 1.35; font-weight: 800; letter-spacing: -0.8px; }
+.cover .sub { margin-top: 14px; font-size: 18px; line-height: 1.55; font-weight: 500; color: #fff; opacity: .92; }
+.cover .meta { position: absolute; left: 80px; right: 80px; bottom: 56px; display: grid; grid-template-columns: 1fr 1fr 1.6fr 1fr; gap: 0; border-top: 1px solid rgba(255, 255, 255, .35); padding-top: 18px; }
+.cover .meta div { font-size: 13px; font-weight: 600; color: #fff; opacity: .85; }
+.cover .meta b { display: block; margin-top: 6px; font-size: 20px; font-weight: 800; opacity: 1; color: #fff; letter-spacing: -0.3px; }
+.cover .right { position: absolute; right: 80px; top: 92px; width: 420px; }
+.cover .rcpt .in { color: var(--ink); }
+.cover .ex { display: inline-flex; height: 24px; align-items: center; padding: 0 8px; border-radius: 6px; background: var(--p-soft); color: var(--p-deep); font-size: 12px; font-weight: 800; }
+.cover .rq { margin-top: 12px; font-size: 19px; line-height: 1.45; font-weight: 700; letter-spacing: -0.4px; color: var(--ink); }
+.cover .cap { margin-top: 12px; font-size: 12.5px; color: #fff; opacity: .9; text-align: right; }
+
+/* ───────── 2. 요약 ───────── */
+.sum-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr 214px; grid-template-rows: auto 1fr auto; gap: 14px; min-height: 0; }
+.oneline { grid-column: 1 / 4; background: var(--p-soft); border-radius: 18px; padding: 18px 22px; }
+.oneline .q { font-size: 21px; line-height: 1.45; font-weight: 800; letter-spacing: -0.5px; color: var(--ink); }
+.sumc { display: flex; flex-direction: column; }
+.sumc .hd { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.circle { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--p); color: #fff; font-size: 15px; font-weight: 800; flex: none; }
+.kw { grid-column: 1 / 4; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: #fff; border-radius: 18px; padding: 14px 20px; }
+.kw .lbl { margin: 0 6px 0 0; }
+.chip { display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 15px; background: var(--p-tint); border: 1px solid var(--mark); font-size: 14px; font-weight: 700; color: var(--p-ink); }
+.sum-phone { grid-column: 4; grid-row: 1 / 4; align-self: start; }
+.sumc .tx { font-size: 15.5px; line-height: 1.6; }
+.fb { margin-top: auto; border-radius: 12px; background: var(--bg); padding: 10px 12px; }
+.fb .fl { font-size: 12px; font-weight: 700; color: var(--sub); }
+.fb .row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: 4px; font-size: 13.5px; color: var(--ink-2); }
+.fb .row b { font-size: 16px; font-weight: 800; color: var(--ink); }
+.fb .row b.p { color: var(--p-deep); }
+.fb .row b.r { color: var(--r); }
+.fb .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
+.fb .pair div { border-radius: 9px; padding: 7px 9px; font-size: 12.5px; line-height: 1.4; color: var(--ink-2); background: #fff; }
+.fb .pair div b { display: block; font-size: 13px; color: var(--ink); }
+.fb .pair div.ai b { color: var(--p-deep); }
+.fb .k3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; }
+.fb .k3 div { background: #fff; border-radius: 9px; padding: 6px 8px; font-size: 11.5px; line-height: 1.35; color: var(--ink-2); }
+.fb .k3 div b { display: block; font-size: 18px; font-weight: 800; color: var(--p-deep); letter-spacing: -0.4px; }
+
+/* ───────── 3. 문제 정의 ───────── */
+.g01 { flex: 1; display: grid; grid-template-columns: 1.06fr 1fr; gap: 14px; min-height: 0; }
+.rules { width: 100%; border-collapse: collapse; }
+.rules td { padding: 10px 4px; border-top: 1px solid var(--line); vertical-align: top; font-size: 15px; line-height: 1.45; color: var(--ink-2); }
+.rules tr:first-child td { border-top: 0; }
+.rules td.k { width: 172px; font-weight: 800; color: var(--ink); white-space: nowrap; }
+.rules td.k .tag { margin-right: 6px; width: 26px; justify-content: center; padding: 0; }
+.stats { display: grid; grid-template-columns: 1fr 1fr 1fr 1.55fr; gap: 12px; margin-top: 14px; }
+.stat { background: #fff; border-radius: 16px; padding: 12px 16px; }
+.stat .v { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: var(--p); }
+.stat .d { margin-top: 2px; font-size: 13px; line-height: 1.4; color: var(--ink-2); font-weight: 600; }
+.stat .s { margin-top: 3px; font-size: 11.5px; line-height: 1.35; color: var(--sub); }
+.stat.warn { background: var(--r-soft); }
+.stat.warn .v { color: var(--r); font-size: 16px; }
+.chart svg { display: block; }
+.chart text { font-family: 'Pretendard', sans-serif; }
+
+/* ───────── 4. 대상 사용자 ───────── */
+.g02 { flex: 1; display: grid; grid-template-columns: 1.55fr 1fr; gap: 14px; min-height: 0; }
+.persona { display: grid; grid-template-columns: 118px 1fr; gap: 18px; align-items: center; padding: 13px 0; border-top: 1px solid var(--line); }
+.persona:first-of-type { border-top: 0; padding-top: 4px; }
+.thumb { width: 118px; height: 128px; border-radius: 14px; box-shadow: 0 0 0 1px rgba(27, 36, 48, .12); background: var(--bg); }
+.thumb img { width: 118px; left: 0; top: -14px; }
+.persona .who { display: flex; align-items: center; gap: 8px; }
+.persona .who .t { font-size: 18px; }
+.persona .qt { margin-top: 5px; font-size: 16px; font-weight: 700; color: var(--p-deep); }
+.persona .ex { margin-top: 5px; font-size: 14.5px; line-height: 1.5; color: var(--ink-2); }
+.stake { display: grid; grid-template-columns: 84px 1fr; gap: 9px 10px; align-items: baseline; }
+.stake dt { font-size: 15px; font-weight: 800; color: var(--ink); }
+.stake dd { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--ink-2); }
+.values { display: grid; gap: 9px; }
+.val { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; }
+.val .ck { width: 22px; height: 22px; border-radius: 50%; background: var(--p); color: #fff; display: inline-flex; align-items: center; justify-content: center; margin-top: 1px; }
+.val .ck svg { width: 12px; height: 12px; }
+.val p { font-size: 15px; line-height: 1.5; color: var(--ink-2); }
+.val p b { color: var(--ink); }
+
+/* ───────── 5. AI 해결 방안 ───────── */
+.g03a { display: grid; grid-template-columns: 1.25fr 1fr; gap: 14px; }
+.flow { display: flex; align-items: stretch; gap: 6px; margin-top: 4px; }
+.fs { flex: 1; border-radius: 12px; padding: 10px 10px; background: var(--weak); }
+.fs .who { font-size: 11px; font-weight: 800; letter-spacing: 0.3px; color: var(--sub); }
+.fs .wt { margin-top: 3px; font-size: 14px; line-height: 1.35; font-weight: 800; color: var(--ink); }
+.fs .wd { margin-top: 3px; font-size: 12px; line-height: 1.4; color: var(--ink-2); }
+.fs.ai { background: var(--p-soft); }
+.fs.ai .who { color: var(--p-deep); }
+.fs.code { background: #1B2430; }
+.fs.code .who { color: #C5CCD4; }
+.fs.code .wt { color: #fff; }
+.fs.code .wd { color: #DDE1E6; }
+.arw { display: flex; align-items: center; color: var(--rule); font-weight: 800; font-size: 14px; }
+.why { display: grid; gap: 7px; }
+.why .w { display: grid; grid-template-columns: 22px 1fr; gap: 8px; }
+.why .w .i { width: 22px; height: 22px; border-radius: 6px; background: var(--p-soft); color: var(--p-deep); font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+.why .w p { font-size: 13.5px; line-height: 1.45; color: var(--ink-2); }
+.why .w p b { color: var(--ink); }
+.g03b { flex: 1; display: grid; grid-template-columns: 1.55fr 1fr; gap: 14px; margin-top: 14px; min-height: 0; }
+.apts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.apt { border: 1px solid var(--line); border-radius: 14px; padding: 11px 13px; }
+.apt .h { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; color: var(--ink); }
+.apt .h .i { width: 22px; height: 22px; border-radius: 50%; background: var(--p); color: #fff; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.apt p { margin-top: 5px; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+.model { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--sub); }
+.model b { color: var(--ink); }
+.guard { background: #1B2430; color: #fff; }
+.guard .lbl { color: #C9C0FF; }
+.guard ul.dots li { color: #E5E8EB; font-size: 13.5px; line-height: 1.45; }
+.guard ul.dots li b { color: #fff; }
+.guard ul.dots li::before { background: #9D8BFF; }
+.guard .test { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .18); font-size: 13px; line-height: 1.45; color: #E5E8EB; }
+.guard .test b { color: #fff; }
+
+/* ───────── 6. 서비스 구조 ───────── */
+.g04 { flex: 1; display: grid; grid-template-columns: 1.5fr 1fr; gap: 14px; min-height: 0; }
+.arch { position: relative; display: grid; grid-template-columns: 1.3fr 58px 1fr 58px 0.95fr; align-items: center; margin-top: 4px; }
+.zone { border-radius: 16px; padding: 12px; }
+.zone.user { background: var(--p-tint); border: 2px solid var(--mark); }
+.zone .zt { font-size: 14px; font-weight: 800; color: var(--p-deep); margin-bottom: 8px; }
+.box { background: #fff; border-radius: 10px; padding: 7px 10px; box-shadow: 0 0 0 1px var(--line); }
+.box + .box { margin-top: 6px; }
+.box .bt { font-size: 14.5px; font-weight: 800; color: var(--ink); }
+.box .bt code { font-family: 'Pretendard', sans-serif; font-weight: 600; color: var(--sub); font-size: 12px; margin-left: 4px; }
+.box .bd { margin-top: 2px; font-size: 12.5px; line-height: 1.42; color: var(--ink-2); }
+.zone.srv { background: #fff; box-shadow: 0 0 0 1px var(--rule); }
+.zone.srv .zt, .zone.ai .zt { color: var(--ink); }
+.zone.ai { background: #1B2430; }
+.zone.ai .zt { color: #fff; }
+.zone.ai .bd2 { font-size: 13px; line-height: 1.5; color: #DDE1E6; }
+.zone .bd2 { font-size: 13px; line-height: 1.5; color: var(--ink-2); }
+.zone .bd2 b { color: var(--ink); }
+.zone.ai .bd2 b { color: #fff; }
+.pipe { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
+.pipe svg { width: 52px; height: 22px; }
+.pipe span { font-size: 11px; line-height: 1.3; text-align: center; color: var(--sub); font-weight: 700; }
+.dflow { margin-top: 12px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.dflow div { position: relative; border-radius: 12px; background: var(--bg); padding: 9px 10px; font-size: 12.5px; line-height: 1.42; color: var(--ink-2); }
+.dflow div i { font-style: normal; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--p); color: #fff; font-size: 11px; font-weight: 800; margin-bottom: 4px; }
+.dflow div b { color: var(--ink); }
+.stack { width: 100%; border-collapse: collapse; }
+.stack td { padding: 8px 6px; border-top: 1px solid var(--line); vertical-align: top; font-size: 13.5px; line-height: 1.45; color: var(--ink-2); }
+.stack tr:first-child td { border-top: 0; }
+.stack td.k { width: 112px; font-weight: 800; color: var(--ink); font-size: 13px; }
+.privacy { margin-top: 12px; display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 14px; padding: 11px 16px; font-size: 13.5px; color: var(--ink-2); }
+.privacy b { color: var(--ink); }
+
+/* ───────── 7. 핵심 기능 ───────── */
+.g05 { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; min-height: 0; }
+.feat { display: flex; flex-direction: column; }
+.feat .t { margin-top: 2px; }
+.feat ul.dots { margin-top: 8px; }
+.feat .t { font-size: 19px; }
+.feat ul.dots.sm li { font-size: 14.5px; line-height: 1.5; }
+.win { margin-top: 12px; flex: 1 1 auto; min-height: 280px; width: 100%; border-radius: 14px; background: var(--bg); box-shadow: 0 0 0 1px rgba(27, 36, 48, .14); }
+.win img { width: 100%; left: 0; }
+.win .cap { position: absolute; right: 8px; top: 8px; padding: 2px 8px; border-radius: 6px; background: rgba(27, 36, 48, .78); color: #fff; font-size: 11px; font-weight: 700; }
+
+/* ───────── 8. 이용 흐름 ───────── */
+.flow6 { display: grid; grid-template-columns: repeat(6, 156px); justify-content: space-between; margin-top: 2px; }
+.step { position: relative; }
+.step .phone { width: 100%; }
+.step .sn { display: flex; align-items: center; gap: 7px; margin-top: 9px; font-size: 15px; font-weight: 800; color: var(--ink); }
+.step .sn i { font-style: normal; display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--p); color: #fff; font-size: 12px; font-weight: 800; }
+.step .sd { margin-top: 3px; font-size: 12.5px; line-height: 1.4; color: var(--ink-2); }
+.step + .step::before { content: ""; position: absolute; left: -31px; top: 160px; width: 12px; height: 12px; border-top: 3px solid var(--p); border-right: 3px solid var(--p); transform: rotate(45deg); }
+.stuck { margin-top: auto; display: grid; grid-template-columns: 132px repeat(4, 1fr); gap: 10px; align-items: stretch; background: #fff; border-radius: 16px; padding: 12px 14px; }
+.stuck .h { font-size: 14px; font-weight: 800; color: var(--ink); align-self: center; line-height: 1.35; }
+.stuck .c { border-left: 1px solid var(--line); padding-left: 10px; font-size: 12.5px; line-height: 1.4; color: var(--ink-2); }
+.stuck .c b { display: block; color: var(--ink); font-size: 13px; margin-bottom: 2px; }
+
+/* ───────── 9. 차별점 ───────── */
+.g06 { flex: 1; display: grid; grid-template-columns: 1.45fr 1fr; gap: 14px; min-height: 0; }
+.cmp { width: 100%; border-collapse: separate; border-spacing: 0; }
+.cmp th { text-align: left; font-size: 14px; font-weight: 800; color: var(--sub); padding: 0 12px 9px; }
+.cmp th.hk { color: var(--p-deep); }
+.cmp td { padding: 13px 12px; border-top: 1px solid var(--line); vertical-align: top; font-size: 15px; line-height: 1.5; color: var(--ink-2); }
+.cmp td.k { width: 84px; font-weight: 800; color: var(--ink); padding-left: 2px; }
+.cmp td.hk { background: var(--p-tint); color: var(--ink); font-weight: 600; }
+.cmp tr:last-child td.hk { border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
+.cmp th.hk { background: var(--p-tint); border-top-left-radius: 12px; border-top-right-radius: 12px; padding-top: 8px; }
+.eff { display: grid; gap: 15px; }
+.ef { display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start; }
+.ef .i { width: 30px; height: 30px; border-radius: 9px; background: var(--p-soft); color: var(--p-deep); display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; }
+.ef .et { font-size: 16.5px; font-weight: 800; color: var(--ink); line-height: 1.35; }
+.ef .ed { margin-top: 3px; font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+.mini { display: flex; align-items: flex-end; gap: 10px; margin-top: 6px; }
+.mini .mb { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11.5px; color: var(--sub); font-weight: 700; }
+.mini .mb i { display: block; width: 46px; border-radius: 6px 6px 3px 3px; }
+.mini .mb span { font-size: 13px; color: var(--ink); font-weight: 800; }
+
+/* ───────── 10. 구현 현황 ───────── */
+.g07 { flex: 1; display: grid; grid-template-columns: 1.08fr 1fr; gap: 16px; min-height: 0; }
+.demo { display: flex; flex-direction: column; gap: 12px; }
+.demo .pc { width: 100%; }
+.demo .pc .shot { width: 100%; height: 232px; }
+.demo .pc .shot img { width: 797px; }
+.pc .bar .lab2 { margin-left: auto; font-style: normal; font-size: 11px; font-weight: 800; color: var(--p-deep); }
+.demo .pc .lab { position: absolute; left: 10px; bottom: 8px; padding: 2px 8px; border-radius: 6px; background: rgba(27, 36, 48, .78); color: #fff; font-size: 11px; font-weight: 700; }
+.url { display: flex; align-items: center; gap: 14px; background: var(--p); border-radius: 16px; padding: 14px 18px; color: #fff; }
+.url .u { font-size: 21px; font-weight: 800; letter-spacing: -0.3px; color: #fff; }
+.url .ud { margin-top: 3px; font-size: 13px; color: #fff; opacity: .92; line-height: 1.45; }
+.impl { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 14px; }
+.impl li { font-size: 13.5px; }
+.kpis { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
+.kpi { background: var(--p-soft); border-radius: 14px; padding: 10px 12px; }
+.kpi .v { font-size: 26px; font-weight: 800; color: var(--p-deep); letter-spacing: -0.6px; line-height: 1.15; }
+.kpi .v small { font-size: 14px; font-weight: 800; margin-left: 1px; }
+.kpi .d { margin-top: 3px; font-size: 12px; line-height: 1.4; color: var(--p-ink); font-weight: 600; }
+.limit { margin-top: 10px; padding-top: 13px; padding-bottom: 13px; }
+
+/* ───────── 11. 기대효과 ───────── */
+.g08 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.who3 .hd { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.big { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: var(--p); line-height: 1.2; }
+.big small { font-size: 14px; color: var(--ink-2); font-weight: 700; margin-left: 4px; letter-spacing: 0; }
+.grow { flex: 1; margin-top: 14px; display: grid; grid-template-columns: 150px 1fr 1fr 1fr; gap: 0; background: #fff; border-radius: 18px; padding: 16px 0; min-height: 0; }
+.grow .gh { padding: 0 20px; }
+.grow .gc { padding: 0 18px; border-left: 1px solid var(--line); }
+.grow .gc .t { font-size: 16px; display: flex; align-items: center; gap: 8px; }
+.grow ul.dots.sm li { font-size: 14.5px; line-height: 1.5; }
+.grow ul.dots.sm li + li { margin-top: 7px; }
+.who3 ul.dots.sm li { font-size: 14px; line-height: 1.5; }
+
+/* ───────── 별첨 ───────── */
+.ap-title { font-size: 26px; font-weight: 800; letter-spacing: -0.6px; margin: 8px 0 14px; }
+.tbl { width: 100%; border-collapse: collapse; background: #fff; border-radius: 14px; overflow: hidden; }
+.tbl th { background: #1B2430; color: #fff; font-size: 13px; font-weight: 700; text-align: left; padding: 9px 12px; }
+.tbl td { padding: 9px 12px; border-top: 1px solid var(--line); font-size: 13.5px; line-height: 1.45; color: var(--ink-2); vertical-align: top; }
+.tbl td.k { font-weight: 800; color: var(--ink); }
+.tbl.ext td { padding: 4px 9px; font-size: 12.2px; line-height: 1.36; }
+.tbl.ext th { padding: 6px 9px; font-size: 12px; }
+.tbl.ext td.grp { background: var(--p-tint); color: var(--p-deep); font-weight: 800; font-size: 12px; }
+.tbl.ext td.nm { font-weight: 700; color: var(--ink); }
+.ap-sub { font-size: 15px; font-weight: 800; margin: 0 0 8px; color: var(--ink); }
+.ap-sub small { font-size: 12.5px; font-weight: 600; color: var(--sub); margin-left: 6px; }
+</style>
+</head>
+<body>
+
+<!-- ═════════ 1. 표지 ═════════ -->
+<section class="slide cover">
+  <div class="left">
+    <p class="eyebrow">2026 대한민국 청년 CAREER FAIR AI 해커톤 · 프로젝트 소개서</p>
+    <h1>한끗</h1>
+    <p class="slogan">일하면서 정부 지원을 받는 청년에게<br>실제로 남는 돈을 미리 계산해 주는 AI 서비스</p>
+    <p class="sub">공고를 올리면 AI가 조건을 읽고, 월급·정부 지원·부모님 보험과 세금이<br>어떻게 달라지는지 일하기 전에 공식 기준으로 보여 줘요</p>
+  </div>
+  <div class="right">
+    <div class="rcpt">
+      <div class="zz top"></div>
+      <div class="in">
+        <span class="ex">예시</span>
+        <p class="rq">주말에 카페에서 일해<br>한 달에 131만 원을 벌면,<br>실제로 남는 돈은 <mark>81만 원</mark>이에요</p>
+        <div class="bars3"><i style="flex:810863;background:var(--p)"></i><i style="flex:127680;background:var(--o-bar)"></i><i style="flex:375385;background:var(--r-bar)"></i></div>
+        <dl>
+          <div class="rc-row"><dt>버는 돈</dt><dd>131만 원</dd></div>
+          <div class="rc-row o"><dt>보험료</dt><dd>−13만 원</dd></div>
+          <div class="rc-row r"><dt>줄어드는 정부 지원</dt><dd>−37만 원</dd></div>
+          <div class="rc-row g sum"><dt>남는 돈</dt><dd>81만 원</dd></div>
+        </dl>
+        <div style="margin-top:12px"><span class="stamp">참고용 추정</span></div>
+      </div>
+      <div class="zz bot"></div>
+    </div>
+    <p class="cap">앱 첫 화면의 가상 예시 · 한끗 계산 엔진으로 계산</p>
+  </div>
+  <div class="meta">
+    <div>팀명<b>AXPO</b></div>
+    <div>대표자<b>김지호</b></div>
+    <div>팀원<b>안상우 / 김채연 / 김민선</b></div>
+    <div>제출일<b>2026. 11. 23.</b></div>
+  </div>
+</section>
+
+<!-- ═════════ 2. 프로젝트 요약 ═════════ -->
+<section class="slide">
+  <div class="chrome"><span>2026 대한민국 청년 CAREER FAIR AI 해커톤 | 프로젝트 소개서</span><span class="logo"><b>한끗</b>AXPO</span></div>
+  <div class="body">
+    <div class="sec">프로젝트 요약</div>
+    <div class="sum-grid" style="margin-top:12px">
+      <div class="oneline">
+        <p class="lbl">한 줄 요약</p>
+        <p class="q">일하면서 정부 지원을 받는 청년이 일자리 공고를 올리면 AI가 근무 조건을 읽고, 공식 기준으로 <mark>실제로 남는 돈</mark>과 정부 지원·부모님 보험·세금의 변화를 계산해 근무시간 선택과 시작 전 준비까지 돕는 서비스</p>
+      </div>
+      <div class="card sumc">
+        <div class="hd"><span class="circle">1</span><span class="t">문제</span></div>
+        <p class="tx">정부 지원을 받으면서 일을 시작하려는 청년은 월급만 보고 정해요. 줄어드는 정부 지원, 보험료, 부모님 공제·피부양자 자격은 제도마다 기준(주 15시간, 월 60시간, 주 30시간, 연 100만 원 등)과 세는 기간이 달라 <b>더 일하고도 덜 남거나 신고를 놓치기 쉬워요.</b></p>
+        <div class="fb">
+          <p class="fl">더 일했는데 덜 남는 예 (가상, 1~6월 한 달)</p>
+          <p class="row">주 18시간 <b class="p num">842,783원</b></p>
+          <p class="row">받은 제안 주 24시간 <b class="r num">810,863원</b></p>
+        </div>
+      </div>
+      <div class="card sumc">
+        <div class="hd"><span class="circle">2</span><span class="t">해결 방안</span></div>
+        <p class="tx">AI(Claude Opus 5.5)가 공고 사진·글에서 조건 5개를 원문 근거와 함께 읽고, 확실하지 않은 것만 되물어요. 계산은 <b>법령 원문으로 만든 규칙표를 코드가</b> 해서 남는 돈, 근무시간별 변화 지점, 사장님께 보낼 문구, 신고 준비까지 보여 줘요.</p>
+        <div class="fb">
+          <p class="fl">AI와 코드의 역할 나눔</p>
+          <div class="pair"><div class="ai"><b>AI</b>읽기·근거·확인 수준</div><div><b>코드</b>판정·금액·비교·문구</div></div>
+        </div>
+      </div>
+      <div class="card sumc">
+        <div class="hd"><span class="circle">3</span><span class="t">구현 현황</span></div>
+        <p class="tx">제출 주소 <b style="white-space:nowrap">hankkeut-app.vercel.app</b>에서 로그인 없이 전체 흐름이 동작해요(AI 공고 읽기 포함). 공고 입력부터 결과, 근무시간 비교, 문구, 시작 전 준비까지 휴대폰과 PC 화면을 모두 만들었어요.</p>
+        <div class="fb">
+          <p class="fl">검증</p>
+          <div class="k3"><div><b class="num">172건</b>계산 엔진 시험 통과</div><div><b class="num">8건</b>AI 추출 시험 기대값 일치</div><div><b class="num">40장</b>휴대폰·PC 화면</div></div>
+        </div>
+      </div>
+      <div class="kw">
+        <span class="lbl">키워드</span>
+        <span class="chip">일하는 청년</span><span class="chip">구직촉진수당</span><span class="chip">건강보험 피부양자</span><span class="chip">부모님 연말정산</span><span class="chip">남는 돈</span><span class="chip">AI 공고 읽기</span><span class="chip">규칙 엔진</span>
+      </div>
+      <div class="sum-phone phone"><img src="그림/375_21_결과.jpg" alt="결과 화면"></div>
+    </div>
+  </div>
+  <div class="pno">2</div>
+</section>
+
+<!-- ═════════ 3. 01 문제 정의 ═════════ -->
+<section class="slide">
+  <div class="chrome"><span>2026 대한민국 청년 CAREER FAIR AI 해커톤 | 프로젝트 소개서</span><span class="logo"><b>한끗</b>AXPO</span></div>
+  <div class="body">
+    <div class="sec"><span class="n">01</span>문제 정의</div>
+    <h2>월급은 보이지만, <mark>실제로 남는 돈</mark>은 보이지 않아요</h2>
+    <div class="g01">
+      <div class="card">
+        <p class="lbl">일 하나를 시작하면 바뀌는 기준: 제도마다 기준선도, 세는 기간도 달라요</p>
+        <table class="rules">
+          <tr><td class="k"><span class="tag p">주</span>주 15시간</td><td>주휴수당이 생기고 4대보험 가입 대상<br><span class="xs">법 기준은 한 달 소정근로 60시간이라 주 14시간도 해당될 수 있음</span></td></tr>
+          <tr><td class="k"><span class="tag b">월</span>한 달 60시간</td><td>직장 건강보험 가입 → <b>부모님 건강보험 피부양자에서 빠짐</b></td></tr>
+          <tr><td class="k"><span class="tag b">월</span>월 소득 938,543원</td><td>넘으면 <b>구직촉진수당이 줄기 시작</b>, 1,538,543원부터 0원</td></tr>
+          <tr><td class="k"><span class="tag p">주</span>주 30시간</td><td>취업으로 보아 <b>구직촉진수당 지급 끝</b></td></tr>
+          <tr><td class="k"><span class="tag g">연</span>연 소득금액 100만 원</td><td>넘으면 <b>부모님 연말정산 부양가족 공제에서 빠짐</b><br><span class="xs">근로소득만 있으면 총급여 500만 원, 자녀는 20세 이하만 대상</span></td></tr>
+        </table>
+        <p class="xs" style="margin-top:6px">근거: 근로기준법 제18조, 국민건강보험법 시행령 제9조, 구직자취업촉진법 시행령 제9조의2·시행규칙 제20조, 소득세법 제50조 (2026. 11. 20. 원문 확인)</p>
+      </div>
+      <div class="card chart">
+        <p class="lbl">그래서 생기는 일: 더 일했는데 덜 남는 구간 <span class="tag k" style="margin-left:4px">가상 예시</span></p>
+        <svg id="dip" width="520" height="262" viewBox="0 0 520 262" role="img" aria-label="주 근무시간별 한 달 남는 돈"></svg>
+        <p class="xs">시급 10,500원 · 구직촉진수당 받는 중(6월까지) · 1~6월 한 달 기준, 한끗 계산 엔진으로 계산. 주 19~29시간은 줄어드는 수당이 늘어나는 급여보다 커서 주 18시간보다 적게 남아요(앱은 ‘이득 없는 구간’으로 표시)</p>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><p class="v num">438만 2천 명</p><p class="d">시간제 근로자 (2026년 8월)</p><p class="s">국가데이터처 근로형태별 부가조사 (정책브리핑, 2026. 10. 21.)</p></div>
+      <div class="stat"><p class="v num">163만여 명</p><p class="d">국민취업지원제도 누적 이용</p><p class="s">2021년 도입~2025년 12월, 고용노동부 보도자료 (2026. 4. 28.)</p></div>
+      <div class="stat"><p class="v num">월 60만 원</p><p class="d">구직촉진수당 × 최대 6개월</p><p class="s">2026년 기준, 고용노동부</p></div>
+      <div class="stat warn"><p class="v">모르고 놓치면</p><p class="d">수당을 받는 동안 번 돈을 신고하지 않고 받으면 돌려줘야 하고, 같은 금액을 더 낼 수도 있어요. 지급 정지가 3번이면 수급자격이 철회돼요</p><p class="s">구직자취업촉진법 제21조·제28조</p></div>
+    </div>
+  </div>
+  <div class="pno">3</div>
+</section>
+
+<!-- ═════════ 4. 02 대상 사용자 ═════════ -->
+<section class="slide">
+  <div class="chrome"><span>2026 대한민국 청년 CAREER FAIR AI 해커톤 | 프로젝트 소개서</span><span class="logo"><b>한끗</b>AXPO</span></div>
+  <div class="body">
+    <div class="sec"><span class="n">02</span>대상 사용자</div>
+    <h2><mark>일하면서 정부 지원을 받는 청년</mark>과 부모님 보험·공제에 걸린 청년</h2>
+    <div class="g02">
+      <div class="card">
+        <p class="lbl">주요 사용자 (Primary) <span class="sm" style="font-weight:600;margin-left:6px">일을 시작하거나 늘리려는 청년 중</span></p>
+        <div class="persona">
+          <div class="thumb crop"><img src="그림/375_21_결과.jpg" alt=""></div>
+          <div>
+            <div class="who"><span class="t">구직촉진수당을 받는 청년</span><span class="tag p">국민취업지원제도</span></div>
+            <p class="qt">“이 일을 하면 수당이 얼마나 줄까?”</p>
+            <p class="ex">예) 27세, 수당 6월까지, 주말 카페 주 24시간 제안 → 한 달 131만 원을 벌어도 남는 돈은 81만 원</p>
+          </div>
+        </div>
+        <div class="persona">
+          <div class="thumb crop"><img src="그림/375_32_결과.jpg" alt=""></div>
+          <div>
+            <div class="who"><span class="t">부모님 건강보험 피부양자·연말정산 부양가족인 대학생</span></div>
+            <p class="qt">“부모님 보험·세금에 영향이 있을까?”</p>
+            <p class="ex">예) 20세, 3.3% 떼는 학원 보조 주 12시간 → 한 달 66만 원, 부모님 공제·피부양자는 확인할 곳과 함께 ‘확인 필요’로 안내</p>
+          </div>
+        </div>
+        <div class="persona">
+          <div class="thumb crop"><img src="그림/375_36_결과.jpg" alt=""></div>
+          <div>
+            <div class="who"><span class="t">조건이 빠진 공고를 받은 청년</span></div>
+            <p class="qt">“무엇을 물어봐야 할까?”</p>
+            <p class="ex">예) 23세, 급여 지급 방식과 기간이 없는 편의점 공고 → 빠진 조건을 되묻고, 사장님께 물어볼 말을 정리</p>
+          </div>
+        </div>
+        <p class="xs" style="margin-top:4px">예시는 모두 앱에 들어 있는 가상 예시이며, 그림은 실제 결과 화면이에요</p>
+      </div>
+      <div style="display:grid;grid-template-rows:auto 1fr;gap:14px;min-height:0">
+        <div class="card">
+          <p class="lbl">보조 사용자 또는 이해관계자</p>
+          <dl class="stake">
+            <dt>부모님</dt><dd>자녀 소득에 따라 건강보험 피부양자·연말정산 부양가족 공제가 바뀜 → 결과를 함께 보고 정부24·건강보험공단에서 확인</dd>
+            <dt>사장님</dt><dd>근무시간·지급 방식·주휴수당 확인 질문을 일 시작 전에 받음</dd>
+            <dt>고용센터 등</dt><dd>청년이 신고할 것·물어볼 것을 정리해 문의 (고용노동부 1350, 건강보험공단 1577-1000, 국세청 126)</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <p class="lbl">사용자가 얻는 가치</p>
+          <div class="values">
+            <div class="val"><span class="ck"><svg viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p><b>일하기 전에 남는 돈</b>을 달마다 앎<br>번 돈 − 보험료·세금 − 줄어드는 정부 지원</p></div>
+            <div class="val"><span class="ck"><svg viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p><b>근무시간을 바꾸면 무엇이 달라지는지</b> 보고 직접 고름 (가장 많이 남는 시간, 그 시간에 수당이 끊기면 수당을 지키는 시간도 보여 줌)</p></div>
+            <div class="val"><span class="ck"><svg viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p><b>사장님께 보낼 문구</b>와 신고할 곳·시점 체크리스트</p></div>
+            <div class="val"><span class="ck"><svg viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p><b>로그인 없이 바로</b>, 입력은 한끗 서버에 저장하지 않음</p></div>
+            <div class="val"><span class="ck"><svg viewBox="0 0 12 12"><path d="M2 6.2 4.8 9 10 3.4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p><b>모르는 건 모른다고</b>: 확인이 필요한 항목은 금액에 넣지 않고 문의처와 함께 따로 표시</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pno">4</div>
+</section>
+
+<!-- ═════════ 5. 03 AI를 활용한 해결 방안 ═════════ -->
+<section class="slide">
+  <div class="chrome"><span>2026 대한민국 청년 CAREER FAIR AI 해커톤 | 프로젝트 소개서</span><span class="logo"><b>한끗</b>AXPO</span></div>
+  <div class="body">
+    <div class="sec"><span class="n">03</span>AI를 활용한 해결 방안</div>
+    <h2>AI는 공고를 읽고, <mark>계산은 공식 기준표</mark>가 해요</h2>
+    <div class="g03a">
+      <div class="card">
+        <p class="lbl">해결 방안 개요</p>
+        <div class="flow">
+          <div class="fs"><p class="who">사용자</p><p class="wt">공고 올리기</p><p class="wd">사진·글·직접 입력</p></div>
+          <div class="arw">›</div>
+          <div class="fs ai"><p class="who">AI</p><p class="wt">조건 읽기</p><p class="wd">조건 5개 + 원문 근거 + 확인 수준</p></div>
+          <div class="arw">›</div>
+          <div class="fs ai"><p class="who">AI 판정 → 화면</p><p class="wt">되묻기</p><p class="wd">추정·빈칸만 하나씩</p></div>
+          <div class="arw">›</div>
+          <div class="fs code"><p class="who">코드</p><p class="wt">규칙 엔진 계산</p><p class="wd">4개 제도, 법령 원문 규칙표</p></div>
+          <div class="arw">›</div>
+          <div class="fs code"><p class="who">코드</p><p class="wt">비교·문구·준비</p><p class="wd">근무시간별 남는 돈, 체크리스트</p></div>
+        </div>
+      </div>
+      <div class="card">
+        <p class="lbl">왜 AI여야 하는가</p>
+        <div class="why">
+          <div class="w"><span class="i">1</span><p><b>공고 표기가 제각각</b>: 시급·월급·일당·3.3%, 요일·시간대·휴게시간, 캡처 사진까지. 정해진 규칙으로는 다 읽지 못해요</p></div>
+          <div class="w"><span class="i">2</span><p><b>읽으면서 계산해야 해요</b>: “금·토·일 10:00~19:00(휴게 1시간)” → 하루 8시간 × 3일 = 주 24시간</p></div>
+          <div class="w"><span class="i">3</span><p><b>소득 종류는 단서로 판별</b>: “3.3% 떼고” → 사업소득, “4대보험 가입” → 근로소득. 어떤 제도가 적용될지가 여기서 갈려요</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="g03b">
+      <div class="card">
+        <p class="lbl">AI 적용 지점 <span class="sm" style="font-weight:600;margin-left:6px">munteok/api/extract.js · 금액·기준선 판정은 AI에 맡기지 않아요</span></p>
+        <div class="apts">
+          <div class="apt"><p class="h"><span class="i">1</span>조건 읽기</p><p>사진(최대 3장, 긴 변 1,600px로 줄여 보냄)·글(4,000자까지)에서 시급, 주당 근무시간, 시작 월, 기간, 소득 종류</p></div>
+          <div class="apt"><p class="h"><span class="i">2</span>근거와 확인 수준</p><p>항목마다 원문 구절과 확정·추정·확인 필요를 붙임 → 화면이 원문에 형광펜을 칠하고, 추정·빈칸만 되물음</p></div>
+          <div class="apt"><p class="h"><span class="i">3</span>공고 판별</p><p>일자리 공고나 제안이 아니면 거절해, 엉뚱한 글로 계산하지 않음</p></div>
+          <div class="apt"><p class="h"><span class="i">4</span>형식 고정</p><p>구조화 출력(JSON 스키마)으로 늘 같은 모양을 받아 계산 엔진이 바로 씀</p></div>
+        </div>
+        <p class="model"><span>모델 <b>Claude Opus 5.5</b> (claude-opus-5-5)</span><span>effort <b>low</b></span><span>Anthropic SDK + zod 구조화 출력</span><span>Vercel 서버 함수에서 호출</span></p>
+      </div>
+      <div class="card guard">
+        <p class="lbl">AI가 틀리거나 모를 때</p>
+        <ul class="dots">
+          <li><b>추측 금지</b>: 모르면 값을 비우고 ‘확인 필요’ → 사용자에게 되물음</li>
+          <li><b>범위 밖 값은 버림</b>: 시급 0원, 주 52시간 초과 같은 값은 ‘확인 필요’로</li>
+          <li><b>공고 속 지시문은 따르지 않게</b> 지시하고 자료로만 다룸</li>
+          <li><b>실패해도 계속</b>: 이유와 재시도 안내, 직접 입력·예시로 이어 감</li>
+          <li><b>모든 값은 사용자가 고침</b>, 결과에 ‘AI가 생성한 내용’ 표시</li>
+          <li><b>개인정보 보호</b>: 근거에 이름·전화번호를 옮기지 않고, 입력은 서버에 저장·기록하지 않음</li>
+        </ul>
+        <p class="test"><b>시험</b> 가상 공고 8건(항목 35개) 기대값 일치, 공고 아닌 글 거절. 재시험에서 ‘12월부터 3개월’을 1개월로 줄여 읽는 오류를 찾아 지시문을 고침</p>
+      </div>
+    </div>
+  </div>
+  <div class="pno">5</div>
+</section>
+
+<!-- ═════════ 6. 04 서비스 구조 ═════════ -->
+<section class="slide">
+  <div class="chrome"><span>2026 대한민국 청년 CAREER FAIR AI 해커톤 | 프로젝트 소개서</span><span class="logo"><b>한끗</b>AXPO</span></div>
+  <div class="body">
+    <div class="sec"><span class="n">04</span>서비스 구조</div>
+    <h2>계산은 <mark>내 브라우저</mark>에서, 서버는 AI 읽기만 이어 줘요</h2>
+    <div class="g04">
+      <div class="card" style="display:flex;flex-direction:column">
+        <p class="lbl">서비스 구조도 (아키텍처)</p>
+        <div class="arch">
+          <div class="zone user">
+            <p class="zt">사용자 브라우저 (휴대폰·PC)</p>
+            <div class="box"><p class="bt">화면<code>app.js</code></p><p class="bd">질문 → 결과 → 근무시간 비교 → 문구 → 시작 전 준비</p></div>
+            <div class="box"><p class="bt">계산 엔진<code>engine.js</code></p><p class="bd">급여·4개 제도 판정·근무시간 탐색. 화면과 분리한 순수 함수, 기대값 시험 172건</p></div>
+            <div class="box"><p class="bt">규칙표<code>rules.json</code></p><p class="bd">기준 금액마다 근거 조문·적용 연도·확인일·확인 수준</p></div>
+            <div class="box"><p class="bt">세션 저장소</p><p class="bd">입력은 이 탭에만, 탭을 닫으면 지워짐</p></div>
+          </div>
+          <div class="pipe">
+            <svg viewBox="0 0 44 20"><path d="M2 6h36m-6-5 6 5-6 5" fill="none" stroke="#5B3DF5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M42 15H6m6-5-6 5 6 5" fill="none" stroke="#A0A8B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>공고 사진·글만<br>↔<br>조건 JSON</span>
+          </div>
+          <div class="zone srv">
+            <p class="zt">Vercel 서버 함수</p>
+            <p class="bd2"><b>api/extract.js</b><br>· 글 4,000자·사진 3장까지<br>· 같은 곳 1분 10회·1시간 60회까지<br>· 범위 밖 값 정리<br>· 입력 저장·기록 안 함<br>· API 키는 서버 환경변수에만</p>
+          </div>
+          <div class="pipe">
+            <svg viewBox="0 0 44 20"><path d="M2 6h36m-6-5 6 5-6 5" fill="none" stroke="#5B3DF5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M42 15H6m6-5-6 5 6 5" fill="none" stroke="#A0A8B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>구조화 출력<br>요청·응답</span>
+          </div>
+          <div class="zone ai">
+            <p class="zt">Anthropic Claude API</p>
+            <p class="bd2">Claude Opus 5.5<br>조건 5개 + 원문 근거 + 확정·추정·확인 필요<br>공고가 아니면 거절</p>
+          </div>
+        </div>
+        <div class="dflow">
+          <div><i>1</i><br>사용자가 공고 <b>사진·글</b>을 올림</div>
+          <div><i>2</i><br>서버 함수가 크기·횟수를 확인하고 <b>Claude</b>에 전달</div>
+          <div><i>3</i><br>Claude가 <b>조건 5개·근거·확인 수준</b>을 JSON으로</div>
+          <div><i>4</i><br>브라우저가 추정·빈칸만 <b>되묻고</b> 규칙표로 <b>계산</b></div>
+          <div><i>5</i><br><b>결과·근무시간 비교·문구·시작 전 준비</b></div>
+        </div>
+      </div>
+      <div class="card">
+        <p class="lbl">기술 스택</p>
+        <table class="stack">
+          <tr><td class="k">프론트/클라이언트</td><td>HTML·CSS·JavaScript(ES 모듈, 프레임워크 없음). 휴대폰 우선 + PC 두 칸 화면, Pretendard 글꼴</td></tr>
+          <tr><td class="k">백엔드/에이전트</td><td>Vercel 서버 함수(Node.js) + @anthropic-ai/sdk·zod. 계산 엔진·근무시간 탐색·문구 조합은 브라우저에서 실행</td></tr>
+          <tr><td class="k">AI 모델</td><td>Claude Opus 5.5 (claude-opus-5-5), effort low, 구조화 출력</td></tr>
+          <tr><td class="k">외부 API</td><td>Anthropic Claude API (공공데이터 API는 쓰지 않음)</td></tr>
+          <tr><td class="k">데이터<br>(출처·라이선스)</td><td>규칙표: 법령·고시 원문(국가법령정보센터 등)을 팀이 정리, 2026. 11. 20. 확인. 법령·고시는 저작권법 제7조의 보호받지 못하는 저작물. 예시·시험 공고는 팀이 만든 가상 데이터</td></tr>
+          <tr><td class="k">배포 환경</td><td>Vercel (화면 + AI 서버 함수)<br><b>hankkeut-app.vercel.app</b></td></tr>
+        </table>
+        <p class="privacy" style="background:var(--p-tint);margin-top:10px"><span><b>금액 계산은 서버나 AI를 거치지 않아요.</b> 사용자 브라우저에서 규칙표로만 계산해서, 같은 입력이면 늘 같은 결과가 나와요</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="pno">6</div>
+</section>
+
+<!-- ═════════ 7. 05 핵심 기능 (1/2) ═════════ -->
+<section class="slide">
+  <div class="chrome"><span>2026 대한민국 청년 CAREER FAIR AI 해커톤 | 프로젝트 소개서</span><span class="logo"><b>한끗</b>AXPO</span></div>
+  <div class="body">
+    <div class="sec"><span class="n">05</span>핵심 기능 및 사용자 흐름 <span class="of">1/2</span></div>
+    <h2>올리고, 확인하고, <mark>비교해서 고르는</mark> 세 가지 기능</h2>
+    <div class="g05">
+      <div class="card feat">
+        <p class="lbl">핵심 기능 1</p>
+        <p class="t">AI 공고 읽기와 확인</p>
+        <ul class="dots sm">
+          <li>사진·글을 올리거나 직접 입력, 예시 공고로 바로 체험</li>
+          <li>읽은 조건마다 공고 원문에 형광펜으로 근거 표시</li>
+          <li>계산하거나 가정한 값(추정)과 빈칸만 하나씩 되묻기</li>
+        </ul>
+        <div class="win crop"><img src="그림/375_13_읽은_조건.jpg" alt="읽은 조건 화면" style="top:-63px"><span class="cap">실제 화면 · 읽은 조건</span></div>
+      </div>
+      <div class="card feat">
+        <p class="lbl">핵심 기능 2</p>
+        <p class="t">남는 돈 계산</p>
+        <ul class="dots sm">
+          <li>구직촉진수당·주 15시간 기준·건강보험 피부양자·부모님 공제, 4개 제도를 규칙표로 계산</li>
+          <li>번 돈 − 보험료·세금 − 줄어드는 지원 = 남는 돈</li>
+          <li>수당이 끝나는 달을 나눠 달마다 보여 줌</li>
+        </ul>
+        <div class="win crop"><img src="그림/375_24_금액_자세히.jpg" alt="금액 자세히 화면" style="top:-266px"><span class="cap">실제 화면 · 금액 자세히</span></div>
+      </div>
+      <div class="card feat">
+        <p class="lbl">핵심 기능 3</p>
+        <p class="t">근무시간 비교와 시작 전 준비</p>
+        <ul class="dots sm">
+          <li>근무시간 막대로 1시간씩 바꿔 보며 남는 돈과 달라지는 지점 비교</li>
+          <li>가장 많이 남는 시간을 보여 주고, 그 시간에 수당이 끊기면 수당을 지키는 시간도 함께</li>
+          <li>고른 시간으로 사장님께 보낼 문구와 물어볼 것·신고할 것 체크리스트</li>
+        </ul>
+        <div class="win crop"><img src="그림/375_26_달라지는_지점.jpg" alt="달라지는 지점 화면" style="top:-58px"><span class="cap">실제 화면 · 달라지는 지점</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="pno">7</div>
+</section>
+
+<!-- ═════════ 8. 05 이용 흐름 (2/2) ═════════ -->
+<section class="slide">
+  <div class="chrome"><span>2026 대한민국 청년 CAREER FAIR AI 해커톤 | 프로젝트 소개서</span><span class="logo"><b>한끗</b>AXPO</span></div>
+  <div class="body">
+    <div class="sec"><span class="n">05</span>핵심 기능 및 사용자 흐름 <span class="of">2/2</span></div>
+    <h2 style="margin-bottom:6px">주요 사용자 이용 흐름 (Happy Path): 공고 하나로 <mark>시작 전 준비까지</mark></h2>
+    <p class="sm" style="margin-bottom:12px">주말 카페 근무 예시(가상)로 처음부터 끝까지 눌러 찍은 실제 화면이에요</p>
+    <div class="flow6">
+      <div class="step"><div class="phone"><img src="그림/375_02_공고_올리기.jpg" alt=""></div><p class="sn"><i>1</i>공고 올리기</p><p class="sd">사진·글·직접 입력 중 하나, 공고가 없으면 예시로</p></div>
+      <div class="step"><div class="phone"><img src="그림/375_11_확인_1-2.jpg" alt=""></div><p class="sn"><i>2</i>조건 확인</p><p class="sd">AI가 읽은 값을 원문과 함께, 추정한 것만 되묻기</p></div>
+      <div class="step"><div class="phone"><img src="그림/375_16_질문_2.jpg" alt=""></div><p class="sn"><i>3</i>내 상황</p><p class="sd">질문 6개를 하나씩, 수당이 끝나는 날은 달력으로 골라요</p></div>
+      <div class="step"><div class="phone"><img src="그림/375_21_결과.jpg" alt=""></div><p class="sn"><i>4</i>결과</p><p class="sd">남는 돈과 달라지는 것, 가장 많이 남는 시간</p></div>
+      <div class="step"><div class="phone"><img src="그림/375_25_근무조건_비교.jpg" alt=""></div><p class="sn"><i>5</i>근무시간 비교</p><p class="sd">변화 지점을 보고 시간을 골라 사장님께 보낼 문구 만들기</p></div>
+      <div class="step"><div class="phone"><img src="그림/375_28_시작_전_준비.jpg" alt=""></div><p class="sn"><i>6</i>시작 전 준비</p><p class="sd">물어볼 것, 신고할 것, 문의처</p></div>
+    </div>
+    <div class="stuck">
+      <p class="h">막혔을 때도<br>흐름이 이어져요</p>
+      <p class="c"><b>공고가 아니거나 사진을 못 읽으면</b>이유를 알려 주고 글 고치기·직접 입력으로</p>
+      <p class="c"><b>AI 서버가 응답하지 않으면</b>재시도 안내, 직접 입력·예시로 계속</p>
+      <p class="c"><b>부모님 보험·세금을 모르면</b>‘모르겠어요’를 고르고 정부24·건강보험공단 바로가기</p>
+      <p class="c"><b>계산하지 않는 지원이면</b>청년월세·실업급여 등은 계산하지 않고 문의처를 안내</p>
+    </div>
+  </div>
+  <div class="pno">8</div>
+</section>
+
+<!-- ═════════ 9. 06 차별점 ═════════ -->
+<section class="slide">
+  <div class="chrome"><span>2026 대한민국 청년 CAREER FAIR AI 해커톤 | 프로젝트 소개서</span><span class="logo"><b>한끗</b>AXPO</span></div>
+  <div class="body">
+    <div class="sec"><span class="n">06</span>차별점</div>
+    <h2>제도 하나씩이 아니라, <mark>받은 제안 하나</mark>에서 출발해요</h2>
+    <div class="g06">
+      <div class="card">
+        <p class="lbl">기존 서비스와 차별화 요소</p>
+        <table class="cmp">
+          <tr><th></th><th>지금 청년이 확인하는 방법</th><th class="hk">한끗</th></tr>
+          <tr><td class="k">시작</td><td>제도별 계산기·안내 페이지를 찾아 조건을 직접 입력</td><td class="hk">받은 공고 사진·글을 올리면 AI가 읽고 근거를 보여 줌</td></tr>
+          <tr><td class="k">범위</td><td>제도 하나씩: 급여 계산기(시급·주휴수당), 고용24 모의계산(수당), 건강보험공단 피부양자 안내, 홈택스 연말정산(부모가 사용)</td><td class="hk">구직촉진수당·주 15시간 기준·건강보험 피부양자·부모님 공제를 한 번에</td></tr>
+          <tr><td class="k">결과</td><td>제도별 자격이나 금액</td><td class="hk">지원 감소까지 뺀 남는 돈, 달마다(수당이 끝나는 달 반영)</td></tr>
+          <tr><td class="k">다음 행동</td><td>청년이 직접 정리</td><td class="hk">근무시간별 변화 지점, 사장님께 보낼 문구, 신고 체크리스트</td></tr>
+          <tr><td class="k">근거</td><td>기관마다 따로 확인</td><td class="hk">규칙마다 근거 조문·확인일·확인 수준. 확인 안 된 규칙은 금액에 쓰지 않음</td></tr>
+        </table>
+        <p class="xs" style="margin-top:8px">기존 서비스는 각 기관·서비스의 공개 안내를 기준으로 정리했어요 (2026. 11. 조사)</p>
+      </div>
+      <div class="card">
+        <p class="lbl">사용자에게 주는 효과</p>
+        <div class="eff">
+          <div class="ef"><span class="i">1</span><div><p class="et">입력 부담이 줄어요</p><p class="ed">공고만 올리면 AI가 읽어요. 사용자는 형광펜으로 표시된 근거를 보고 확인만 해요</p></div></div>
+          <div class="ef"><span class="i">2</span><div><p class="et">더 일해도 덜 남는 ‘이득 없는 구간’이 보여요</p>
+            <div class="mini">
+              <div class="mb"><span>84만 원</span><i style="height:56px;background:var(--p)"></i>주 18시간</div>
+              <div class="mb"><span>81만 원</span><i style="height:54px;background:var(--r-bar)"></i>주 24시간(제안)</div>
+              <p class="ed" style="margin:0 0 2px 4px;flex:1">6시간을 더 일하는 제안인데 한 달에 약 3만 원이 덜 남아요(가상 예시, 1~6월)</p>
+            </div></div></div>
+          <div class="ef"><span class="i">3</span><div><p class="et">고른 결정이 행동으로 이어져요</p><p class="ed">가장 많이 남는 시간을, 그 시간에 수당이 끊기면 수당을 지키는 시간도 함께 보여 주고, 고른 시간으로 문구와 신고 준비까지. 신고를 피하는 표현은 시험으로 막아요</p></div></div>
+          <div class="ef"><span class="i">4</span><div><p class="et">믿고 쓸 수 있는 숫자</p><p class="ed">확실·어림값·확인 필요를 나눠 보여 주고, 큰 금액에는 원문으로 확인한 규칙만 써요</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pno">9</div>
+</section>
+
+<!-- ═════════ 10. 07 구현 현황 및 프로토타입 ═════════ -->
+<section class="slide">
+  <div class="chrome"><span>2026 대한민국 청년 CAREER FAIR AI 해커톤 | 프로젝트 소개서</span><span class="logo"><b>한끗</b>AXPO</span></div>
+  <div class="body">
+    <div class="sec"><span class="n">07</span>구현 현황 및 프로토타입</div>
+    <h2>제출 주소에서 <mark>로그인 없이</mark> 처음부터 끝까지 동작해요</h2>
+    <div class="g07">
+      <div class="demo">
+        <div class="pc"><div class="bar"><i></i><i></i><i></i><span>hankkeut-app.vercel.app</span><em class="lab2">PC 첫 화면</em></div>
+          <div class="crop shot"><img src="그림/1440_01_첫_화면.jpg" alt="첫 화면" style="left:-100px;top:-133px"></div></div>
+        <div class="pc"><div class="bar"><i></i><i></i><i></i><span>hankkeut-app.vercel.app</span><em class="lab2">제안 비교: 두 제안을 같은 기준으로</em></div>
+          <div class="crop shot"><img src="그림/1440_38_제안_비교.jpg" alt="제안 비교 화면" style="width:641px;left:-21px;top:-86px"></div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;min-height:0">
+        <div class="url"><div><p class="u">https://hankkeut-app.vercel.app</p><p class="ud">로그인·설치 없이 휴대폰과 PC에서 바로 써요. AI 공고 읽기 동작 확인(2026. 11. 23.), 예시 공고로는 AI 없이도 끝까지 체험할 수 있어요</p></div></div>
+        <div class="card" style="margin-top:10px;padding-top:13px;padding-bottom:13px">
+          <p class="lbl">구현된 기능</p>
+          <ul class="dots sm impl">
+            <li>입력 3가지(사진·글·직접) + 예시 공고</li>
+            <li>AI 공고 읽기 (배포해 동작 중)</li>
+            <li>추정·빈칸 되묻기, 값 고치기</li>
+            <li>내 상황 질문 6개, 끝나는 날 달력</li>
+            <li>4개 제도 계산 + 확인 수준 표시</li>
+            <li>달마다 남는 돈, 금액 자세히</li>
+            <li>근무시간 막대·변화 지점, 추천 두 가지</li>
+            <li>사장님 문구 (행동 4가지)</li>
+            <li>제안 3개까지 비교</li>
+            <li>시작 전 준비 체크리스트</li>
+            <li>휴대폰·PC 화면, 움직임 멈춤</li>
+            <li>개인정보 처리 안내, 입력 지우기</li>
+          </ul>
+        </div>
+        <div class="kpis">
+          <div class="kpi"><p class="v num">172<small>건</small></p><p class="d">계산 엔진 기대값 시험 모두 통과 (손으로 계산한 기대값)</p></div>
+          <div class="kpi"><p class="v num">8<small>건</small> 35<small>항목</small></p><p class="d">배포한 AI 추출을 가상 공고로 시험, 모두 기대값과 일치</p></div>
+          <div class="kpi"><p class="v num">40<small>장</small></p><p class="d">처음부터 끝까지 휴대폰·PC로 찍은 화면</p></div>
+        </div>
+        <div class="card limit">
+          <p class="lbl gray">남은 한계</p>
+          <ul class="dots sm">
+            <li>AI 추출 시험은 가상 공고 8건이라 실제 공고의 다양한 표기를 다 담지 못함</li>
+            <li>원문을 확인하지 못한 규칙 3건·2차 자료 2건은 ‘확인 필요’·‘어림값’으로만 표시</li>
+            <li>2026년 한 해만 계산하고, 소득세·부모님 세금 증가액은 계산하지 않음</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pno">10</div>
+</section>
+
+<!-- ═════════ 11. 08 기대효과 ═════════ -->
+<section class="slide">
+  <div class="chrome"><span>2026 대한민국 청년 CAREER FAIR AI 해커톤 | 프로젝트 소개서</span><span class="logo"><b>한끗</b>AXPO</span></div>
+  <div class="body">
+    <div class="sec"><span class="n">08</span>기대효과</div>
+    <h2>일을 시작하기 전에 <mark>남는 돈과 해야 할 신고</mark>를 알게 돼요</h2>
+    <div class="g08">
+      <div class="card who3">
+        <div class="hd"><span class="tag p">청년</span></div>
+        <p class="big">+31,920원<small>한 달, 6시간 덜 일하고</small></p>
+        <p class="xs" style="margin:4px 0 8px">주 24시간 제안 대신 주 18시간을 고른 경우 (가상 예시, 1~6월)</p>
+        <ul class="dots sm">
+          <li>시작 전에 남는 돈을 보고 근무시간을 고름</li>
+          <li>수당을 받는 동안 번 돈 신고를 놓치지 않음 (누락하면 반환하고 추가 징수될 수 있음)</li>
+          <li>사장님께 근무시간·지급 방식을 미리 확인</li>
+        </ul>
+      </div>
+      <div class="card who3">
+        <div class="hd"><span class="tag b">가족 · 고용주 · 기관</span></div>
+        <p class="big">3곳<small>문의처를 한 번에</small></p>
+        <p class="xs" style="margin:4px 0 8px">고용노동부 1350 · 건강보험공단 1577-1000 · 국세청 126</p>
+        <ul class="dots sm">
+          <li>부모님 피부양자·부양가족 공제 영향을 미리 알고 대비</li>
+          <li>근무조건(시간·기간·지급 방식)을 일 시작 전에 분명히 함</li>
+          <li>무엇을 물어볼지 정리된 상태로 기관에 문의</li>
+        </ul>
+      </div>
+      <div class="card who3">
+        <div class="hd"><span class="tag g">운영 부담</span></div>
+        <p class="big">약 50~70원<small>공고 1건 AI 비용</small></p>
+        <p class="xs" style="margin:4px 0 8px">어림값: 입력 약 2,500·출력 약 1,500토큰, Claude Opus 5.5 가격(100만 토큰당 $4·$20), 1달러 1,400원</p>
+        <ul class="dots sm">
+          <li>계산은 사용자 브라우저에서 해서 계산 서버가 필요 없음</li>
+          <li>개인정보를 저장하지 않아 보관·보안 부담이 적음</li>
+          <li>기준 금액이 바뀌면 규칙표 데이터와 기대값 시험만 고치면 됨</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grow">
+      <div class="gh"><p class="lbl">사용자·기능 확대 시 발전방안</p><p class="sm">지금 된 것은 <span class="tag g">적용</span>, 앞으로 할 것은 <span class="tag k">계획</span>으로 나눴어요</p></div>
+      <div class="gc"><p class="t">품질</p><ul class="dots sm" style="margin-top:6px"><li><span class="tag k">계획</span> 주급·연봉·건별·주휴 포함 시급·교대 근무 공고를 시험에 추가</li><li><span class="tag g">적용</span> 규칙을 바꾸면 기대값 시험을 손으로 다시 계산해 함께 고침</li><li><span class="tag k">계획</span> 해마다 새 기준(2027년 최저임금 10,700원 등)으로 규칙표 갱신</li><li><span class="tag g">적용</span> 확실·어림값·확인 필요를 화면에 나눠 보여 틀릴 수 있는 곳을 드러냄</li></ul></div>
+      <div class="gc"><p class="t">기능</p><ul class="dots sm" style="margin-top:6px"><li><span class="tag g">적용</span> 계산하지 않는 지원(근로장려금·실업급여·청년월세 등)은 문의처 안내</li><li><span class="tag k">계획</span> 원문을 확인한 제도부터 근거·확인일·기대값 시험과 함께 추가해 계산 범위 확대</li><li><span class="tag k">계획</span> 고용센터·대학 취업지원 등 상담 전 확인 도구로 연결</li></ul></div>
+      <div class="gc"><p class="t">비용</p><ul class="dots sm" style="margin-top:6px"><li><span class="tag g">적용</span> 사진은 긴 변 1,600px로 줄여 보내고, 같은 곳 호출 횟수를 제한</li><li><span class="tag k">계획</span> 실제 사용량(토큰)을 기록해 비용을 재고</li><li><span class="tag k">계획</span> 쉬운 글 공고는 더 가벼운 모델로 먼저 읽는 방식을 시험</li><li><span class="tag g">적용</span> AI는 공고를 읽을 때만 부르고, 1시간 단위 근무시간 비교·문구는 브라우저에서 계산</li></ul></div>
+    </div>
+  </div>
+  <div class="pno">11</div>
+</section>
+
+<!-- ═════════ 12. 별첨 1/2 ═════════ -->
+<section class="slide">
+  <div class="chrome"><span>2026 대한민국 청년 CAREER FAIR AI 해커톤 | 프로젝트 소개서</span><span class="logo"><b>한끗</b>AXPO</span></div>
+  <div class="body">
+    <div class="sec"><span class="n">별첨</span>지정 별첨 <span class="of">1/2</span></div>
+    <p class="ap-title">별첨. 팀 구성 및 사전 개발 내역 고지</p>
+    <p class="ap-sub">팀 구성 및 역할</p>
+    <table class="tbl">
+      <tr><th style="width:180px">이름</th><th style="width:220px">역할</th><th>담당 업무</th></tr>
+      <tr><td class="k">김지호</td><td>대표자</td><td>구조설계 및 백엔드 지원</td></tr>
+      <tr><td class="k">안상우</td><td>백엔드</td><td>메인 백엔드 개발</td></tr>
+      <tr><td class="k">김채연</td><td>프론트엔드</td><td>프론트엔드 및 백엔드 지원</td></tr>
+      <tr><td class="k">김민선</td><td>데이터</td><td>데이터 수집</td></tr>
+    </table>
+    <p class="ap-sub" style="margin-top:22px">기존 개발물 · 사전 개발 내역 <small>해당 없으면 “해당 없음”</small></p>
+    <table class="tbl">
+      <tr><th style="width:240px">구분</th><th>내용</th></tr>
+      <tr><td class="k">해커톤 이전 개발 범위</td><td>해당 없음 (저장소 첫 기록 2026. 11. 19.)</td></tr>
+      <tr><td class="k">해커톤 기간 중 개발 범위</td><td>2026. 11. 19. ~ 11. 23. 전부: 문제 정의와 기획 문서, 법령 원문을 정리한 규칙표, 계산 엔진과 기대값 시험 172건, AI 공고 읽기 서버 함수(Claude API), 휴대폰·PC 화면, Vercel 배포</td></tr>
+      <tr><td class="k">타 공모전 출품·수상 여부</td><td>해당 없음</td></tr>
+    </table>
+  </div>
+  <div class="pno">12</div>
+</section>
+
+<!-- ═════════ 13. 별첨 2/2 ═════════ -->
+<section class="slide">
+  <div class="chrome"><span>2026 대한민국 청년 CAREER FAIR AI 해커톤 | 프로젝트 소개서</span><span class="logo"><b>한끗</b>AXPO</span></div>
+  <div class="body">
+    <div class="sec"><span class="n">별첨</span>지정 별첨 <span class="of">2/2</span></div>
+    <p class="ap-title" style="margin:4px 0 8px;font-size:22px">활용한 외부 자원 · 출처</p>
+    <table class="tbl ext">
+      <tr><th style="width:110px">구분</th><th style="width:178px">명칭</th><th style="width:420px">출처 · 라이선스</th><th>사용 위치</th></tr>
+      <tr><td class="grp" rowspan="4">오픈소스 · 템플릿</td><td class="nm">Pretendard 글꼴 v1.3.9</td><td>github.com/orioncactus/pretendard · SIL Open Font License 1.1</td><td>앱 화면·소개서 글꼴 (jsDelivr CDN으로 불러옴)</td></tr>
+      <tr><td class="nm">@anthropic-ai/sdk 1.10.0</td><td>npmjs.com/package/@anthropic-ai/sdk · Apache-2.0 (설치 패키지 기준)</td><td>AI 서버 함수 api/extract.js의 Claude 호출</td></tr>
+      <tr><td class="nm">zod 4.6.7</td><td>npmjs.com/package/zod · MIT</td><td>AI 출력 형식(JSON 스키마) 고정</td></tr>
+      <tr><td class="nm">템플릿 · UI 키트</td><td>사용하지 않음 (토스 공개 디자인 원칙 글만 참고, 로고·서체·색·UI 키트 미사용)</td><td>화면 설계 원칙 (화면은 직접 제작)</td></tr>
+      <tr><td class="grp" rowspan="6">외부 데이터 · API</td><td class="nm">Anthropic Claude API</td><td>platform.claude.com · Anthropic 상용 이용약관</td><td>공고 사진·글 읽기 (Vercel 서버 함수에서 호출)</td></tr>
+      <tr><td class="nm">Microsoft Clarity</td><td>clarity.microsoft.com · Microsoft 서비스 약관·개인정보처리방침 (쿠키 사용, 기록은 Microsoft 서버)</td><td>체험 주소(munteok-open)에서만, 동의한 사람의 화면 사용 기록(누른 곳·스크롤). 입력값·계산 금액은 가림. 제출 주소에서는 꺼 둠</td></tr>
+      <tr><td class="nm">법령 · 고시 원문</td><td>국가법령정보센터 law.go.kr · 저작권법 제7조의 보호받지 못하는 저작물 · 2026. 11. 20. 확인</td><td>규칙표 rules.json 기준값: 소득세법, 국민건강보험법령, 구직자취업촉진법령, 국민연금법, 노인장기요양보험법·고용보험법·보험료징수법 시행령, 근로기준법, 최저임금·기준 중위소득 고시 (조문 번호는 규칙표에 기록)</td></tr>
+      <tr><td class="nm">정부 안내 자료</td><td>moel.go.kr(구직촉진수당 금액, 주휴 질의회시) · nhis.or.kr(피부양자 인정기준) · korea.kr(부양가족 공제, 세제개편안) · 각 누리집 이용조건</td><td>규칙표 출처 링크, 화면 ‘계산 근거와 출처’</td></tr>
+      <tr><td class="nm">통계</td><td>국가데이터처 근로형태별 부가조사 브리핑(korea.kr, 2026. 10. 21., 공공누리 제1유형) · 고용노동부 보도자료(2026. 4. 28.) · 기획 참고: 한국조세재정연구원 보고서(2025. 12.), 정책브리핑 예산안(2026. 9. 4.)</td><td>소개서 01장 통계, 기획 근거</td></tr>
+      <tr><td class="nm">가상 공고</td><td>팀이 직접 작성(예시 3건, 시험용 5건) · 실제 개인정보 없음</td><td>앱 예시, AI 추출 시험</td></tr>
+      <tr><td class="grp" rowspan="6">AI 모델 · 개발 도구</td><td class="nm">Claude Opus 5.5</td><td>Anthropic · API 이용약관 · 모델 ID claude-opus-5-5</td><td>서비스: 공고 조건 추출 (effort low, 구조화 출력)</td></tr>
+      <tr><td class="nm">Claude Fable 5.2</td><td>Anthropic · 이용약관 · 모델 ID claude-fable-5-2 (Claude Code에서)</td><td>기획: 주제 검토, 기획서·기획 문서 초안 검토, 디자인 시안 조사 (11. 19.~22.)</td></tr>
+      <tr><td class="nm">Claude Code</td><td>Anthropic · 이용약관</td><td>개발: 법령 원문 조사, 계산 엔진·화면·시험 코드, 화면 시안, 문서·소개서 초안</td></tr>
+      <tr><td class="nm">매니패스트</td><td>AI 기획 문서 도구 · 서비스 이용약관</td><td>기획: 요구사항·기능명세·유저플로우·와이어프레임 초안</td></tr>
+      <tr><td class="nm">Vercel · GitHub Pages</td><td>vercel.com · pages.github.com · 각 서비스 약관</td><td>배포: 화면과 AI 서버 함수(Vercel), 정적 사본(GitHub Pages)</td></tr>
+      <tr><td class="nm">헤드리스 Chrome · ffmpeg</td><td>google.com/chrome · ffmpeg.org (LGPL/GPL)</td><td>화면 캡처, 첫 화면 배경 영상(코드로 그린 장면) 녹화·인코딩, 소개서 PDF 변환</td></tr>
+    </table>
+    <p class="xs" style="margin-top:6px">AI와 팀의 역할·검증 과정은 과제 제출서 「AI 활용내역」에 적었어요</p>
+  </div>
+  <div class="pno">13</div>
+</section>
+
+<script>
+// 01장 그래프: 카페 예시(가상)의 주 1~30시간 한 달 남는 돈(1~6월). 값은 munteok/js/engine.js의 searchAlternatives 결과
+(function () {
+  const net = [45212, 90424, 135636, 180848, 226060, 271271, 316484, 361695, 406908, 452119, 497331, 542543, 587755, 632967, 741406, 790832, 840260, 842783, 837463, 832143, 826823, 821503, 816183, 810863, 805543, 800223, 794903, 789583, 833384, 882810];
+  const svg = document.getElementById('dip');
+  const W = 520, H = 262, L = 40, R = 6, T = 40, B = 26;
+  const max = 1000000;
+  const bw = (W - L - R) / net.length;
+  const y = (v) => T + (H - T - B) * (1 - v / max);
+  let s = '';
+  // 덜 남는 구간 배경
+  s += `<rect x="${L + 18 * bw}" y="${T - 6}" width="${11 * bw}" height="${H - T - B + 6}" fill="#FBE7E3" rx="6"/>`;
+  for (const g of [0, 300000, 600000, 900000]) {
+    s += `<line x1="${L}" x2="${W - R}" y1="${y(g)}" y2="${y(g)}" stroke="#E5E8EB" stroke-width="1"/>`;
+    s += `<text x="${L - 6}" y="${y(g) + 4}" font-size="10.5" fill="#4F5968" text-anchor="end">${g ? g / 10000 + '만' : '0'}</text>`;
+  }
+  net.forEach((v, i) => {
+    const h = i + 1;
+    const fill = h === 18 ? '#5B3DF5' : h === 24 ? '#C8382A' : h >= 19 && h <= 29 ? '#F09A8E' : h === 30 ? '#8F7BF8' : '#CFC6FD';
+    s += `<rect x="${(L + i * bw + 1.5).toFixed(1)}" y="${y(v).toFixed(1)}" width="${(bw - 3).toFixed(1)}" height="${(H - B - y(v)).toFixed(1)}" rx="2" fill="${fill}"/>`;
+  });
+  // 가로축 눈금
+  for (const h of [1, 15, 18, 24, 30]) {
+    s += `<text x="${(L + (h - 0.5) * bw).toFixed(1)}" y="${H - 8}" font-size="11" font-weight="${h === 18 || h === 24 ? 800 : 600}" fill="${h === 24 ? '#B42318' : h === 18 ? '#3D22BF' : '#4F5968'}" text-anchor="middle">${h}</text>`;
+  }
+  s += `<text x="${W - R}" y="${H - 8}" font-size="10.5" fill="#4F5968" text-anchor="end"></text>`;
+  // 설명
+  const cx = (h) => L + (h - 0.5) * bw;
+  s += `<line x1="${cx(18)}" y1="${y(842783) - 4}" x2="${cx(18)}" y2="${T - 18}" stroke="#3D22BF" stroke-width="1.2"/>`;
+  s += `<text x="${cx(18) - 4}" y="${T - 22}" font-size="12" font-weight="800" fill="#3D22BF" text-anchor="end">주 18시간 842,783원</text>`;
+  s += `<text x="${cx(24)}" y="${y(810863) + 16}" font-size="11.5" font-weight="800" fill="#fff" text-anchor="middle"></text>`;
+  s += `<line x1="${cx(24)}" y1="${y(810863) - 4}" x2="${cx(24)}" y2="${T + 2}" stroke="#B42318" stroke-width="1.2"/>`;
+  s += `<text x="${cx(24)}" y="${T - 4}" font-size="12" font-weight="800" fill="#B42318" text-anchor="middle">받은 제안 주 24시간 810,863원</text>`;
+  s += `<text x="${cx(30) + 4}" y="${y(882810) - 8}" font-size="11" font-weight="700" fill="#3D22BF" text-anchor="end">주 30시간: 수당 끝</text>`;
+  s += `<text x="${L}" y="12" font-size="11" fill="#4F5968">한 달 남는 돈(원)</text>`;
+  s += `<text x="${W - R}" y="12" font-size="11" fill="#4F5968" text-anchor="end">주 근무시간 →</text>`;
+  svg.innerHTML = s;
+})();
+</script>
+</body>
+</html>
