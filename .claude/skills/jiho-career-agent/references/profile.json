@@ -1,0 +1,221 @@
+{
+  "version": "2026-11-24",
+  "person": {
+    "name": "김지호",
+    "location": "대전",
+    "github": "https://github.com/JIHOSW/jiho-agent",
+    "hackathon_repo": "https://github.com/JIHOSW/Hackathon",
+    "contact_note": "전화번호·이메일·생년월일·상세 주소는 이 자료에 없다. 필요하면 사용자에게 묻고, 공개 HTML에는 넣지 않는다."
+  },
+  "sources": {
+    "conversation": "스킬 제작 때 사용자가 직접 답한 경력 문답, 해커톤 역할·Clarity 관찰 답변",
+    "resume": "사용자 제공 이력서_20261115.pdf 및 tmp/resume_build/content.portfolio.json에서 옮긴 이력 (원본 PDF는 이 저장소에 없음)",
+    "personal": "https://github.com/JIHOSW/jiho-agent",
+    "hackathon": "https://github.com/JIHOSW/Hackathon (제출 태그 submit-2026-11-23, 커밋 8c04d09)"
+  },
+  "facts": {
+    "work-nn": {
+      "text": "엔엔소프트 솔루션지원팀 사원, 2024.05~2024.10. HANDY 그룹웨어 기술지원, Linux 환경 설치, 서버 점검, 고객 문의 대응과 운영 오류 수정. 저장공간·자원 사용량·오류 로그 확인 및 누적 로그 정리.",
+      "sources": ["conversation", "resume"],
+      "limit": "특정 고객 장애의 원인·해결 시간·재발률 수치는 확인되지 않았다."
+    },
+    "work-oracle": {
+      "text": "엔엔소프트 이력에 Oracle DB 설치·운영이 기재되어 있다.",
+      "sources": ["resume"],
+      "limit": "SQL 튜닝·DBA 전문성·구체적인 장애 복구 경험은 확인되지 않았다."
+    },
+    "work-iris": {
+      "text": "아이리스닷넷 프로젝트영업팀 대리(계약직), 이력서상 2025.09~2026.02. 국립문화유산연구원·지식이음 홈페이지 기능 및 UI·UX 고도화, 유지보수 사업 참여. 주 사용자는 직원과 관련 전공자.",
+      "sources": ["conversation", "resume"],
+      "limit": "공식 PM·PL 총괄이나 서비스 전체 단독 개발로 표현하지 않는다. 재직 월수는 사용자 설명과 차이가 있어 기간 합산을 보류한다."
+    },
+    "work-planning": {
+      "text": "RFP 분석, 제안서 작성, 기관 담당자와의 기능회의, 회의록, 화면설계서·메뉴구조도 등 산출물 작성. 유사 공공기관 UI·UX 자료를 비교해 아이디어 제안.",
+      "sources": ["conversation", "resume"],
+      "limit": "실제로 벤치마킹한 특정 기관·메뉴·화면은 미확인이다. 인터넷 조사 사례를 본인 실적으로 넣지 않는다."
+    },
+    "work-migration": {
+      "text": "NAS에서 클라우드 문서 시스템으로 이전하는 사업에서 결과 점검 및 확인사항 개발자 전달.",
+      "sources": ["conversation"],
+      "limit": "클라우드 인프라 설계·구축·서버 이전 실행을 직접 맡았다는 뜻이 아니다."
+    },
+    "work-training": {
+      "text": "44장 교육자료와 발표 대본을 직접 작성하고 전국 지방연구소를 방문해 약 300명의 이용자에게 대면 교육·기능 시연. 드라이브 설치·구조, 폴더 구조, 파일 등록·생성·저장, 문서 이관·영구보존 설명.",
+      "sources": ["conversation", "resume", "personal"],
+      "limit": "약 300명은 교육 대상 규모다. 활성 사용자 수·AI 도입 고객 수가 아니다. 44장은 슬라이드 수이며 교육 횟수가 아니다."
+    },
+    "work-feedback": {
+      "text": "복잡한 이관·영구보존 업무를 새 시스템에서 처리하는 데 어려움을 겪는 사용자를 교육. 교육 후 앞으로 더 편리해지겠다는 정성적 의견. 쏟아지는 질문을 기록해 개발자들과 접근 편의성 개선 회의 진행.",
+      "sources": ["conversation"],
+      "limit": "만족도·시간 절감·문의 감소·정착률은 측정되지 않았다. 긍정적 기대를 실제 이용 성과로 바꾸지 않는다."
+    },
+    "work-qa": {
+      "text": "테스트 이슈를 Excel과 오류 화면 캡처 PPT로 정리해 PM·개발자와 공유하고 수정 과정에 참여.",
+      "sources": ["resume", "personal"],
+      "limit": "전담 QA 리드·품질 지표 개선 수치는 미확인이다."
+    },
+    "motivation": {
+      "text": "고객 요청 정리, 제안서 디자인, 보고자료 등 반복 업무와 문서 작업에 시간이 많이 들고 현장에 AI 활용 여지가 남아 있음을 체감해 AI 공부를 시작.",
+      "sources": ["conversation"],
+      "limit": "실제 회사에 AI를 도입하거나 업무 시간을 절감한 실적으로 쓰지 않는다."
+    },
+    "career-direction": {
+      "text": "대덕인재개발원 과정 때부터 프레젠테이션·기술지원·의사소통에 강점을 느껴 그 방향의 IT 직무를 원했다. 학위·자격이 없어 먼저 엔지니어로 입사했고 취업 후 공부와 학위를 병행해 원하는 분야로 옮겼다.",
+      "sources": ["conversation"],
+      "limit": "경력 방향을 자연스럽게 설명할 때만 쓴다. 자기비하·퇴사 해명으로 쓰지 않는다."
+    },
+    "education": {
+      "text": "대덕인재개발원 풀스택 개발자 과정 2023.07~2024.02 (Java·JSP·Spring·Oracle·MySQL·전자정부 표준 프레임워크). 컴퓨터네트워크 전문학사 2026.02 졸업. SQLD(2024.12), ADsP(2025.03), 네트워크관리사 2급(2025.05).",
+      "sources": ["resume"],
+      "limit": "학습 기술을 상용 서비스 개발 경력으로 표현하지 않는다."
+    },
+    "ax-study": {
+      "text": "CJ올리브네트웍스 L.L.M Academy AX 과정 2026.10 시작, 2026-11-24 기준 수강 중.",
+      "sources": ["resume", "personal"],
+      "limit": "종료 예정월이 자료마다 2027.01/2027.02로 다르다. 수료 시점을 쓰기 전에 사용자에게 확인한다."
+    },
+    "project-onboarding": {
+      "text": "고객 온보딩 AI 에이전트 개인 프로젝트. AI를 활용해 기획·설계·구현·검증을 혼자 진행. Next.js·TypeScript·Gemini API. LLM이 13개 도구를 골라 진단, 기술 문제 확인, 안내, 교육 계획, 첫 활용 목표까지 연결. 설정 변경·고객 메시지·개발 이슈 등록은 사람 승인.",
+      "sources": ["conversation", "personal"],
+      "limit": "가상 고객·제품·데이터. 외부 CRM·메일·업무 시스템 미연동. 공개 데모는 저장한 실행 기록 재생이며 실시간 AI 호출이 아니다."
+    },
+    "project-onboarding-check": {
+      "text": "세 가상 고객 시나리오 실행 결과 확인. 교육 계획·첫 활용 목표 없이 보고서가 먼저 작성되는 경우를 발견해 첫 보고서 제출을 반려하고 누락 이유 확인과 보완을 유도. 조치 뒤 재확인과 고객 회신 확인 흐름 점검.",
+      "sources": ["personal"],
+      "limit": "모든 누락을 원천 차단하거나 실고객 문제 해결을 보장하는 시스템이 아니다."
+    },
+    "project-ticket": {
+      "text": "기술지원 티켓 에이전트 개인 프로젝트. HTML·JavaScript로 문의 유형·우선순위, 고객 기록·KB 조회, 답변 초안과 사람 승인, 개발 이슈 전달, 해결 내용 KB 환류 흐름 구현.",
+      "sources": ["conversation", "personal"],
+      "limit": "가상 데이터 기반 브라우저 규칙 시연이다. LLM·실제 메일·티켓 시스템 연동은 없다."
+    },
+    "project-blog": {
+      "text": "Claude Code 기반 AI 블로그 자동화 개인 프로젝트. 동향 조사·분석 스킬 2개, 자료 수집·출처 정리·초안·검수 흐름. 분석 글 2편과 동향 요약 1편, 버전별 검수 기록. 출처 번호와 원문 불일치, 초안·최종 단계의 상충 기준을 점검해 출처 대조와 단계별 검수로 보완.",
+      "sources": ["personal"],
+      "limit": "직접 실행하는 업무 스킬이며 예약 수집·블로그 자동 게시가 아니다. 최종 발행 결정·게시는 사람이 한다."
+    },
+    "project-hooks": {
+      "text": "블로그 프로젝트에 UserPromptSubmit·PreToolUse·Stop 훅을 구성해 세션·도구 이벤트·시간·토큰 사용 기록을 JSONL로 수집. 별도 로컬 대시보드에서 로그 연결 시 실제 기록 확인.",
+      "sources": ["personal"],
+      "limit": "대시보드 기본 시간·토큰은 예시다. MCP 서버 제작·Claude Team 관리자 운영 경험과 다르다."
+    },
+    "hackathon-role": {
+      "text": "해커톤 팀 프로젝트 한끗의 팀장(팀명 AXPO, 4명). 매니페스트 AI로 PRD·기능명세서·와이어프레임을 마련하고 팀 개발 기준을 정리. 소개서상 구조설계 및 백엔드 지원 담당. 개발과 테스트 후 해커톤 출품.",
+      "sources": ["conversation", "hackathon"],
+      "limit": "팀 프로젝트이며 전체 단독 개발이 아니다. 매니페스트는 사용자 표기(저장소는 매니패스트). 수상·순위는 미확인이다."
+    },
+    "hackathon-architecture": {
+      "text": "한끗은 일자리의 근무 조건과 지원 변화를 비교하는 웹 서비스. HTML·CSS·JavaScript, Vercel 서버 함수, Claude API. AI는 공고 글·사진의 근무 조건을 추출하고 판정·계산은 규칙표와 코드로 분리.",
+      "sources": ["hackathon"],
+      "limit": "공식 법률·금융 자문 서비스가 아니며 모든 제도를 검증한 것이 아니다. 기술 구성은 팀 결과물의 구조이지 각 코드를 혼자 작성했다는 증거가 아니다."
+    },
+    "hackathon-ux": {
+      "text": "Microsoft Clarity에서 미스클릭과 뒤로가기 반복 사용을 관찰. 시작 화면으로 바로 갈 수 있는 홈 버튼 추가. 작동하는 요소로 오해해 클릭하던 장식 모션그래픽 삭제. 이후 UI·UX 개선 및 테스트 수행.",
+      "sources": ["conversation", "hackathon"],
+      "limit": "구체적인 관찰·수정은 사용자 직접 설명이 근거다(저장소에는 동의 기반 Clarity 연동 코드만 확인). 개선 전후 수치는 미측정. 모든 모션을 삭제했다는 뜻이 아니다."
+    },
+    "hackathon-tests": {
+      "text": "제출 README에 계산 엔진 기대값 시험 172건과 가상 공고 8건 AI 추출 시험 기록이 있다. 제출 태그의 계산 엔진 시험 172건은 내려받아 실행하면 통과한다.",
+      "sources": ["hackathon"],
+      "limit": "팀 결과물 시험이며 본인이 172건을 모두 작성했다는 뜻이 아니다. AI 추출 실제 API 시험은 재실행하지 않았다. 가상 8건 일치는 일반 정확도 100%가 아니다."
+    }
+  },
+  "experience": [
+    {
+      "period": "2025.09 – 2026.02 (이력서 기준)",
+      "org": "아이리스닷넷",
+      "title": "프로젝트영업팀 대리 (계약직)",
+      "points": [
+        "국립문화유산연구원·지식이음 홈페이지 기능 및 UI·UX 고도화, 유지보수 사업 참여",
+        "RFP 분석, 제안서 작성, 기관 담당자 기능회의, 회의록·화면설계서·메뉴구조도 작성",
+        "44장 교육자료와 발표 대본을 작성해 전국 지방연구소 이용자 약 300명에게 대면 교육·기능 시연",
+        "교육 후 받은 질문을 기록해 개발자들과 사용 편의성 논의, 테스트 이슈를 Excel·캡처 PPT로 정리해 공유"
+      ],
+      "evidence": ["work-iris", "work-planning", "work-training", "work-feedback", "work-qa"]
+    },
+    {
+      "period": "2024.05 – 2024.10",
+      "org": "엔엔소프트",
+      "title": "솔루션지원팀 사원",
+      "points": [
+        "HANDY 그룹웨어 기술지원, Linux 환경 설치와 서버 점검",
+        "고객 문의 대응과 운영 오류 수정, 저장공간·자원 사용량·오류 로그 확인과 누적 로그 정리",
+        "Oracle DB 설치·운영 업무 수행"
+      ],
+      "evidence": ["work-nn", "work-oracle"]
+    }
+  ],
+  "education": [
+    "CJ올리브네트웍스 L.L.M Academy AX 과정 · 2026.10 – 수강 중",
+    "컴퓨터네트워크 전문학사 · 2026.02 졸업",
+    "대덕인재개발원 풀스택 개발자 과정 · 2023.07 – 2024.02",
+    "SQLD(2024.12) · ADsP(2025.03) · 네트워크관리사 2급(2025.05)"
+  ],
+  "projects": {
+    "project-onboarding": {
+      "title": "고객 온보딩 AI 에이전트",
+      "kind": "개인 프로젝트",
+      "role": "기획·설계·AI를 활용한 구현·실행 검증을 혼자 진행",
+      "stack": "Next.js · TypeScript · Gemini API",
+      "scope_note": "가상 고객·제품·데이터로 만든 포트폴리오입니다. 외부 CRM·메일·업무 시스템과 연결하지 않았고, 공개 데모는 실제 실행을 저장한 기록을 재생합니다(실시간 AI 호출 아님).",
+      "flow": ["고객 정보 조회", "설정 진단·로그 확인", "승인 후 조치·안내", "교육 계획", "첫 활용 목표", "보고서 제출 검사"],
+      "links": [
+        {"label": "시연(저장 기록 재생)", "url": "https://jihosw.github.io/jiho-agent/onboarding-agent/"},
+        {"label": "소스", "url": "https://github.com/JIHOSW/jiho-agent/tree/main/%EA%B3%A0%EA%B0%9D%20%EC%98%A8%EB%B3%B4%EB%94%A9%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4"}
+      ],
+      "evidence": ["project-onboarding", "project-onboarding-check"],
+      "source_files": ["고객 온보딩 에이전트 포트폴리오/README.md", "고객 온보딩 에이전트 포트폴리오/src/lib/agent.ts", "고객 온보딩 에이전트 포트폴리오/src/lib/tools.ts", "고객 온보딩 에이전트 포트폴리오/public/replays/"]
+    },
+    "project-ticket": {
+      "title": "기술지원 티켓 에이전트",
+      "kind": "개인 프로젝트",
+      "role": "기획·설계·AI를 활용한 구현·검증을 혼자 진행",
+      "stack": "HTML · JavaScript (브라우저 규칙 기반)",
+      "scope_note": "가상 데이터로 브라우저 안에서 동작하는 규칙 기반 시연입니다. LLM, 실제 메일, 티켓 시스템과 연결하지 않았습니다.",
+      "flow": ["문의 분류·우선순위", "고객 기록·KB 조회", "답변 초안", "사람 승인", "개발 이슈 전달", "해결 내용 KB 환류"],
+      "links": [
+        {"label": "시연", "url": "https://jihosw.github.io/jiho-agent/support-agent/"},
+        {"label": "소스", "url": "https://github.com/JIHOSW/jiho-agent/tree/main/%EA%B8%B0%EC%88%A0%EC%A7%80%EC%9B%90%20%ED%8B%B0%EC%BC%93%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8"}
+      ],
+      "evidence": ["project-ticket"],
+      "source_files": ["기술지원 티켓 에이전트/README.md"]
+    },
+    "project-blog": {
+      "title": "Claude Code 블로그 자동화 스킬과 실행 기록 훅",
+      "kind": "개인 프로젝트",
+      "role": "스킬·검수 기준·훅 구성을 AI를 활용해 혼자 진행",
+      "stack": "Claude Code Skills · Hooks(UserPromptSubmit·PreToolUse·Stop) · Node.js",
+      "scope_note": "사람이 직접 실행하는 업무 스킬입니다. 예약 수집이나 블로그 자동 게시는 하지 않고, 발행 결정은 사람이 합니다. 대시보드의 기본 시간·토큰 값은 예시이며 기록 파일을 연결해야 실제 값이 나옵니다.",
+      "flow": ["자료 수집", "출처 정리", "초안", "단계별 검수", "실행 기록(JSONL)", "대시보드 확인"],
+      "links": [
+        {"label": "소스", "url": "https://github.com/JIHOSW/jiho-agent/tree/main/ai%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%9E%90%EB%8F%99%ED%99%94%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8"},
+        {"label": "관제 대시보드", "url": "https://jihosw.github.io/jiho-agent/agent-switchboard/"}
+      ],
+      "evidence": ["project-blog", "project-hooks"],
+      "source_files": ["ai 블로그 자동화 에이전트/.claude/skills/blog-trend/SKILL.md", "ai 블로그 자동화 에이전트/.claude/skills/blog-analysis/SKILL.md", "ai 블로그 자동화 에이전트/.claude/settings.json", "ai 블로그 자동화 에이전트/.claude/hooks/trace.mjs", "에이전트 팀 관제 대시보드/serve.mjs"]
+    },
+    "project-hankkeut": {
+      "title": "한끗 · 해커톤 팀 프로젝트",
+      "kind": "팀 프로젝트 (4명, 팀장)",
+      "role": "팀장. 매니페스트 AI로 PRD·기능명세서·와이어프레임 정리, 구조설계와 백엔드 지원",
+      "stack": "HTML · CSS · JavaScript · Vercel 서버 함수 · Claude API",
+      "scope_note": "팀이 함께 만든 결과물이며 모든 코드를 혼자 작성하지 않았습니다. 법률·금융 자문 서비스가 아니고, 계산 규칙은 팀이 원문을 확인한 범위에 한정됩니다. 제출 시점 기준은 태그 submit-2026-11-23입니다.",
+      "flow": ["공고 글·사진 입력", "AI가 근무 조건 추출", "규칙표·코드로 판정·계산", "변화와 준비사항 안내"],
+      "links": [
+        {"label": "제출 시점 소스", "url": "https://github.com/JIHOSW/Hackathon/tree/submit-2026-11-23"},
+        {"label": "앱", "url": "https://jihosw.github.io/Hackathon/"}
+      ],
+      "evidence": ["hackathon-role", "hackathon-architecture", "hackathon-ux", "hackathon-tests"],
+      "source_files": ["README.md", "기획/소개서/원고.md", "기획/AI_활용내역.md", "munteok/js/app.js", "munteok/tests/run.mjs"]
+    }
+  },
+  "unresolved": [
+    "아이리스닷넷 재직 기간: 이력서 2025.09~2026.02 대 사용자 설명(계약 6개월+1개월 연장). 정확한 날짜 확인 전 합산하지 않는다.",
+    "AX 과정 수료 예정월: 2027.02(PDF) 대 2027.01(README). 필요할 때 사용자에게 확인한다.",
+    "Git 터미널 직접 사용 수준, 해외 출장 결격 여부, 입사 가능일, 대전 외 근무 가능 여부, 영어 문서 독해 수준은 미확인이다.",
+    "Claude Team 관리자, 직접 만든 MCP 서버, 반도체 장비 제어, 상용 운영 AI 성과는 확인되지 않았다."
+  ],
+  "repo_discrepancies": [
+    "jiho-agent README의 경력 표에는 'PL·PMO 관련 실무', 'Linux 서버 관리·구축·고도화'처럼 프로필보다 넓은 표현이 있다. 지원서에는 프로필의 좁은 표현을 쓴다."
+  ]
+}
