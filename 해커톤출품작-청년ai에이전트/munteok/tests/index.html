@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>한끗 규칙 엔진 테스트</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 24px; color: #1f2933; }
+  h1 { font-size: 20px; }
+  .pass { color: #0a6352; }
+  .fail { color: #b42318; font-weight: 700; }
+  li { margin: 4px 0; }
+  code { background: #f1f1ee; padding: 1px 4px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<h1>한끗 규칙 엔진 테스트</h1>
+<p id="summary">실행 중</p>
+<ul id="list"></ul>
+<script type="module">
+  import { runTests } from './engine.test.js';
+  const rules = await fetch('../data/rules.json').then((r) => r.json());
+  const results = runTests(rules);
+  const failed = results.filter((r) => !r.pass);
+  window.__testResults = { total: results.length, failed: failed.map((f) => ({ name: f.name, actual: f.actual, expected: f.expected })) };
+  document.getElementById('summary').textContent = `전체 ${results.length}건, 통과 ${results.length - failed.length}건, 실패 ${failed.length}건 (규칙표 ${rules.version})`;
+  document.getElementById('summary').className = failed.length ? 'fail' : 'pass';
+  const list = document.getElementById('list');
+  for (const r of results) {
+    const li = document.createElement('li');
+    li.className = r.pass ? 'pass' : 'fail';
+    li.textContent = (r.pass ? '통과  ' : '실패  ') + r.name + (r.pass ? '' : `  실제 ${JSON.stringify(r.actual)}, 기대 ${JSON.stringify(r.expected)}`);
+    list.appendChild(li);
+  }
+</script>
+</body>
+</html>

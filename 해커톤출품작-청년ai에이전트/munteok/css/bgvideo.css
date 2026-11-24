@@ -1,0 +1,32 @@
+/* PC 첫 화면 배경 영상 (docs/intent/hankkeut-bg-video.md)
+   js/bgvideo.js가 1024px 이상 첫 화면에서만 .bgv를 넣고 body에 .bgv-on을 붙인다. 휴대폰에는 아무것도 없다.
+   '움직임 0.3초 이하' 규칙의 예외는 이 영상 하나뿐이다. 영상이 처음 나타날 때만 0.3초에 걸쳐 흐려졌다 선명해진다. */
+@media (min-width: 1024px) {
+  .bgv { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .3s linear; }
+  .bgv.on { opacity: 1; }
+  /* 띠 모양 창 두 개. 자리·크기와 그 안 장면(영상·그림)의 위치는 js/bgvideo.js가 첫 화면의 위·아래 빈칸을 재서 정한다.
+     위 띠(공고 입력 칸·로고)는 위쪽 막대와 제목 사이 빈칸 가운데에, 아래 띠(영수증·한 줄 문구)는 내용 아래 빈칸 가운데에 온다.
+     아래 띠의 캔버스는 같은 영상의 그 부분을 옮겨 그린 것이다. 영상 바탕이 앱 바탕(#F2F4F6)과 같아 창 가장자리는 보이지 않는다. */
+  .bgv-band { position: absolute; overflow: hidden; }
+  .bgv-band > img, .bgv-band > video { position: absolute; display: block; max-width: none; max-height: none; }
+  .bgv-band > canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+  /* 아주 옅은 막: 영상이 첫 화면 내용보다 한 걸음 뒤로 물러나 보이게만 한다(띠는 글 뒤로 들어가지 않아 글자 대비와는 상관없다) */
+  .bgv::after { content: ""; position: absolute; inset: 0; background: rgba(242, 244, 246, .12); }
+
+  body.bgv-on[data-step="start"] .nav { background: transparent; }
+  body.bgv-on[data-step="start"] .app { position: relative; z-index: 1; }
+  /* 왼쪽 글 뒤의 막: 바탕과 같은 색이라 보이지 않는다. 혹시 영상이 글 뒤로 지나가도 글자 대비 4.5:1 이상을 지키는 안전판.
+     시작 화면 그리드의 왼쪽 칸(1~6줄) 전체를 덮는다. 띠는 이 막보다 바깥(js/bgvideo.js의 GAP)에 놓인다.
+     절대 위치 요소는 끝 선을 비워 두면 그리드 끝까지 늘어나 창 폭 1024~1143px에서 가로로 넘치므로, 끝 선(2)을 꼭 적는다. */
+  body.bgv-on[data-step="start"] .app::before { content: ""; position: absolute; grid-column: 1 / 2; grid-row: 1 / -1; inset: -8px -32px -8px; background: rgba(242, 244, 246, .9); border-radius: 24px; z-index: -1; pointer-events: none; }
+
+  /* 5초 넘게 저절로 움직이므로 '움직임 멈춤' 버튼(app.js)을 첫 화면에도 보인다. 1366px 이상은 다른 화면과 같은 자리(틀 바깥 오른쪽 여백),
+     그보다 좁으면 위쪽 막대 줄의 오른쪽 끝 */
+  body.bgv-on[data-step="start"] .motion-btn { display: inline-flex; }
+}
+@media (min-width: 1024px) and (max-width: 1365.98px) {
+  body.bgv-on[data-step="start"] .motion-btn { left: auto; right: max(8px, calc((100% - 1080px) / 2 + 8px)); translate: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bgv { transition: none; }
+}

@@ -1,0 +1,7 @@
+.vercel
+# build.sh가 munteok에서 복사해 만드는 파일. 원본은 munteok에 있다.
+/index.html
+/css
+/js
+/data
+/media
