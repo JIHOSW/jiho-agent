@@ -66,19 +66,39 @@ html[data-motion="off"] .slide,html[data-motion="off"] .slide.active{transition:
 .btn.ghost{background:#fff;color:var(--blue-d);border:2px solid var(--blue-l);box-shadow:none}
 
 /* ---------- 표지 ---------- */
-.cover{background:#fff}
-.cover .band{position:absolute;left:0;top:0;right:0;height:400px;background:var(--blue)}
+.cover{background:#F6F7FB;overflow:hidden}
+/* 정적인 배경: 옅은 격자와 한쪽 색 번짐 (움직이지 않음, 클릭 불가) */
+.cover .grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(24,32,47,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(24,32,47,.045) 1px,transparent 1px);background-size:80px 80px;-webkit-mask-image:radial-gradient(ellipse at 30% 40%,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse at 30% 40%,#000 30%,transparent 75%)}
+.cover .glow{position:absolute;right:-260px;top:-260px;width:1100px;height:1100px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,color-mix(in srgb,var(--blue) 26%,transparent) 0%,color-mix(in srgb,var(--blue) 8%,transparent) 45%,transparent 70%)}
+.cover .top{position:absolute;left:110px;right:110px;top:72px;display:flex;align-items:center;justify-content:space-between;font-size:20px;font-weight:700;letter-spacing:.14em;color:var(--ink3)}
+.cover .top .tag{letter-spacing:0;font-size:20px;color:var(--blue-d);background:#fff;border:1px solid var(--blue-l);padding:10px 20px;border-radius:999px}
+.cover .main{position:absolute;left:110px;top:255px;width:920px}
+.cover .kicker{font-size:22px;font-weight:800;letter-spacing:.12em;color:var(--blue);text-transform:uppercase}
+.cover h1{font-size:98px;line-height:1.12;font-weight:800;letter-spacing:-.045em;margin:26px 0 34px;color:var(--ink)}
+.cover h1 em{font-style:normal;background:linear-gradient(transparent 62%,var(--blue-l) 62%);padding:0 4px}
+.cover .kw{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:80px}
+.cover .kw span{font-size:21px;font-weight:700;color:var(--ink2);padding:10px 18px;border-radius:10px;background:rgba(255,255,255,.7);border:1px solid var(--line)}
+.cover .who{display:flex;align-items:center;gap:22px}
+.cover .who b{font-size:44px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;flex:none}
+.cover .who span{font-size:22px;color:var(--ink2);line-height:1.5;border-left:2px solid var(--line);padding-left:22px}
+/* 공고 업무 → 제 경험 연결: 순서대로 이어지는 것이 의미 있는 움직임 */
+.cover .match{position:absolute;right:110px;top:275px;width:690px;padding:44px 44px 36px;border-radius:32px;background:var(--ink);color:#fff;box-shadow:0 40px 90px rgba(24,32,47,.28)}
+.cover .match h2{font-size:20px;font-weight:700;letter-spacing:.1em;color:#9AA6BC;margin-bottom:26px;display:flex;justify-content:space-between}
+.cover .match ol{list-style:none}
+.cover .match li{display:grid;grid-template-columns:1fr 46px 1fr;align-items:center;padding:22px 0;border-top:1px solid rgba(255,255,255,.1)}
+.cover .match .d{font-size:23px;font-weight:700;line-height:1.35}
+.cover .match .m{font-size:20px;line-height:1.45;color:#C9D3E6}
+.cover .match .ln{height:2px;background:linear-gradient(90deg,#fff,var(--blue-l));transform-origin:left;margin:0 8px;position:relative}
+.cover .match .ln::after{content:"";position:absolute;right:-2px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--blue-l)}
+html[data-motion="on"] .slide.active .match .ln{animation:grow .7s var(--ease) both;animation-delay:calc(var(--k)*450ms + 900ms)}
+html[data-motion="on"] .slide.active .match .m{animation:fade .6s ease both;animation-delay:calc(var(--k)*450ms + 1250ms)}
+.cover .match small{display:block;margin-top:20px;font-size:16px;color:#8592AA}
+.cover .date{position:absolute;left:110px;right:110px;bottom:64px;display:flex;justify-content:space-between;font-size:20px;font-weight:600;color:var(--ink3)}
+
+/* 장식용 물결선(목차·마무리): 클릭 불가 */
 svg.wave{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .wave path{fill:none;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0}
 html[data-motion="on"] .slide.active .wave path{animation:draw 2.6s cubic-bezier(.6,0,.2,1) .2s both}
-.cover .logo{position:absolute;left:110px;top:70px;color:#fff;font-size:30px;font-weight:800;display:flex;gap:14px;align-items:center}
-.cover .logo i{width:44px;height:44px;border-radius:12px;background:#fff;color:var(--blue);display:grid;place-items:center;font-style:normal;font-size:22px}
-.cover .txt{position:absolute;left:110px;top:470px;width:1000px}
-.cover .kicker{font-size:34px;font-weight:700;color:var(--blue-d)}
-.cover h1{font-size:96px;line-height:1.2;font-weight:500;letter-spacing:-.03em;margin:18px 0 34px}
-.cover h1 b{font-weight:800}
-.cover p{font-size:32px;font-weight:600;line-height:1.5}
-.cover .date{position:absolute;right:110px;bottom:70px;font-size:28px;font-weight:600}
 
 /* ---------- 목차 ---------- */
 .toc{display:grid!important;grid-template-columns:760px 1fr;background:#fff}
@@ -233,11 +253,15 @@ html[data-motion="on"] .slide.active .tl::after{animation:grow 1.8s var(--ease) 
   .hd small{font-size:13px}.hd h2{font-size:23px}
   .back{height:40px;font-size:14px;padding:0 14px;margin-left:52px}
   .card{border-radius:16px}
-  .cover{height:auto;padding-bottom:40px!important}.cover .band{height:170px}
-  .cover .logo{position:relative;left:16px;top:24px;font-size:20px}.cover .logo i{width:32px;height:32px;font-size:16px}
-  .cover .txt{position:relative;left:auto;top:auto;width:auto;padding:120px 16px 0}
-  .cover .kicker{font-size:17px}.cover h1{font-size:40px;margin:10px 0 16px}.cover p{font-size:18px}
-  .cover .date{position:static;padding:16px 16px 0;font-size:16px}
+  .cover{height:auto;padding:24px 16px 32px!important}.cover .glow{width:520px;height:520px;right:-200px;top:-200px}
+  .cover .top{position:static;font-size:12px;flex-wrap:wrap;gap:8px}.cover .top .tag{font-size:13px;padding:6px 12px}
+  .cover .main{position:static;width:auto;margin-top:36px}.cover .kicker{font-size:13px}
+  .cover h1{font-size:36px;margin:12px 0 18px}.cover .kw{gap:8px;margin-bottom:28px}.cover .kw span{font-size:14px;padding:6px 10px}
+  .cover .who{flex-direction:column;align-items:flex-start;gap:6px}.cover .who b{font-size:26px}.cover .who span{font-size:14px;padding-left:0;border-left:0}
+  .cover .match{position:relative;right:auto;top:auto;width:auto;margin-top:28px;padding:22px;border-radius:20px}
+  .cover .match h2{font-size:12px;margin-bottom:10px}.cover .match li{grid-template-columns:1fr;gap:6px;padding:14px 0}
+  .cover .match .ln{display:none}.cover .match .d{font-size:16px}.cover .match .m{font-size:14px}.cover .match small{font-size:12px}
+  .cover .date{position:static;margin-top:20px;font-size:13px}
   .toc{display:block!important}.toc .l{padding:40px 16px}.toc .l h2{font-size:40px}.toc .l p{font-size:16px;margin-top:14px}
   .toc .r{padding:8px 16px 24px}.toc a{font-size:18px;gap:14px;padding:16px 4px}.toc a span{font-size:14px;width:26px}.toc a em{display:none}
   .why,.fit,.stats,.tl,.map,.pj{display:block}
@@ -277,7 +301,8 @@ html[data-motion="on"] .slide.active .tl::after{animation:grow 1.8s var(--ease) 
   .slide{position:relative;width:1920px;height:1080px;opacity:1!important;visibility:visible!important;transform:none!important;transition:none!important;page-break-after:always;break-after:page;overflow:hidden}
   [data-a]{opacity:1!important;animation:none!important}
   .wave path{stroke-dashoffset:0!important;animation:none!important}
-  .stat::after,.tl::after{animation:none!important;transform:none!important}
+  .stat::after,.tl::after,.match .ln{animation:none!important;transform:none!important}
+  .match .m{animation:none!important;opacity:1!important}
   .flow li{border-color:var(--blue-l)!important;transform:none!important;background:#fff!important}
   .flow .status{display:none}
   #nav,#bar,#ov,.skip,.back{display:none!important}

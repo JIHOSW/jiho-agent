@@ -507,7 +507,34 @@
       "skills-2",
       "projects-n"
     ],
-    "include_all_projects": true
+    "include_all_projects": true,
+    "cover": {
+      "kicker": "AX Engineer · Claude Code",
+      "headline": "현장의 반복 업무를\nClaude Code로 줄이겠습니다",
+      "highlight": "Claude Code",
+      "keywords": [
+        "견적·생산·품질 문서 자동화",
+        "Agent Skills·훅",
+        "내부 웹 도구",
+        "임직원 AI 활용 지원"
+      ],
+      "who": "솔루션 기술지원 · 공공 IT 사업 수행 · AI 에이전트 제작",
+      "match": [
+        {
+          "duty": "반복 업무 자동화",
+          "mine": "업무를 Claude Code 스킬 2개로 나누고 검수 단계를 둠"
+        },
+        {
+          "duty": "Skills·훅 제작",
+          "mine": "훅 3종으로 도구 사용·시간·토큰을 JSONL 기록"
+        },
+        {
+          "duty": "임직원 AI 활용 지원",
+          "mine": "교육자료 44장 작성, 이용자 약 300명 대면 교육"
+        }
+      ],
+      "match_note": "개인 프로젝트와 실무 경력 기준 · 범위는 각 프로젝트 장 참고"
+    }
   },
   "company": {
     "title": "스타랩에 대해 확인한 것",

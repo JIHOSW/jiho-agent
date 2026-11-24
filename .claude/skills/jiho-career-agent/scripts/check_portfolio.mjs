@@ -51,7 +51,7 @@ try {
     await wait(120);
     await page.screenshot({ path: path.join(outDir, `pc-${String(i + 1).padStart(2, '0')}.png`) });
     const o = await page.evaluate(() => { const s = document.querySelector('.slide.active'); const r = s.getBoundingClientRect();
-      return [...s.querySelectorAll('*')].some(el => { const b = el.getBoundingClientRect(); return b.width && (b.bottom > r.bottom + 2 || b.right > r.right + 2); }); });
+      return [...s.querySelectorAll('*')].some(el => { if (el.closest('[aria-hidden="true"]')) return false; const b = el.getBoundingClientRect(); return b.width && (b.bottom > r.bottom + 2 || b.right > r.right + 2); }); });
     if (o) overflow.push(i + 1);
   }
   rec('PC: 슬라이드 밖으로 넘치는 내용 없음', overflow.length === 0, overflow.length ? `넘침: ${overflow.join(', ')}장` : `${N}장 확인`);

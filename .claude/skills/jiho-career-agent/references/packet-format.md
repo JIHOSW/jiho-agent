@@ -23,7 +23,8 @@ brief는 한 지원 건의 전체 입력이다. Claude가 직접 쓰고, `script
 | 키 | 내용 |
 |---|---|
 | `accent` | `#RRGGBB` |
-| `hero` | `eyebrow`, `title`, `lead` |
+| `hero` | `eyebrow`, `title`, `lead` (lead는 '한눈에 보기' 장 첫 문장) |
+| `cover` | 표지: `kicker`, `headline`(\n 줄바꿈), `highlight`, `keywords`[3~4], `who`, `match`[{`duty`,`mine`}×3], `match_note`. 없으면 hero·fit으로 대신 채움 |
 | `flow` | 첫 화면 업무 흐름 모션: `title`, `caption`, `steps`[{`label`, `desc`, `say`}] (4~6단계). 단계는 차례로 강조될 뿐 클릭 대상이 아니다 |
 | `why` | `title`, `paragraphs`[] |
 | `fit` | [{`duty`, `experience`, `evidence`[]}] 공고 업무와 이어지는 경험 (gap은 넣지 않음) |

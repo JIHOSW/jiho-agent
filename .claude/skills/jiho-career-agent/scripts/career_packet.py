@@ -179,6 +179,10 @@ def portfolio_texts(brief: dict) -> list[tuple[str, str]]:
     for i, pr in enumerate(p.get("projects", [])):
         out.append((f"portfolio.projects[{i}]", " ".join([pr.get("headline", ""), pr.get("summary", "")] + pr.get("verify", []))))
     out.append(("portfolio.closing", p.get("closing", "")))
+    cov = p.get("cover") or {}
+    out.append(("portfolio.cover", " ".join([cov.get("kicker", ""), cov.get("headline", ""), cov.get("who", ""), cov.get("match_note", "")] + cov.get("keywords", []))))
+    for i, r in enumerate(cov.get("match", [])):
+        out.append((f"portfolio.cover.match[{i}]", r.get("duty", "") + " " + r.get("mine", "")))
     co = brief.get("company") or {}
     for i, x in enumerate(co.get("points", [])):
         out.append((f"company.points[{i}]", x))
@@ -388,13 +392,25 @@ def render_portfolio(brief: dict, profile: dict) -> str:
     S = []  # 장 목록: {title, cls, html} 또는 {title, sec, label, h, html, back, note}
 
     hero = p["hero"]
+    cov = p.get("cover") or {}
+    head_lines = [esc(x) for x in (cov.get("headline") or hero.get("title", "")).split("\n")]
+    hl_word = cov.get("highlight")
+    h1 = "<br>".join(head_lines)
+    if hl_word and esc(hl_word) in h1:
+        h1 = h1.replace(esc(hl_word), f"<em>{esc(hl_word)}</em>", 1)
+    kw = "".join(f"<span>{esc(k)}</span>" for k in cov.get("keywords", [])[:5])
+    rows = cov.get("match") or [{"duty": r.get("duty"), "mine": r.get("experience")} for r in p.get("fit", [])[:3]]
+    match = "".join(f'<li style="--k:{k}"><span class="d">{esc(r.get("duty"))}</span><span class="ln" aria-hidden="true"></span><span class="m">{esc(r.get("mine"))}</span></li>' for k, r in enumerate(rows[:3]))
     S.append({"title": "표지", "cls": "cover", "html": (
-        '<div class="band"></div>'
-        + wave("M -60 250 H 960 C 1100 250 1170 330 1170 470 V 650 C 1170 800 1260 890 1390 890 C 1520 890 1610 800 1610 650 V 330 C 1610 200 1690 130 1810 130 H 2000", mix(accent, "#000000", .25), uid="w-cover")
-        + '<div class="logo" data-a="fade"><i>J</i>JIHO KIM</div>'
-        + f'<div class="txt"><div class="kicker" data-a>{esc(hero.get("eyebrow"))}</div>'
-        + f'<h1 data-a><b>김지호</b><br>입사지원 포트폴리오</h1><p data-a>{esc(hero.get("title"))}</p></div>'
-        + f'<div class="date" data-a="fade">{esc(year_month)}</div>')})
+        '<div class="grid" aria-hidden="true"></div><div class="glow" aria-hidden="true"></div>'
+        + f'<div class="top" data-a="fade"><span>KIM JIHO · PORTFOLIO</span><span class="tag">{esc(company)} · {esc(role)}</span></div>'
+        + f'<div class="main"><div class="kicker" data-a>{esc(cov.get("kicker") or hero.get("eyebrow"))}</div>'
+        + f'<h1 data-a>{h1}</h1>'
+        + (f'<div class="kw" data-a>{kw}</div>' if kw else "")
+        + f'<div class="who" data-a><b>김지호</b><span>{esc(cov.get("who") or "기술지원 · IT 사업 수행 · AI 에이전트 제작")}</span></div></div>'
+        + (f'<div class="match" data-a="right"><h2><span>공고 상세요강</span><span>제 경험</span></h2><ol>{match}</ol>'
+           + (f'<small>{esc(cov.get("match_note"))}</small>' if cov.get("match_note") else "") + "</div>" if rows else "")
+        + f'<div class="date" data-a="fade"><span>{esc(year_month)}</span><span>github.com/JIHOSW/jiho-agent</span></div>')})
 
     toc_i = len(S)
     S.append(None)  # 목차는 장 번호가 정해진 뒤 채운다
