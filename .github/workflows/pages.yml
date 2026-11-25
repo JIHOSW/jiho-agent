@@ -11,6 +11,7 @@ on:
       - 'B2B 영업제안서 html 모션 ppt/**'
       - '기술지원 티켓 에이전트/**'
       - '포트폴리오 html 모션 ppt/**'
+      - 'apply/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -60,6 +61,11 @@ jobs:
           # 포트폴리오 모션 HTML(index.html + assets): 짧은 주소(portfolio)
           mkdir -p "$RUNNER_TEMP/jiho-pages/portfolio"
           cp -a "포트폴리오 html 모션 ppt/." "$RUNNER_TEMP/jiho-pages/portfolio/"
+          # 회사별 입사지원 포트폴리오(지원서 스킬의 publish 결과): apply/<회사-직무>/
+          if [ -d apply ]; then
+            mkdir -p "$RUNNER_TEMP/jiho-pages/apply"
+            cp -a "apply/." "$RUNNER_TEMP/jiho-pages/apply/"
+          fi
       - name: Upload presentation
         uses: actions/upload-pages-artifact@v4
         with:

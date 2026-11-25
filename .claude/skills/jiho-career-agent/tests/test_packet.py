@@ -193,6 +193,21 @@ class BuildTest(unittest.TestCase):
             self.assertIn(s["body"].strip(), txt)
 
 
+class PublishTest(unittest.TestCase):
+    def test_publish_copies_and_rejects_bad_slug(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            d = cp.build(EXAMPLE, Path(tmp) / "out", [])
+            with self.assertRaises(SystemExit):
+                cp.publish(d, "x", Path(tmp))  # 화면 검수 전
+            (d / "checks").mkdir()
+            (d / "checks" / "검수결과.md").write_text("ok", encoding="utf-8")
+            with self.assertRaises(SystemExit):
+                cp.publish(d, "Bad Slug!", Path(tmp))
+            dst = cp.publish(d, "stalab-ax-engineer", Path(tmp))
+            self.assertEqual(dst, Path(tmp) / "apply" / "stalab-ax-engineer" / "index.html")
+            self.assertTrue((d / "공개주소.txt").exists())
+
+
 class SkillFileTest(unittest.TestCase):
     def test_skill_frontmatter(self):
         text = (SKILL / "SKILL.md").read_text(encoding="utf-8")

@@ -90,11 +90,26 @@ node .claude/skills/jiho-career-agent/scripts/check_portfolio.mjs <만든 폴더
 - 스크린샷(`checks/pc-1440-first.png`, `checks/mobile-375-first.png` 등)을 Read로 직접 열어 보고, 본 것만 "시각 확인"이라고 보고한다. 고칠 것이 있으면 brief를 고쳐 새 버전으로 다시 빌드한다.
 - Playwright가 없는 환경이면 브라우저 검수를 하지 않았다고 분명히 보고한다.
 
+### 8-1. 공개 주소 만들기 (사용자가 매번 HTML과 GitHub URL을 함께 받기로 함)
+- 화면 검수를 통과한 포트폴리오만 공개한다. slug는 `회사영문-직무영문`(소문자·숫자·하이픈)로 정한다.
+
+```bash
+python3 .claude/skills/jiho-career-agent/scripts/career_packet.py publish <만든 폴더> --slug <company-role>
+```
+
+- `apply/<slug>/index.html`로 복사된다. 같은 slug는 최신 버전으로 바뀌고, 버전별 원본은 `applications/`에 남는다.
+- 공개 폴더에는 포트폴리오만 올린다. 자기소개서·공고분석·근거검토는 올리지 않는다.
+- 작업 브랜치에 커밋·푸시하고 main으로 PR을 만들어 합친다. 사용자가 공개 주소를 매번 바로 받기로 했기 때문이다. 합치면 `.github/workflows/pages.yml`이 배포한다.
+- 배포 작업(Actions)이 성공했는지 확인한 뒤 주소를 준다.
+  - 공개 주소: `https://jihosw.github.io/jiho-agent/apply/<slug>/`
+  - GitHub 폴더: `https://github.com/JIHOSW/jiho-agent/tree/main/apply/<slug>`
+  - 배포를 확인하지 못했으면 그렇게 말한다.
+
 ### 9. 보고
 채팅에 다음을 보여 준다.
 1. 이력서 제목과 **자기소개서 전문** (수정 설명만 주거나 일부 문단만 주지 않는다), 글자 수(공백 포함/제외)
 2. 채용 담당자 관점에서 고친 주요 내용 3~6개
-3. 만든 폴더와 파일 경로 (자기소개서.txt/.md, portfolio.html, 공고분석.md, 근거검토.md, 입력/)
+3. 만든 폴더와 파일 경로 (자기소개서.txt/.md, portfolio.html, 공고분석.md, 근거검토.md, 입력/), portfolio.html 첨부, 포트폴리오 공개 주소와 GitHub 폴더 주소
 4. 실행한 검사와 하지 못한 검사 (못 한 것은 완료라고 쓰지 않는다)
 5. 사용자에게 확인할 질문 묶음
 

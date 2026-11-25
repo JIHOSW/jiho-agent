@@ -396,6 +396,12 @@ def render_portfolio(brief: dict, profile: dict) -> str:
     head_lines = [esc(x) for x in (cov.get("headline") or hero.get("title", "")).split("\n")]
     hl_word = cov.get("highlight")
     h1 = "<br>".join(head_lines)
+    # 제목이 화면에서 3줄을 넘지 않을 때까지만 글자 크기를 줄인다(표지 폭 약 920px).
+    # 너비 추정: 한글은 글자당 약 1em, 영문·공백은 약 0.55em
+    widths = [sum(1.0 if ord(ch) > 0x2E80 else 0.55 for ch in html.unescape(x)) for x in head_lines]
+    head_px = 98
+    while head_px > 60 and sum(max(1, -(-int(w * head_px) // 920)) for w in widths) > 3:
+        head_px -= 2
     if hl_word and esc(hl_word) in h1:
         h1 = h1.replace(esc(hl_word), f"<em>{esc(hl_word)}</em>", 1)
     kw = "".join(f"<span>{esc(k)}</span>" for k in cov.get("keywords", [])[:5])
@@ -405,7 +411,7 @@ def render_portfolio(brief: dict, profile: dict) -> str:
         '<div class="grid" aria-hidden="true"></div><div class="glow" aria-hidden="true"></div>'
         + f'<div class="top" data-a="fade"><span>KIM JIHO · PORTFOLIO</span><span class="tag">{esc(company)} · {esc(role)}</span></div>'
         + f'<div class="main"><div class="kicker" data-a>{esc(cov.get("kicker") or hero.get("eyebrow"))}</div>'
-        + f'<h1 data-a>{h1}</h1>'
+        + f'<h1 data-a style="font-size:{head_px}px">{h1}</h1>'
         + (f'<div class="kw" data-a>{kw}</div>' if kw else "")
         + f'<div class="who" data-a><b>김지호</b><span>{esc(cov.get("who") or "기술지원 · IT 사업 수행 · AI 에이전트 제작")}</span></div></div>'
         + (f'<div class="match" data-a="right"><h2><span>공고 상세요강</span><span>제 경험</span></h2><ol>{match}</ol>'
@@ -503,7 +509,7 @@ def render_portfolio(brief: dict, profile: dict) -> str:
                 ("flow", "일하는 순서", "업무 자동화를 만드는 순서"), ("projects", "프로젝트", f"작업물 {len(projs)}개")]
     toc_rows = [r for r in toc_rows if r[0] in sections]
     S[toc_i] = {"title": "목차", "cls": "toc", "html":
-                '<div class="l">' + wave("M -60 760 H 300 C 420 760 480 700 480 590 C 480 480 560 420 660 420 H 1000", mix(accent, "#000000", .15), 4, 12, uid="w-toc")
+                '<div class="l">' + wave("M -60 900 H 300 C 420 900 480 840 480 730 C 480 620 560 560 660 560 H 1000", mix(accent, "#000000", .15), 4, 12, uid="w-toc")
                 + f'<h2 data-a="left">Contents.</h2><p data-a="left">{esc(company)} {esc(role)} 지원을 위해, 공고 업무와 이어지는 경험과 작업물을 골라 담았습니다.</p></div>'
                 + '<div class="r"><ol>' + "".join(f'<li data-a><a href="#s-{sections[key] + 1}"><span>{k:02d}</span>{esc(name)}<em>{esc(sub)}</em></a></li>' for k, (key, name, sub) in enumerate(toc_rows, 1)) + "</ol></div>"}
     cols = 2 if len(projs) <= 4 else 3 if len(projs) <= 6 else 4
@@ -682,6 +688,32 @@ def build(brief_path: Path, out_root: Path, attach: list[Path]) -> Path:
     return d
 
 
+PAGES_BASE = "https://jihosw.github.io/jiho-agent/apply/"
+REPO_TREE = "https://github.com/JIHOSW/jiho-agent/tree/main/apply/"
+
+
+def publish(packet_dir: Path, slug: str, repo_root: Path) -> Path:
+    """검수를 마친 포트폴리오를 GitHub Pages 공개 폴더 apply/<slug>/index.html로 복사한다.
+    같은 slug는 최신 버전으로 바뀐다(버전별 원본은 applications/에 남는다). main에 합쳐져야 주소가 열린다."""
+    if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", slug or ""):
+        raise SystemExit("slug는 영문 소문자·숫자·하이픈만 씁니다 (예: stalab-ax-engineer)")
+    src = packet_dir / "portfolio.html"
+    if not src.exists():
+        raise SystemExit(f"포트폴리오가 없습니다: {src}")
+    if not (packet_dir / "checks" / "검수결과.md").exists():
+        raise SystemExit("화면 검수(check_portfolio.mjs)를 먼저 실행하세요")
+    text = src.read_text(encoding="utf-8")
+    for pat, why in PRIVATE:
+        if why != "퇴사·공백 설명(공개 화면 금지)" and re.search(pat, re.sub(r"<[^>]+>", " ", text)):
+            raise SystemExit(f"공개 전 확인 필요: 포트폴리오에 {why} 형식의 문자열이 있습니다")
+    dst = repo_root / "apply" / slug / "index.html"
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, dst)
+    (packet_dir / "공개주소.txt").write_text(f"{PAGES_BASE}{slug}/\n{REPO_TREE}{slug}\n", encoding="utf-8")
+    print(f"공개 파일: {dst}\n주소(main 병합·배포 후): {PAGES_BASE}{slug}/\nGitHub: {REPO_TREE}{slug}")
+    return dst
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -691,6 +723,10 @@ def main(argv: list[str] | None = None) -> int:
     b.add_argument("brief", type=Path)
     b.add_argument("--out", type=Path, default=DEFAULT_OUT)
     b.add_argument("--attach", type=Path, nargs="*", default=[])
+    pb = sub.add_parser("publish")
+    pb.add_argument("packet", type=Path)
+    pb.add_argument("--slug", required=True)
+    pb.add_argument("--repo", type=Path, default=Path.cwd())
     n = sub.add_parser("count")
     n.add_argument("file", type=Path)
     a = ap.parse_args(argv)
@@ -700,6 +736,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0 if rep.ok else 1
     if a.cmd == "build":
         build(a.brief, a.out, a.attach)
+        return 0
+    if a.cmd == "publish":
+        publish(a.packet, a.slug, a.repo)
         return 0
     if a.cmd == "count":
         w, n_ = char_counts(a.file.read_text(encoding="utf-8"))
