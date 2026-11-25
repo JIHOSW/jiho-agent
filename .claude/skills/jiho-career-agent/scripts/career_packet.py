@@ -396,6 +396,12 @@ def render_portfolio(brief: dict, profile: dict) -> str:
     head_lines = [esc(x) for x in (cov.get("headline") or hero.get("title", "")).split("\n")]
     hl_word = cov.get("highlight")
     h1 = "<br>".join(head_lines)
+    # 제목이 화면에서 3줄을 넘지 않을 때까지만 글자 크기를 줄인다(표지 폭 약 920px).
+    # 너비 추정: 한글은 글자당 약 1em, 영문·공백은 약 0.55em
+    widths = [sum(1.0 if ord(ch) > 0x2E80 else 0.55 for ch in html.unescape(x)) for x in head_lines]
+    head_px = 98
+    while head_px > 60 and sum(max(1, -(-int(w * head_px) // 920)) for w in widths) > 3:
+        head_px -= 2
     if hl_word and esc(hl_word) in h1:
         h1 = h1.replace(esc(hl_word), f"<em>{esc(hl_word)}</em>", 1)
     kw = "".join(f"<span>{esc(k)}</span>" for k in cov.get("keywords", [])[:5])
@@ -405,7 +411,7 @@ def render_portfolio(brief: dict, profile: dict) -> str:
         '<div class="grid" aria-hidden="true"></div><div class="glow" aria-hidden="true"></div>'
         + f'<div class="top" data-a="fade"><span>KIM JIHO · PORTFOLIO</span><span class="tag">{esc(company)} · {esc(role)}</span></div>'
         + f'<div class="main"><div class="kicker" data-a>{esc(cov.get("kicker") or hero.get("eyebrow"))}</div>'
-        + f'<h1 data-a>{h1}</h1>'
+        + f'<h1 data-a style="font-size:{head_px}px">{h1}</h1>'
         + (f'<div class="kw" data-a>{kw}</div>' if kw else "")
         + f'<div class="who" data-a><b>김지호</b><span>{esc(cov.get("who") or "기술지원 · IT 사업 수행 · AI 에이전트 제작")}</span></div></div>'
         + (f'<div class="match" data-a="right"><h2><span>공고 상세요강</span><span>제 경험</span></h2><ol>{match}</ol>'
@@ -503,7 +509,7 @@ def render_portfolio(brief: dict, profile: dict) -> str:
                 ("flow", "일하는 순서", "업무 자동화를 만드는 순서"), ("projects", "프로젝트", f"작업물 {len(projs)}개")]
     toc_rows = [r for r in toc_rows if r[0] in sections]
     S[toc_i] = {"title": "목차", "cls": "toc", "html":
-                '<div class="l">' + wave("M -60 760 H 300 C 420 760 480 700 480 590 C 480 480 560 420 660 420 H 1000", mix(accent, "#000000", .15), 4, 12, uid="w-toc")
+                '<div class="l">' + wave("M -60 900 H 300 C 420 900 480 840 480 730 C 480 620 560 560 660 560 H 1000", mix(accent, "#000000", .15), 4, 12, uid="w-toc")
                 + f'<h2 data-a="left">Contents.</h2><p data-a="left">{esc(company)} {esc(role)} 지원을 위해, 공고 업무와 이어지는 경험과 작업물을 골라 담았습니다.</p></div>'
                 + '<div class="r"><ol>' + "".join(f'<li data-a><a href="#s-{sections[key] + 1}"><span>{k:02d}</span>{esc(name)}<em>{esc(sub)}</em></a></li>' for k, (key, name, sub) in enumerate(toc_rows, 1)) + "</ol></div>"}
     cols = 2 if len(projs) <= 4 else 3 if len(projs) <= 6 else 4
