@@ -70,6 +70,9 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: ${{ runner.temp }}/jiho-pages
+      # 업로드 직후에는 GitHub가 산출물을 아직 목록에 올리지 않아 배포가 'No artifacts'로 실패할 때가 있어 잠시 기다린다
+      - name: Wait for artifact registration
+        run: sleep 20
       - name: Deploy presentation
         id: deployment
         uses: actions/deploy-pages@v4
