@@ -688,6 +688,32 @@ def build(brief_path: Path, out_root: Path, attach: list[Path]) -> Path:
     return d
 
 
+PAGES_BASE = "https://jihosw.github.io/jiho-agent/apply/"
+REPO_TREE = "https://github.com/JIHOSW/jiho-agent/tree/main/apply/"
+
+
+def publish(packet_dir: Path, slug: str, repo_root: Path) -> Path:
+    """검수를 마친 포트폴리오를 GitHub Pages 공개 폴더 apply/<slug>/index.html로 복사한다.
+    같은 slug는 최신 버전으로 바뀐다(버전별 원본은 applications/에 남는다). main에 합쳐져야 주소가 열린다."""
+    if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", slug or ""):
+        raise SystemExit("slug는 영문 소문자·숫자·하이픈만 씁니다 (예: stalab-ax-engineer)")
+    src = packet_dir / "portfolio.html"
+    if not src.exists():
+        raise SystemExit(f"포트폴리오가 없습니다: {src}")
+    if not (packet_dir / "checks" / "검수결과.md").exists():
+        raise SystemExit("화면 검수(check_portfolio.mjs)를 먼저 실행하세요")
+    text = src.read_text(encoding="utf-8")
+    for pat, why in PRIVATE:
+        if why != "퇴사·공백 설명(공개 화면 금지)" and re.search(pat, re.sub(r"<[^>]+>", " ", text)):
+            raise SystemExit(f"공개 전 확인 필요: 포트폴리오에 {why} 형식의 문자열이 있습니다")
+    dst = repo_root / "apply" / slug / "index.html"
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, dst)
+    (packet_dir / "공개주소.txt").write_text(f"{PAGES_BASE}{slug}/\n{REPO_TREE}{slug}\n", encoding="utf-8")
+    print(f"공개 파일: {dst}\n주소(main 병합·배포 후): {PAGES_BASE}{slug}/\nGitHub: {REPO_TREE}{slug}")
+    return dst
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -697,6 +723,10 @@ def main(argv: list[str] | None = None) -> int:
     b.add_argument("brief", type=Path)
     b.add_argument("--out", type=Path, default=DEFAULT_OUT)
     b.add_argument("--attach", type=Path, nargs="*", default=[])
+    pb = sub.add_parser("publish")
+    pb.add_argument("packet", type=Path)
+    pb.add_argument("--slug", required=True)
+    pb.add_argument("--repo", type=Path, default=Path.cwd())
     n = sub.add_parser("count")
     n.add_argument("file", type=Path)
     a = ap.parse_args(argv)
@@ -706,6 +736,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0 if rep.ok else 1
     if a.cmd == "build":
         build(a.brief, a.out, a.attach)
+        return 0
+    if a.cmd == "publish":
+        publish(a.packet, a.slug, a.repo)
         return 0
     if a.cmd == "count":
         w, n_ = char_counts(a.file.read_text(encoding="utf-8"))
