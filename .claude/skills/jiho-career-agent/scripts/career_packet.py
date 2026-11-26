@@ -257,6 +257,8 @@ def validate(brief: dict, profile: dict | None = None) -> Report:
             hack_sections += 1
             if i == 0:
                 rep.err(f"{label}: 해커톤은 추가 경험입니다. 첫 소제목의 주인공으로 두지 마세요")
+    if hack_sections == 0 and meta.get("track") == "ax":
+        rep.warn("해커톤 근거를 쓴 문항이 없습니다. AI·개발 계열 공고면 한 문항으로 넣으세요(writing-guide '대충 쓰지 않는다')")
     if hack_sections > 1:
         rep.warn(f"해커톤 근거를 쓴 소제목이 {hack_sections}개입니다. 기존 경력 중심을 유지하세요")
 
