@@ -200,7 +200,10 @@ class PublishTest(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 cp.publish(d, "x", Path(tmp))  # 화면 검수 전
             (d / "checks").mkdir()
-            (d / "checks" / "검수결과.md").write_text("ok", encoding="utf-8")
+            (d / "checks" / "검수결과.md").write_text("| 실패 | PC 넘침 |", encoding="utf-8")
+            with self.assertRaises(SystemExit):
+                cp.publish(d, "stalab-ax-engineer", Path(tmp))  # 실패 항목이 있으면 공개 거부
+            (d / "checks" / "검수결과.md").write_text("| 통과 | PC 넘침 |", encoding="utf-8")
             with self.assertRaises(SystemExit):
                 cp.publish(d, "Bad Slug!", Path(tmp))
             dst = cp.publish(d, "stalab-ax-engineer", Path(tmp))
