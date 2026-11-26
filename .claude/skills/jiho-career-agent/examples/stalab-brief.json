@@ -13,7 +13,8 @@
     },
     "limits": {
       "cover_letter_chars": null,
-      "count_spaces": true
+      "count_spaces": true,
+      "section_chars": null
     },
     "tone": {
       "style": "차분한 실무형. 만든 도구와 검증 사례를 앞에 두고, 반도체 장비처럼 모르는 분야는 짧게 인정한다.",

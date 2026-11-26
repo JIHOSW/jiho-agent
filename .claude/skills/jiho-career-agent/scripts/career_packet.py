@@ -31,6 +31,7 @@ DEFAULT_OUT = Path.cwd() / "applications"
 
 TRACKS = {"ax": "AX 개발", "onboarding": "온보딩·기술지원"}
 DEFAULT_RANGE = (2000, 3000)  # 분량 제한이 없을 때 공백 포함 권장 범위
+SECTION_RANGE = (500, 700)  # 문항(소제목)별 본문 공백 포함 권장 범위
 
 # 근거 없이 쓰면 안 되는 표현. (패턴, 설명). 같은 문장에 부정 표현이 있으면 경고로 낮춘다.
 BANNED = [
@@ -284,6 +285,14 @@ def validate(brief: dict, profile: dict | None = None) -> Report:
         lo, hi = DEFAULT_RANGE
         if not lo <= with_sp <= hi:
             rep.warn(f"분량 제한이 없을 때 권장 범위({lo}~{hi}자, 공백 포함)를 벗어났습니다: {with_sp}자")
+        # 문항(소제목)마다 500~700자 (2026-11-26 사용자 요청). limits.section_chars: null 이면 끔
+        sec_range = limits.get("section_chars", list(SECTION_RANGE))
+        if sec_range:
+            slo, shi = sec_range
+            for i, sec in enumerate(brief.get("cover_letter", [])):
+                n = char_counts(sec.get("body", ""))[0]
+                if not slo <= n <= shi:
+                    rep.warn(f"cover_letter[{i}] '{sec.get('heading', '')}': 문항 본문 {n}자, 권장 {slo}~{shi}자(공백 포함)")
 
     for i, row in enumerate(brief.get("mapping", [])):
         if row.get("status") not in {"match", "partial", "gap", "unknown"}:

@@ -78,6 +78,14 @@ class ValidateTest(unittest.TestCase):
         b["meta"]["limits"] = {"cover_letter_chars": 1000, "count_spaces": True}
         self.assertTrue(any("제한 1000자" in e for e in errors_of(b)))
 
+    def test_section_length_warning(self):
+        b = example()
+        b["meta"]["limits"].pop("section_chars", None)  # 기본값(500~700자) 적용
+        rep = cp.validate(b)
+        self.assertTrue(any("문항 본문" in w for w in rep.warnings))
+        b["meta"]["limits"]["section_chars"] = [1, 5000]
+        self.assertFalse(any("문항 본문" in w for w in cp.validate(b).warnings))
+
     def test_mapping_match_needs_evidence(self):
         b = example()
         b["mapping"].append({"kind": "preferred", "item": "영어", "status": "match", "evidence": []})
