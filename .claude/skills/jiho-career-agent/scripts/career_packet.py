@@ -162,6 +162,34 @@ def scan_private(label: str, text: str, rep: Report, public: bool) -> None:
                 rep.err(f"{label}: 제출용 화면에 {why}가 섞였습니다")
 
 
+AI_TELLS = [
+    (r"가장 가깝다고 생각해 지원", 1, "'가장 가깝다고 생각해 지원했습니다' 공식 문장"),
+    (r"(배웠습니다|알게 되었습니다|깨달았습니다)", 2, "'~배웠습니다'류 교훈 문장"),
+    (r"을 통해|를 통해|에 있어서|함에 있어", 2, "번역투 표현(~을 통해, ~에 있어서)"),
+    (r"(흐름|지점|역량|시너지|인사이트)", 6, "추상어(흐름·지점·역량 등)"),
+]
+
+
+def scan_ai_tells(brief: dict, rep: Report) -> None:
+    """AI가 쓴 티가 나는 신호를 경고로 알린다(오류 아님). 기준은 writing-guide.md."""
+    secs = brief.get("cover_letter", [])
+    body = "\n".join(s.get("body", "") for s in secs)
+    for pat, limit, why in AI_TELLS:
+        n = len(re.findall(pat, body))
+        if n > limit:
+            rep.warn(f"AI 티: {why}가 {n}번 나옵니다(권장 {limit}번 이하)")
+    dots = body.count("·")
+    if secs and dots > 6 * len(secs):
+        rep.warn(f"AI 티: 가운뎃점(·) 나열이 {dots}개로 많습니다")
+    heads = [s.get("heading", "") for s in secs]
+    if len(heads) >= 3 and all(h.endswith("습니다") for h in heads):
+        rep.warn("AI 티: 소제목이 모두 '~습니다'로 끝나는 같은 모양입니다")
+    ends = [re.findall(r"[^.]+[.]\s*$", s.get("body", "").strip())[-1:] for s in secs]
+    tails = [e[0].strip()[-6:] for e in ends if e]
+    if len(tails) >= 3 and len(set(tails)) < len(tails) - 1:
+        rep.warn("AI 티: 여러 문단이 같은 말투로 끝납니다")
+
+
 def portfolio_texts(brief: dict) -> list[tuple[str, str]]:
     p = brief.get("portfolio", {})
     out: list[tuple[str, str]] = []
@@ -233,6 +261,9 @@ def validate(brief: dict, profile: dict | None = None) -> Report:
 
     full = letter_text(brief)
     body_only = letter_text(brief, with_headings=False)
+    scan_ai_tells(brief, rep)
+    if not meta.get("tone"):
+        rep.warn("meta.tone(회사 톤앤매너와 근거)이 비어 있습니다")
     scan_banned("자기소개서", full + "\n" + brief.get("resume_title", ""), rep)
     scan_numbers("자기소개서", full, rep)
     scan_private("자기소개서", full, rep, public=False)
@@ -512,7 +543,7 @@ def render_portfolio(brief: dict, profile: dict) -> str:
                 '<div class="l">' + wave("M -60 900 H 300 C 420 900 480 840 480 730 C 480 620 560 560 660 560 H 1000", mix(accent, "#000000", .15), 4, 12, uid="w-toc")
                 + f'<h2 data-a="left">Contents.</h2><p data-a="left">{esc(company)} {esc(role)} 지원을 위해, 공고 업무와 이어지는 경험과 작업물을 골라 담았습니다.</p></div>'
                 + '<div class="r"><ol>' + "".join(f'<li data-a><a href="#s-{sections[key] + 1}"><span>{k:02d}</span>{esc(name)}<em>{esc(sub)}</em></a></li>' for k, (key, name, sub) in enumerate(toc_rows, 1)) + "</ol></div>"}
-    cols = 2 if len(projs) <= 4 else 3 if len(projs) <= 6 else 4
+    cols = 2 if len(projs) <= 4 else 3 if len(projs) <= 6 else 4 if len(projs) <= 12 else 5
     many = " many" if len(projs) > 6 else ""
     S[map_i] = {"title": "프로젝트 한눈에", "sec": "05", "label": "프로젝트", "h": f"작업물 {len(projs)}개를 한눈에", "note":
                 "AI 프로젝트는 개인 학습·실습 작업물이며 고객사와 데이터는 가상입니다. 팀 프로젝트는 역할을 따로 적었습니다.", "html":
@@ -700,8 +731,11 @@ def publish(packet_dir: Path, slug: str, repo_root: Path) -> Path:
     src = packet_dir / "portfolio.html"
     if not src.exists():
         raise SystemExit(f"포트폴리오가 없습니다: {src}")
-    if not (packet_dir / "checks" / "검수결과.md").exists():
+    result = packet_dir / "checks" / "검수결과.md"
+    if not result.exists():
         raise SystemExit("화면 검수(check_portfolio.mjs)를 먼저 실행하세요")
+    if "| 실패 |" in result.read_text(encoding="utf-8"):
+        raise SystemExit("화면 검수에 실패 항목이 있어 공개하지 않습니다. 고친 뒤 새 버전으로 다시 검수하세요")
     text = src.read_text(encoding="utf-8")
     for pat, why in PRIVATE:
         if why != "퇴사·공백 설명(공개 화면 금지)" and re.search(pat, re.sub(r"<[^>]+>", " ", text)):
