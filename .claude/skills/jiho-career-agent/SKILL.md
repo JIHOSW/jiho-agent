@@ -75,6 +75,15 @@ description: 김지호의 전용 지원서 에이전트. 채용공고(URL·텍�
 - 먼저 `writing-guide.md` '대충 쓰지 않는다' 체크리스트와 `recruiter-review.md` '부실 점검'을 통과시킨다. 공고 업무·필수 요건 문장마다 답이 있어야 하고, AI·개발·기획 계열이면 해커톤 문항을 넣는다.
 - `references/recruiter-review.md`의 질문으로 문장을 공격하고, 찾은 문제와 고친 내용을 `review`에 남긴 뒤 본문을 실제로 고친다. 고친 뒤 한 번 더 읽는다.
 
+### 6-1. AI 글투 윤문 (humanize-korean, 2026-11-28 사용자 결정)
+검토까지 끝난 자기소개서를 같은 저장소의 `.claude/skills/humanize-korean/`(im-not-ai v2.4.8, MIT, 복사 설치)로 한 번 더 다듬는다. 문체만 고치고 내용·숫자·소제목은 바꾸지 않는다. run 폴더는 그 지원서 버전 폴더 안 `_workspace/`(applications/라 git에 안 올라감).
+
+1. `python3 .claude/skills/jiho-career-agent/scripts/humanize_bridge.py export <brief.json> --run-dir <run>`
+2. humanize-korean 스킬 절차(Phase 1 shim → route_hint 경로 → Phase 2.4 복원 3종 → Phase 2.5 `verify_gates.py`)를 따른다. 자기소개서는 `--genre essay`, 강도는 **보수**. 서브에이전트 `humanize-monolith` 등이 목록에 없으면 general-purpose 에이전트에게 `.claude/agents/humanize-*.md` 정의를 읽고 그대로 따르게 한다. 지시에 "소제목·숫자·고유명사·⟦ ⟧ 그대로, 새 사실 금지, 문항 본문 500~700자 유지"를 꼭 넣는다.
+3. `verify_gates.py`가 exit 2면 윤문본을 버린다. exit 0/1이면 `humanize_bridge.py import <brief.json> --final <run>/final.md --out <새 brief>` — 소제목·숫자·영문 토큰·⟦ ⟧가 하나라도 달라지면 거부하고 원문을 쓴다.
+4. 새 brief로 `career_packet.py check`를 다시 통과시킨 뒤 8단계로 간다. 스토리 초안도 같은 방법으로 윤문하고 `humanize_bridge.py verify <원본> <윤문본>`으로 대조한다.
+5. 보고에 "윤문: 경로/변경률/게이트 결과"를 한 줄로 적는다. 윤문은 탐지기 회피 보장이 아니라 문체 교정이라고 말한다.
+
 ### 7. 포트폴리오 내용 쓰기
 - 포트폴리오는 저장소의 `포트폴리오 html 모션 ppt/index.html`(사용자가 참고로 준 입사지원 포트폴리오)과 같은 16:9 모션 슬라이드 형식으로 만들어진다: 표지 → 목차 → 지원 이유(기업 정보 카드) → 공고 업무와 이어지는 경험 → 한눈에 보기(숫자 카드) → 경력 타임라인 → 일하는 순서(단계 강조 모션) → 프로젝트 한눈에(카드를 누르면 해당 장) → 프로젝트 장(화면 이미지·역할·검증·구현 범위·링크) → 마무리. 자기소개서는 포트폴리오에 넣지 않고 별도 파일(자기소개서.txt/.md)로만 만든다.
 - 참고 포트폴리오처럼 저장소의 **모든 프로젝트(현재 12개)**를 싣는다. brief의 `portfolio.projects`에 적은 프로젝트가 공고에 맞춘 문구로 앞에 오고, 나머지는 profile의 기본 문구로 뒤에 자동으로 붙는다(`include_all_projects: false`면 고른 것만). PC는 방향키·전체 보기·처음으로, 휴대폰은 세로 읽기 모드로 바뀐다.
